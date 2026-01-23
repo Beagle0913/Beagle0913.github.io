@@ -7,24 +7,19 @@
     <title>Répartition des Charges - Colocation</title>
 
     <!-- SEO Meta Description -->
-    <meta name="description" content="Répartition des charges (électricité, internet, assurance) pour la coloc au 21 Rue d'Orbey, du 1er septembre au 16 novembre.">
+    <meta name="description" content="Répartition des charges (électricité, internet) pour la coloc au 21 Rue d'Orbey.">
 
-    <!-- ========================================== -->
-    <!--  WHATSAPP & SOCIAL PREVIEW TAGS (OpenGraph) -->
-    <!-- ========================================== -->
+    <!-- WHATSAPP & SOCIAL PREVIEW TAGS (OpenGraph) -->
     <meta name="theme-color" content="#073B4C">
     <meta property="og:title" content="Répartition des charges - Coloc 21 Rue d'Orbey">
-    <meta property="og:description" content="Qui doit combien ? Détail électricité, internet et assurance du 1er sept au 16 nov.">
+    <meta property="og:description" content="Détail électricité et internet. Total : 105,23 € par personne.">
     <meta property="og:type" content="website">
-    
-    <!-- Updated placeholders as requested -->
     <meta property="og:url" content="https://Beagle0913.github.io/">
-    <meta property="og:image" content="https://Beagle0913.github.io/preview-charges.png">
     
-    <!-- Libraries with 'defer' for performance -->
-    <script src="https://cdn.tailwindcss.com" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0" defer></script>
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,244 +32,183 @@
             background-color: #f8f9fa;
         }
 
-        /* Responsive Chart Containers */
         .chart-container {
             position: relative;
             width: 100%;
             max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            /* Mobile height default */
+            margin: auto;
             height: 300px;
-            max-height: 50vh;
         }
         .chart-container-donut {
             position: relative;
             width: 100%;
             max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: auto;
             height: 300px;
-            max-height: 40vh;
         }
-        /* Desktop height adjustments */
         @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
-            .chart-container-donut {
-                height: 350px;
-            }
+            .chart-container, .chart-container-donut { height: 350px; }
         }
 
-        /* Card Styling */
         .card {
             background-color: #ffffff;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             padding: 1.5rem;
-            margin-bottom: 0; /* Reset margin, handled by grid gap */
-            display: flex;
-            flex-direction: column;
             height: 100%;
         }
-        .card-content {
-            flex-grow: 1;
+
+        .stat-card-blue { background-color: #118AB2; color: white; padding: 1.5rem; border-radius: 0.5rem; }
+        .stat-card-red { background-color: #EF476F; color: white; padding: 1.5rem; border-radius: 0.5rem; }
+        .payment-card { background-color: #073B4C; color: white; border-radius: 0.75rem; padding: 1.5rem; }
+        
+        .badge-date {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 4px;
         }
 
-        /* Specific Component Styles */
-        .stat-card-internet {
-            background-color: #118AB2;
-            color: white;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        .stat-card-assurance {
-            background-color: #06D6A0;
-            color: white;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-        .payment-card {
-            background-color: #073B4C;
-            color: white;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-        }
-        .info-box {
-            background-color: #fff1f2;
-            border-left: 4px solid #EF476F;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            color: #881337;
-        }
-        
-        /* Utility */
         .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-        canvas {
-            display: block;
-            width: 100% !important;
-            height: 100% !important;
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
         }
     </style>
 </head>
-<body class="text-[#073B4C]">
+<body class="text-[#073B4C] antialiased">
     <div class="container mx-auto p-4 pt-6 md:p-8 max-w-7xl">
         
-        <header class="text-center mb-8 md:mb-10">
+        <header class="flex flex-col items-center mb-8 md:mb-10 text-center">
             <h1 class="text-3xl md:text-5xl font-bold text-[#073B4C] mb-2">Répartition des Charges</h1>
-            <p class="text-base md:text-lg text-gray-600">Période du septembre au novembre (21 Rue d'Orbey)</p>
+            <p class="text-base md:text-lg text-gray-600 mb-4">Période : Décembre 2025 - Janvier 2026 (21 Rue d'Orbey)</p>
+            
+            <!-- Navigation Button to Archive -->
+            <a href="archive-nov-jan-2026.html" class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                Voir les archives (Sept-Nov)
+            </a>
         </header>
 
-        <main class="flex flex-col gap-6 md:gap-8">
+        <main class="grid gap-6 md:gap-8">
 
             <!-- TOTAL SUMMARY SECTION -->
             <section class="card">
-                <div class="card-content">
-                    <h2 class="text-xl md:text-2xl font-bold text-[#073B4C] mb-4">Résumé : Total à Payer par Personne</h2>
-                    <p class="text-gray-700 mb-6 text-sm md:text-base">Voici le montant final que chacun doit. (Inclut Élec + Internet + Assurance).</p>
-                    <p id="totalBarChartDesc" class="sr-only">
-                        Graphique en barres montrant le total à payer par personne :
-                        Džiugas 144,98 €, Matisse 139,92 € (Payé), Shawn 126,74 €, Christos 118,64 € (Payé).
-                    </p>
-                    <div class="chart-container">
-                        <canvas id="totalBarChart" role="img" aria-describedby="totalBarChartDesc"></canvas>
-                    </div>
+                <h2 class="text-xl md:text-2xl font-bold text-[#073B4C] mb-4">Total à Payer par Personne</h2>
+                <div class="flex flex-wrap items-baseline gap-2 mb-6">
+                    <span class="text-4xl font-bold text-[#06D6A0]">105,23 €</span>
+                    <span class="text-gray-500 text-sm">par colocataire</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="totalBarChart"></canvas>
                 </div>
             </section>
 
             <!-- DETAILS GRID -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-
-                <!-- PIE CHART CARD -->
+                <!-- DONUT CHART CARD -->
                 <section class="card md:col-span-1">
-                    <div class="card-content">
-                        <h2 class="text-xl md:text-2xl font-bold text-[#073B4C] mb-4">Composition Globale (530,26 €)</h2>
-                        <div class="text-sm text-gray-700 mb-4 space-y-2">
-                            <p>Le budget total se décompose ainsi :</p>
-                            <ul class="list-disc pl-4 space-y-1">
-                                <li class="text-[#EF476F]"><strong>Électricité :</strong> 311,70 € (59%)</li>
-                                <li class="text-[#118AB2]"><strong>Internet :</strong> 116,96 € (22%)</li>
-                                <li class="text-[#06D6A0]"><strong>Assurance :</strong> 101,60 € (19%)</li>
-                            </ul>
-                        </div>
-                        <p id="compositionDonutDesc" class="sr-only">
-                            Diagramme en anneau montrant la composition globale des charges :
-                            Électricité 311,70 €, Internet 116,96 €, Assurance 101,60 €.
+                    <h2 class="text-xl font-bold text-[#073B4C] mb-4">Composition Globale (420,92 €)</h2>
+                    <div class="text-sm text-gray-700 mb-6 space-y-2">
+                        <p class="flex justify-between items-center">
+                            <span class="text-[#EF476F] font-semibold">Électricité :</span>
+                            <span class="font-medium">360,92 €</span>
                         </p>
-                        <div class="chart-container-donut">
-                            <canvas id="compositionDonutChart" role="img" aria-describedby="compositionDonutDesc"></canvas>
-                        </div>
+                        <p class="flex justify-between items-center">
+                            <span class="text-[#118AB2] font-semibold">Internet :</span>
+                            <span class="font-medium">60,00 €</span>
+                        </p>
+                        <hr class="my-2">
+                        <p class="flex justify-between font-bold">
+                            <span>Total :</span>
+                            <span>420,92 €</span>
+                        </p>
+                    </div>
+                    <div class="chart-container-donut">
+                        <canvas id="compositionDonutChart"></canvas>
                     </div>
                 </section>
-                
-                <!-- ELECTRICITY DETAILS CARD -->
-                <section class="card md:col-span-2">
-                    <div class="card-content">
-                        <h2 class="text-xl md:text-2xl font-bold text-[#073B4C] mb-4">Détail du Calcul Électricité (1er sept - 16 nov : 311,70 €)</h2>
-                        
-                        <div class="info-box">
-                            <h3 class="font-bold mb-1">Calcul Hybride</h3>
-                            <p>Assure l'équité : Frais d'ouverture divisés par 4, consommation au prorata de la présence.</p>
-                        </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-sm">
-                            <div>
-                                <h4 class="font-bold text-[#9D1F42] mb-1">1. Frais Fixes (49,30 €)</h4>
-                                <p class="text-gray-600">Abonnement + Taxes.</p>
-                                <p class="font-semibold">Divisé par 4 = 12,33 €/pers.</p>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-[#EF476F] mb-1">2. Consommation (262,40 €)</h4>
-                                <p class="text-gray-600">Au prorata des jours.</p>
-                                <p class="font-semibold">~1,01 € / jour de présence.</p>
-                            </div>
-                        </div>
-
-                        <p id="electricityStackedDesc" class="sr-only">
-                            Graphique en barres empilées montrant la part électricité par personne.
-                        </p>
-                        <div class="chart-container">
-                            <canvas id="electricityStackedChart" role="img" aria-describedby="electricityStackedDesc"></canvas>
+                <!-- INDIVIDUAL CATEGORIES -->
+                <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Electricity Card -->
+                    <div class="stat-card-red flex flex-col justify-center min-h-[140px]">
+                        <h3 class="text-lg font-bold">⚡ Électricité</h3>
+                        <div class="badge-date">16/11/2025 au 16/01/2026</div>
+                        <div class="mt-3">
+                            <p class="text-3xl font-bold">360,92 €</p>
+                            <p class="text-sm opacity-90">Soit 90,23 € / pers</p>
                         </div>
                     </div>
-                </section>
-            </div>
-
-            <!-- FIXED FEES SECTION -->
-            <section class="card">
-                <div class="card-content">
-                    <h2 class="text-xl md:text-2xl font-bold text-[#073B4C] mb-4">Les Frais Fixes</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        
-                        <div class="stat-card-internet">
-                            <h3 class="text-lg md:text-xl font-bold mb-2">🌐 Internet (Total)</h3>
-                            <p class="text-3xl md:text-5xl font-bold mb-3">116,96 €</p>
-                            <p class="text-lg md:text-2xl font-semibold">Soit 29,24 € par personne</p>
-                            <p class="text-xs md:text-sm opacity-90 mt-2 border-t border-white/30 pt-2">
-                                *Inclut 49€ de frais d'installation<br>
-                                (Partagés équitablement entre les 4)
-                            </p>
+                    
+                    <!-- Internet Card -->
+                    <div class="stat-card-blue flex flex-col justify-center min-h-[140px]">
+                        <h3 class="text-lg font-bold">🌐 Internet</h3>
+                        <div class="badge-date">Décembre & Janvier</div>
+                        <div class="mt-3">
+                            <p class="text-3xl font-bold">60,00 €</p>
+                            <p class="text-sm opacity-90">Soit 15,00 € / pers</p>
                         </div>
-
-                        <div class="stat-card-assurance">
-                            <h3 class="text-lg md:text-xl font-bold mb-2">🏠 Assurance (Total)</h3>
-                            <p class="text-3xl md:text-5xl font-bold mb-3">101,60 €</p>
-                            <p class="text-lg md:text-2xl font-semibold">Soit 25,40 € par personne</p>
-                            <p class="text-xs md:text-sm opacity-90 mt-2 border-t border-white/30 pt-2">
-                                Couverture annuelle complète
-                            </p>
-                        </div>
-
+                    </div>
+                    
+                    <!-- Breakdown table -->
+                    <div class="sm:col-span-2 card">
+                        <h3 class="font-bold mb-3">Récapitulatif par personne</h3>
+                        <table class="w-full text-left text-sm">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="py-2 text-gray-500 uppercase text-xs">Rubrique</th>
+                                    <th class="py-2 text-right text-gray-500 uppercase text-xs">Montant</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="py-2">Part Électricité <span class="text-gray-400 text-xs ml-1">(2 mois)</span></td>
+                                    <td class="py-2 text-right font-medium">90,23 €</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="py-2">Part Internet <span class="text-gray-400 text-xs ml-1">(Déc + Jan)</span></td>
+                                    <td class="py-2 text-right font-medium">15,00 €</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 font-bold">Total Personnel</td>
+                                    <td class="py-3 text-right font-bold text-[#06D6A0] text-lg">105,23 €</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </section>
+            </div>
 
             <!-- PAYMENT SECTION -->
             <section class="payment-card">
-                <div class="flex flex-col md:flex-row justify-between items-start gap-6">
+                <div class="flex flex-col md:flex-row justify-between items-start gap-8">
                     <div class="flex-1">
                         <h2 class="text-xl md:text-2xl font-bold mb-4 text-[#FFD166]">💳 Paiement & Justificatifs</h2>
-                        <p class="mb-2 text-sm md:text-base">J'ai tout ajouté dans <strong>Tricount</strong>.</p>
-                        <p class="mb-6 text-sm md:text-base">Factures disponibles sur le Drive :</p>
-                        <!-- Added rel="noopener noreferrer" and target="_blank" -->
+                        <p class="mb-6 opacity-90">Les factures et le décompte détaillé ont été ajoutés dans <strong>Tricount</strong>.</p>
                         <a href="https://drive.google.com/drive/folders/1wVoDw_WrTJ7K77VDbuIqDCdl6i2nL2lm?usp=sharing" 
                            target="_blank" 
                            rel="noopener noreferrer" 
-                           class="inline-block bg-[#EF476F] hover:bg-[#D63A5E] text-white font-bold py-2 px-6 rounded-full transition duration-300 text-sm md:text-base shadow-lg">
-                            📂 Voir les justificatifs
+                           class="inline-flex items-center gap-2 bg-[#EF476F] hover:bg-[#D63A5E] text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-lg">
+                            <span>📂 Factures sur le Drive</span>
                         </a>
                     </div>
-                    <div class="flex-1 bg-white/10 p-6 rounded-lg w-full md:w-auto">
+                    <div class="flex-1 bg-white/10 p-6 rounded-lg w-full">
                         <h3 class="text-lg font-bold mb-3 text-[#FFD166] border-b border-white/20 pb-2">Coordonnées Bancaires</h3>
-                        <div class="space-y-2 font-mono text-sm md:text-base">
+                        <div class="space-y-4 font-mono text-sm">
                             <div class="flex flex-col">
                                 <span class="text-gray-300 text-xs uppercase">Bénéficiaire</span>
-                                <span class="font-bold">Džiugas Satkauskas</span>
+                                <span class="font-bold text-base">Džiugas Satkauskas</span>
                             </div>
-                            <div class="flex flex-col pt-2">
-                                <span class="text-gray-300 text-xs uppercase">IBAN</span>
-                                <span class="tracking-[0.15em] bg-black/20 p-2 rounded select-all break-all md:break-normal">
-                                    LT463250015654374408
-                                </span>
+                            <div class="flex flex-col">
+                                <span class="text-gray-300 text-xs uppercase">IBAN (Revolut)</span>
+                                <span class="bg-black/20 p-2 rounded select-all break-all mt-1 border border-white/10 text-base">LT463250015654374408</span>
                             </div>
                             <div class="flex flex-col">
                                 <span class="text-gray-300 text-xs uppercase">BIC</span>
-                                <span class="select-all">REVOLT21</span>
+                                <span class="select-all font-bold">REVOLT21</span>
                             </div>
                         </div>
                     </div>
@@ -284,234 +218,81 @@
         </main>
     </div>
 
-    <!-- Script wrapped in load event listener to wait for defer scripts -->
     <script>
         window.addEventListener('load', function() {
-            (function() {
-                // Ensure Chart is available (redundant if using load, but good practice)
-                if (typeof Chart === 'undefined') {
-                    console.error('Chart.js not loaded');
-                    return;
+            Chart.register(ChartDataLabels);
+
+            const IS_MOBILE = window.matchMedia('(max-width: 768px)').matches;
+            const PALETTE = {
+                ELEC: '#EF476F',
+                INTERNET: '#118AB2',
+                SUCCESS: '#06D6A0',
+                NEUTRAL: '#073B4C'
+            };
+
+            const formatEuro = (v) => v.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+
+            // 1. TOTAL BAR CHART
+            new Chart(document.getElementById('totalBarChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Džiugas', 'Matisse', 'Shawn', 'Christos'],
+                    datasets: [{
+                        label: 'Total à Payer',
+                        data: [105.23, 105.23, 105.23, 105.23],
+                        backgroundColor: PALETTE.SUCCESS,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            color: PALETTE.NEUTRAL,
+                            font: { weight: 'bold', family: 'Inter' },
+                            formatter: (v) => formatEuro(v)
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 130, ticks: { callback: (v) => v + ' €' } },
+                        x: { grid: { display: false } }
+                    }
                 }
+            });
 
-                Chart.register(ChartDataLabels);
-
-                // DETECT MOBILE
-                const IS_MOBILE = window.matchMedia('(max-width: 768px)').matches;
-
-                const PALETTE = {
-                    ELEC_MAIN: '#EF476F',
-                    ELEC_DARK: '#9D1F42',
-                    INTERNET: '#118AB2',
-                    ASSURANCE: '#06D6A0',
-                    NEUTRAL: '#073B4C',
-                    YELLOW: '#FFD166'
-                };
-
-                const formatEuro = (value) => {
-                    try {
-                        return new Intl.NumberFormat('fr-FR', { 
-                            style: 'currency', 
-                            currency: 'EUR',
-                            minimumFractionDigits: 2 
-                        }).format(value);
-                    } catch (e) {
-                        return value.toFixed(2).replace('.', ',') + ' €';
-                    }
-                };
-
-                // GLOBAL CHART OPTIONS (Responsive Defaults)
-                const globalChartOptions = (extraOptions = {}) => {
-                    return {
-                        maintainAspectRatio: false,
-                        responsive: true,
-                        layout: { 
-                            padding: { top: 25 } 
-                        },
-                        animation: {
-                            duration: IS_MOBILE ? 0 : 800 // Disable animation on mobile for performance
-                        },
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) label += ': ';
-                                        const v = context.parsed.y ?? context.parsed;
-                                        if (v !== null && v !== undefined) label += formatEuro(v);
-                                        return label;
-                                    }
-                                }
+            // 2. COMPOSITION DONUT CHART
+            new Chart(document.getElementById('compositionDonutChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Électricité', 'Internet'],
+                    datasets: [{
+                        data: [360.92, 60.00],
+                        backgroundColor: [PALETTE.ELEC, PALETTE.INTERNET],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { family: 'Inter' } } },
+                        datalabels: {
+                            color: '#fff',
+                            formatter: (value, ctx) => {
+                                let sum = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                let percentage = (value * 100 / sum).toFixed(0) + "%";
+                                return percentage;
                             },
-                            legend: {
-                                display: true,
-                                position: 'bottom',
-                                labels: {
-                                    color: PALETTE.NEUTRAL,
-                                    font: { family: 'Inter', size: IS_MOBILE ? 12 : 14 },
-                                    boxWidth: 12,
-                                    padding: 15
-                                }
-                            },
-                            datalabels: {
-                                // GLOBAL RULE: Hide labels on mobile to prevent clutter
-                                display: !IS_MOBILE,
-                                color: '#FFFFFF',
-                                font: { 
-                                    weight: 'bold', 
-                                    family: 'Inter', 
-                                    size: IS_MOBILE ? 9 : 12 
-                                },
-                                formatter: (value) => formatEuro(value)
-                            }
-                        },
-                        scales: {
-                            x: {
-                                ticks: {
-                                    color: PALETTE.NEUTRAL,
-                                    font: { family: 'Inter', size: IS_MOBILE ? 10 : 12 }
-                                },
-                                grid: { display: false }
-                            },
-                            y: {
-                                ticks: {
-                                    color: PALETTE.NEUTRAL,
-                                    font: { family: 'Inter', size: IS_MOBILE ? 10 : 12 }
-                                },
-                                grid: { color: '#e5e7eb' }
-                            }
-                        },
-                        ...extraOptions
-                    };
-                };
-                
-                // 1. TOTAL BAR CHART
-                const totalBarCtx = document.getElementById('totalBarChart').getContext('2d');
-                new Chart(totalBarCtx, {
-                    type: 'bar',
-                    data: {
-                        // UPDATED: Added checkmarks for Matisse and Christos
-                        labels: ['Džiugas', 'Matisse ✅', 'Shawn', 'Christos ✅'],
-                        datasets: [{
-                            label: 'Total à Payer',
-                            data: [144.98, 139.92, 126.74, 118.64],
-                            // UPDATED: Changed background color to green (PALETTE.ASSURANCE) for those who paid
-                            backgroundColor: [
-                                PALETTE.NEUTRAL,
-                                PALETTE.ASSURANCE,
-                                PALETTE.NEUTRAL,
-                                PALETTE.ASSURANCE
-                            ],
-                            borderRadius: 4,
-                            datalabels: {
-                                color: PALETTE.NEUTRAL,
-                                anchor: 'end',
-                                align: 'top',
-                                offset: 0,
-                                // EXCEPTION: Always show total labels, even on mobile
-                                display: true,
-                                font: { 
-                                    weight: 'bold',
-                                    family: 'Inter', 
-                                    size: IS_MOBILE ? 10 : 12 
-                                },
-                                formatter: (value) => formatEuro(value)
-                            }
-                        }]
-                    },
-                    options: globalChartOptions({
-                        layout: { padding: { top: 30 } },
-                        plugins: { 
-                            legend: { display: false } // Single dataset, no legend needed
-                        },
-                        scales: { 
-                            y: { beginAtZero: true } 
-                        }
-                    })
-                });
-
-                // 2. COMPOSITION PIE CHART
-                const compositionDonutCtx = document.getElementById('compositionDonutChart').getContext('2d');
-                new Chart(compositionDonutCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Électricité', 'Internet', 'Assurance'],
-                        datasets: [{
-                            data: [311.70, 116.96, 101.60],
-                            backgroundColor: [PALETTE.ELEC_MAIN, PALETTE.INTERNET, PALETTE.ASSURANCE],
-                            hoverOffset: 4,
-                            datalabels: {
-                                display: !IS_MOBILE,
-                                color: '#FFFFFF',
-                                font: { weight: 'bold', size: 11 },
-                                formatter: (value) => formatEuro(value)
-                            }
-                        }]
-                    },
-                    options: {
-                        maintainAspectRatio: false,
-                        responsive: true,
-                        animation: { duration: IS_MOBILE ? 0 : 800 },
-                        plugins: {
-                            legend: { 
-                                position: 'bottom',
-                                labels: {
-                                    color: PALETTE.NEUTRAL,
-                                    font: { family: 'Inter', size: IS_MOBILE ? 12 : 14 },
-                                    padding: 15
-                                }
-                            },
-                            tooltip: {
-                                 callbacks: {
-                                     label: (context) => {
-                                         let label = context.label || '';
-                                         if (label) label += ': ';
-                                         label += formatEuro(context.parsed);
-                                         return label;
-                                     }
-                                 }
-                            }
+                            font: { weight: 'bold', size: 14, family: 'Inter' }
                         }
                     }
-                });
-
-                // 3. ELECTRICITY STACKED CHART
-                const electricityStackedCtx = document.getElementById('electricityStackedChart').getContext('2d');
-                new Chart(electricityStackedCtx, {
-                    type: 'bar',
-                    data: {
-                        // UPDATED: Added checkmarks for Matisse and Christos
-                        labels: ['Džiugas', 'Matisse ✅', 'Shawn', 'Christos ✅'],
-                        datasets: [
-                            {
-                                label: 'Frais Fixes',
-                                data: [12.325, 12.325, 12.325, 12.325],
-                                backgroundColor: PALETTE.ELEC_DARK,
-                                datalabels: { display: false } // Always hidden (too small)
-                            },
-                            {
-                                label: 'Consommation',
-                                data: [78.01, 72.95, 59.77, 51.67],
-                                backgroundColor: PALETTE.ELEC_MAIN,
-                                datalabels: {
-                                    display: !IS_MOBILE, // Hide details on mobile
-                                    color: 'white',
-                                    anchor: 'center',
-                                    align: 'center',
-                                    formatter: (value) => formatEuro(value)
-                                }
-                            }
-                        ]
-                    },
-                    options: globalChartOptions({
-                        scales: {
-                            x: { stacked: true, grid: { display: false } },
-                            y: { stacked: true, beginAtZero: true }
-                        }
-                    })
-                });
-
-            })();
+                }
+            });
         });
     </script>
 </body>
