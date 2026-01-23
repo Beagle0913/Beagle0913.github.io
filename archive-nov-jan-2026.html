@@ -3,214 +3,313 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Archive : Répartition des Charges (Sept-Nov)</title>
 
+    <!-- SEO Meta Description -->
     <meta name="description" content="ARCHIVE - Répartition des charges pour la coloc au 21 Rue d'Orbey, du 1er septembre au 16 novembre.">
 
-    <meta name="theme-color" content="#6B7280">
-    <meta property="og:title" content="ARCHIVE - Charges Coloc 21 Rue d'Orbey">
+    <!-- WHATSAPP & SOCIAL PREVIEW TAGS -->
+    <meta name="theme-color" content="#64748b">
+    <meta property="og:title" content="📁 ARCHIVE - Charges Coloc Orbey">
     <meta property="og:description" content="Période passée : Septembre à Novembre.">
     <meta property="og:type" content="website">
-    
     <meta property="og:url" content="https://Beagle0913.github.io/archive-nov-jan-2026.html">
     <meta property="og:image" content="https://Beagle0913.github.io/preview-charges.png">
     
-    <script src="https://cdn.tailwindcss.com" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0" defer></script>
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 
     <style>
         body {
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: #f3f4f6; /* Slightly grayer background for archive feel */
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f1f5f9;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* Responsive Chart Containers */
         .chart-container {
             position: relative;
             width: 100%;
             max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 50vh;
+            margin: auto;
+            height: 280px;
         }
         .chart-container-donut {
             position: relative;
             width: 100%;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 40vh;
+            max-width: 320px;
+            margin: auto;
+            height: 280px;
         }
         @media (min-width: 768px) {
-            .chart-container { height: 350px; }
-            .chart-container-donut { height: 350px; }
+            .chart-container, .chart-container-donut { height: 350px; }
         }
 
-        /* Card Styling */
         .card {
             background-color: #ffffff;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            padding: 1.25rem;
             height: 100%;
+            border: 1px solid #e2e8f0;
         }
-        .card-content { flex-grow: 1; }
 
-        /* Specific Component Styles */
-        .stat-card-internet { background-color: #118AB2; color: white; padding: 1.5rem; border-radius: 0.5rem; }
-        .stat-card-assurance { background-color: #06D6A0; color: white; padding: 1.5rem; border-radius: 0.5rem; }
-        .payment-card { background-color: #073B4C; color: white; border-radius: 0.5rem; padding: 1.5rem; }
+        /* Archive Muted Styles */
+        .stat-card-gray { background-color: #64748b; color: white; padding: 1.25rem; border-radius: 0.75rem; }
+        .stat-card-red { background-color: #ef4444; color: white; padding: 1.25rem; border-radius: 0.75rem; opacity: 0.85; }
+        .stat-card-blue { background-color: #3b82f6; color: white; padding: 1.25rem; border-radius: 0.75rem; opacity: 0.85; }
+        .stat-card-green { background-color: #10b981; color: white; padding: 1.25rem; border-radius: 0.75rem; opacity: 0.85; }
         
-        .archive-banner {
+        .badge-archive {
             background-color: #fee2e2;
-            border: 1px solid #fecaca;
             color: #991b1b;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-        
-        canvas { display: block; width: 100% !important; height: 100% !important; }
+
+        .period-badge {
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        canvas { max-width: 100% !important; }
     </style>
 </head>
-<body class="text-[#073B4C]">
-    <div class="container mx-auto p-4 pt-6 md:p-8 max-w-7xl">
-        
-        <nav class="archive-banner flex-col md:flex-row gap-4">
-            <div class="flex items-center gap-2">
-                <span class="text-xl">📁</span>
-                <div>
-                    <p class="font-bold">Mode Archive</p>
-                    <p class="text-sm italic">Cette page affiche les données pour la période passée (septembre - novembre).</p>
-                </div>
+<body class="text-slate-800 antialiased">
+    <!-- Top Archive Banner -->
+    <div class="bg-amber-50 border-b border-amber-100 p-3 sticky top-0 z-50">
+        <div class="container mx-auto max-w-7xl flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-2 text-amber-800">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.1 3.9A2 2 0 0 0 7.5 3H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2z"/></svg>
+                <span class="text-xs font-black uppercase tracking-widest">Consultation Archive</span>
             </div>
-            <a href="index.html" class="bg-[#073B4C] hover:bg-black text-white px-6 py-2 rounded-full font-bold transition-all shadow-md text-sm">
-                Retour à la période actuelle →
+            <a href="index.html" class="flex items-center gap-2 px-4 py-1.5 bg-slate-800 text-white rounded-full text-xs font-bold hover:bg-black transition-all shadow-sm active:scale-95">
+                Retour au tableau de bord actuel
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </a>
-        </nav>
+        </div>
+    </div>
 
-        <header class="text-center mb-8 md:mb-10">
-            <h1 class="text-3xl md:text-5xl font-bold text-gray-500 mb-2 underline decoration-red-400">Archive : Charges</h1>
-            <p class="text-base md:text-lg text-gray-600">Période : Septembre à Novembre (21 Rue d'Orbey)</p>
+    <div class="container mx-auto p-4 pt-6 md:p-8 max-w-7xl">
+        <header class="flex flex-col items-center mb-8 text-center">
+            <div class="badge-archive mb-3">Données Historiques</div>
+            <h1 class="text-3xl md:text-5xl font-black text-slate-400 mb-2 tracking-tight">Septembre → Novembre</h1>
+            <p class="text-sm md:text-lg text-slate-500 font-medium italic">Période du 01/09/2025 au 16/11/2025</p>
         </header>
 
-        <main class="flex flex-col gap-6 md:gap-8">
-            <section class="card opacity-90">
-                <div class="card-content">
-                    <h2 class="text-xl md:text-2xl font-bold text-[#073B4C] mb-4">Résumé : Total à Payer par Personne</h2>
-                    <div class="chart-container">
-                        <canvas id="totalBarChart"></canvas>
+        <main class="grid gap-6">
+
+            <!-- TOTAL SUMMARY SECTION -->
+            <section class="card">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-400 opacity-70 uppercase tracking-wider mb-1">Résumé des Paiements</h2>
+                        <p class="text-slate-400 text-xs font-medium italic">Montants définitifs réglés pour cette période</p>
                     </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="totalBarChart"></canvas>
                 </div>
             </section>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            <!-- DETAILS GRID -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- COMPOSITION DONUT -->
                 <section class="card md:col-span-1">
-                    <div class="card-content">
-                        <h2 class="text-xl md:text-2xl font-bold text-[#073B4C] mb-4">Composition Globale (530,26 €)</h2>
-                        <div class="chart-container-donut">
-                            <canvas id="compositionDonutChart"></canvas>
+                    <h2 class="text-xl font-bold text-slate-800 mb-4">Composition (530,26 €)</h2>
+                    <div class="chart-container-donut mb-6">
+                        <canvas id="compositionDonutChart"></canvas>
+                    </div>
+                    <div class="space-y-3 px-2">
+                        <div class="flex justify-between items-center text-sm border-b border-slate-50 pb-2">
+                            <span class="flex items-center gap-2 font-semibold text-slate-600"><span class="w-3 h-3 rounded-full bg-[#ef4444]"></span> Électricité</span>
+                            <span class="font-bold">311,70 €</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm border-b border-slate-50 pb-2">
+                            <span class="flex items-center gap-2 font-semibold text-slate-600"><span class="w-3 h-3 rounded-full bg-[#3b82f6]"></span> Internet</span>
+                            <span class="font-bold">116,96 €</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm border-b border-slate-50 pb-2">
+                            <span class="flex items-center gap-2 font-semibold text-slate-600"><span class="w-3 h-3 rounded-full bg-[#10b981]"></span> Assurance</span>
+                            <span class="font-bold">101,60 €</span>
                         </div>
                     </div>
                 </section>
-                
+
+                <!-- DETAILED ELECTRICITY CHART -->
                 <section class="card md:col-span-2">
-                    <div class="card-content">
-                        <h2 class="text-xl md:text-2xl font-bold text-[#073B4C] mb-4">Détail Électricité (Archivé)</h2>
-                        <div class="chart-container">
-                            <canvas id="electricityStackedChart"></canvas>
-                        </div>
+                    <h2 class="text-xl font-bold text-slate-800 mb-2">Détail Conso Électricité</h2>
+                    <p class="text-xs text-slate-400 mb-6">Répartition Part Fixe vs Consommation Individuelle</p>
+                    <div class="chart-container">
+                        <canvas id="electricityStackedChart"></canvas>
                     </div>
                 </section>
             </div>
 
-            <section class="card">
-                <div class="card-content text-center py-4">
-                    <p class="text-gray-500 italic">Pour consulter les frais fixes et justificatifs détaillés de cette période, veuillez vous référer au dossier Drive correspondant.</p>
+            <!-- CATEGORY SUMMARY BADGES -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="stat-card-red flex flex-col justify-between shadow-sm">
+                    <h3 class="text-base font-bold">⚡ Électricité</h3>
+                    <div class="mt-4">
+                        <p class="text-3xl font-black">311,70 €</p>
+                    </div>
+                </div>
+                <div class="stat-card-blue flex flex-col justify-between shadow-sm">
+                    <h3 class="text-base font-bold">🌐 Internet</h3>
+                    <div class="mt-4">
+                        <p class="text-3xl font-black">116,96 €</p>
+                    </div>
+                </div>
+                <div class="stat-card-green flex flex-col justify-between shadow-sm">
+                    <h3 class="text-base font-bold">🛡️ Assurance</h3>
+                    <div class="mt-4">
+                        <p class="text-3xl font-black">101,60 €</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER NOTICE -->
+            <section class="card bg-slate-50 border-dashed">
+                <div class="text-center py-4">
+                    <p class="text-slate-400 text-sm font-medium italic">
+                        Ce dossier est clos. Pour toute réclamation sur ces montants, merci de consulter le Drive historique.
+                    </p>
                 </div>
             </section>
         </main>
+        
+        <footer class="mt-12 mb-8 text-center text-slate-300 text-[10px] font-bold uppercase tracking-widest">
+            Archive • Coloc Orbey • Janvier 2026
+        </footer>
     </div>
 
     <script>
         window.addEventListener('load', function() {
-            (function() {
-                Chart.register(ChartDataLabels);
-                const IS_MOBILE = window.matchMedia('(max-width: 768px)').matches;
-                const PALETTE = {
-                    ELEC_MAIN: '#EF476F',
-                    ELEC_DARK: '#9D1F42',
-                    INTERNET: '#118AB2',
-                    ASSURANCE: '#06D6A0',
-                    NEUTRAL: '#6B7280', // Grayer for archive
-                    BLACK: '#073B4C'
-                };
+            Chart.register(ChartDataLabels);
 
-                const formatEuro = (value) => value.toFixed(2).replace('.', ',') + ' €';
+            const IS_MOBILE = window.matchMedia('(max-width: 768px)').matches;
+            const COLORS = {
+                RED: '#ef4444',
+                BLUE: '#3b82f6',
+                GREEN: '#10b981',
+                SLATE: '#64748b',
+                DARK: '#0f172a'
+            };
 
-                const globalOptions = {
+            const formatEuro = (v) => v.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.color = COLORS.SLATE;
+
+            // 1. TOTAL BAR CHART
+            new Chart(document.getElementById('totalBarChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Džiugas', 'Matisse ✅', 'Shawn', 'Christos ✅'],
+                    datasets: [{
+                        data: [144.98, 139.92, 126.74, 118.64],
+                        backgroundColor: COLORS.SLATE,
+                        borderRadius: 8,
+                        barThickness: IS_MOBILE ? 35 : 60
+                    }]
+                },
+                options: {
                     maintainAspectRatio: false,
                     responsive: true,
                     plugins: {
-                        legend: { position: 'bottom' },
-                        datalabels: { display: !IS_MOBILE, color: '#FFF', font: { weight: 'bold' }, formatter: formatEuro }
+                        legend: { display: false },
+                        datalabels: {
+                            anchor: 'end', align: 'top', offset: 4,
+                            color: COLORS.DARK,
+                            font: { weight: '900', size: 12 },
+                            formatter: (v) => formatEuro(v)
+                        }
+                    },
+                    scales: {
+                        y: { display: false, beginAtZero: true, max: 170 },
+                        x: { grid: { display: false }, ticks: { font: { weight: '700' } } }
                     }
-                };
-                
-                // 1. TOTAL BAR CHART
-                new Chart(document.getElementById('totalBarChart'), {
-                    type: 'bar',
-                    data: {
-                        labels: ['Džiugas', 'Matisse ✅', 'Shawn', 'Christos ✅'],
-                        datasets: [{
-                            label: 'Total Payé',
-                            data: [144.98, 139.92, 126.74, 118.64],
-                            backgroundColor: PALETTE.NEUTRAL,
-                            borderRadius: 4
-                        }]
-                    },
-                    options: globalOptions
-                });
+                }
+            });
 
-                // 2. COMPOSITION PIE CHART
-                new Chart(document.getElementById('compositionDonutChart'), {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Élec', 'Web', 'Assur'],
-                        datasets: [{
-                            data: [311.70, 116.96, 101.60],
-                            backgroundColor: [PALETTE.ELEC_MAIN, PALETTE.INTERNET, PALETTE.ASSURANCE]
-                        }]
-                    },
-                    options: globalOptions
-                });
+            // 2. COMPOSITION DONUT CHART
+            new Chart(document.getElementById('compositionDonutChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Élec', 'Web', 'Assur'],
+                    datasets: [{
+                        data: [311.70, 116.96, 101.60],
+                        backgroundColor: [COLORS.RED, COLORS.BLUE, COLORS.GREEN],
+                        borderWidth: 0,
+                        cutout: '75%'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        datalabels: {
+                            color: '#fff',
+                            font: { weight: '900', size: 12 },
+                            formatter: (value, ctx) => {
+                                let sum = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                return Math.round(value * 100 / sum) + "%";
+                            }
+                        }
+                    }
+                }
+            });
 
-                // 3. ELECTRICITY STACKED CHART
-                new Chart(document.getElementById('electricityStackedChart'), {
-                    type: 'bar',
-                    data: {
-                        labels: ['Džiugas', 'Matisse', 'Shawn', 'Christos'],
-                        datasets: [
-                            { label: 'Fixe', data: [12.33, 12.33, 12.33, 12.33], backgroundColor: PALETTE.ELEC_DARK },
-                            { label: 'Conso', data: [78.01, 72.95, 59.77, 51.67], backgroundColor: PALETTE.ELEC_MAIN }
-                        ]
+            // 3. ELECTRICITY STACKED CHART
+            new Chart(document.getElementById('electricityStackedChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Džiugas', 'Matisse', 'Shawn', 'Christos'],
+                    datasets: [
+                        {
+                            label: 'Part Fixe',
+                            data: [12.33, 12.33, 12.33, 12.33],
+                            backgroundColor: '#94a3b8',
+                            borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 4, bottomRight: 4 }
+                        },
+                        {
+                            label: 'Consommation',
+                            data: [78.01, 72.95, 59.77, 51.67],
+                            backgroundColor: COLORS.RED,
+                            borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 }
+                        }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: true, grid: { display: false } },
+                        y: { stacked: true, beginAtZero: true, display: false }
                     },
-                    options: { ...globalOptions, scales: { x: { stacked: true }, y: { stacked: true } } }
-                });
-            })();
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { weight: 'bold' } } },
+                        datalabels: {
+                            color: '#fff',
+                            font: { weight: 'bold', size: 10 },
+                            formatter: (v) => v > 15 ? formatEuro(v) : ''
+                        }
+                    }
+                }
+            });
         });
     </script>
 </body>
