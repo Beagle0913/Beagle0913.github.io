@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Archive : Répartition des Charges (Déc-Jan)</title>
+
+    <!-- SEO Meta Description -->
+    <meta name="description" content="ARCHIVE - Répartition des charges pour la coloc au 21 Rue d'Orbey, de décembre 2025 à janvier 2026.">
+
+    <!-- WHATSAPP & SOCIAL PREVIEW TAGS -->
+    <meta name="theme-color" content="#64748b">
+    <meta property="og:title" content="📁 ARCHIVE - Charges Coloc Orbey (Déc-Jan)">
+    <meta property="og:description" content="Période passée : Décembre 2025 à Janvier 2026.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://Beagle0913.github.io/archive-dec-jan-2026.html">
+    <meta property="og:image" content="https://Beagle0913.github.io/preview-charges.png">
+    
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f1f5f9;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin: auto;
+            height: 280px;
+        }
+        .chart-container-donut {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            margin: auto;
+            height: 280px;
+        }
+        @media (min-width: 768px) {
+            .chart-container, .chart-container-donut { height: 350px; }
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            padding: 1.25rem;
+            height: 100%;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Archive Muted Styles */
+        .stat-card-gray { background-color: #64748b; color: white; padding: 1.25rem; border-radius: 0.75rem; }
+        .stat-card-red { background-color: #ef4444; color: white; padding: 1.25rem; border-radius: 0.75rem; opacity: 0.85; }
+        .stat-card-blue { background-color: #3b82f6; color: white; padding: 1.25rem; border-radius: 0.75rem; opacity: 0.85; }
+        
+        .badge-archive {
+            background-color: #fee2e2;
+            color: #991b1b;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .period-badge {
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        canvas { max-width: 100% !important; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased">
+    <!-- Top Archive Banner -->
+    <div class="bg-amber-50 border-b border-amber-100 p-3 sticky top-0 z-50">
+        <div class="container mx-auto max-w-7xl flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-2 text-amber-800">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.1 3.9A2 2 0 0 0 7.5 3H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2z"/></svg>
+                <span class="text-xs font-black uppercase tracking-widest">Consultation Archive</span>
+            </div>
+            <a href="index.html" class="flex items-center gap-2 px-4 py-1.5 bg-slate-800 text-white rounded-full text-xs font-bold hover:bg-black transition-all shadow-sm active:scale-95">
+                Retour au tableau de bord actuel
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+        </div>
+    </div>
+
+    <div class="container mx-auto p-4 pt-6 md:p-8 max-w-7xl">
+        <header class="flex flex-col items-center mb-8 text-center">
+            <div class="badge-archive mb-3">Données Historiques</div>
+            <h1 class="text-3xl md:text-5xl font-black text-slate-400 mb-2 tracking-tight">Décembre → Janvier</h1>
+            <p class="text-sm md:text-lg text-slate-500 font-medium italic">Période du 16/11/2025 au 16/01/2026</p>
+        </header>
+
+        <main class="grid gap-6">
+
+            <!-- TOTAL SUMMARY SECTION -->
+            <section class="card">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-400 opacity-70 uppercase tracking-wider mb-1">Résumé des Paiements</h2>
+                        <p class="text-slate-400 text-xs font-medium italic">Montants définitifs réglés pour cette période • 105,23 € / personne</p>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="totalBarChart"></canvas>
+                </div>
+            </section>
+
+            <!-- DETAILS GRID -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- COMPOSITION DONUT -->
+                <section class="card md:col-span-1">
+                    <h2 class="text-xl font-bold text-slate-800 mb-4">Composition (420,92 €)</h2>
+                    <div class="chart-container-donut mb-6">
+                        <canvas id="compositionDonutChart"></canvas>
+                    </div>
+                    <div class="space-y-3 px-2">
+                        <div class="flex justify-between items-center text-sm border-b border-slate-50 pb-2">
+                            <span class="flex items-center gap-2 font-semibold text-slate-600"><span class="w-3 h-3 rounded-full bg-[#ef4444]"></span> Électricité</span>
+                            <span class="font-bold">360,92 €</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm border-b border-slate-50 pb-2">
+                            <span class="flex items-center gap-2 font-semibold text-slate-600"><span class="w-3 h-3 rounded-full bg-[#3b82f6]"></span> Internet</span>
+                            <span class="font-bold">60,00 €</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- DETAILED BREAKDOWN -->
+                <section class="card md:col-span-2">
+                    <h2 class="text-xl font-bold text-slate-800 mb-2">Détail du calcul</h2>
+                    <p class="text-xs text-slate-400 mb-6">Répartition à parts égales sur 4 colocataires</p>
+                    <div class="overflow-hidden">
+                        <table class="w-full text-left text-sm">
+                            <thead>
+                                <tr class="text-xs uppercase text-slate-400 border-b border-slate-100">
+                                    <th class="py-2 font-bold">Poste</th>
+                                    <th class="py-2 text-right font-bold">Période</th>
+                                    <th class="py-2 text-right font-bold">Total</th>
+                                    <th class="py-2 text-right font-bold">/ pers</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-slate-50">
+                                    <td class="py-3 font-semibold text-slate-600">⚡ Électricité</td>
+                                    <td class="py-3 text-right text-slate-500 text-xs">16/11 → 16/01</td>
+                                    <td class="py-3 text-right font-bold">360,92 €</td>
+                                    <td class="py-3 text-right font-bold">90,23 €</td>
+                                </tr>
+                                <tr class="border-b border-slate-50">
+                                    <td class="py-3 font-semibold text-slate-600">🌐 Internet</td>
+                                    <td class="py-3 text-right text-slate-500 text-xs">Déc &amp; Jan</td>
+                                    <td class="py-3 text-right font-bold">60,00 €</td>
+                                    <td class="py-3 text-right font-bold">15,00 €</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-4 font-black text-base text-slate-700" colspan="2">Total</td>
+                                    <td class="py-4 text-right font-black text-slate-700">420,92 €</td>
+                                    <td class="py-4 text-right font-black text-xl text-slate-700">105,23 €</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <!-- CATEGORY SUMMARY BADGES -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="stat-card-red flex flex-col justify-between shadow-sm">
+                    <h3 class="text-base font-bold">⚡ Électricité</h3>
+                    <div class="mt-4">
+                        <p class="text-3xl font-black">360,92 €</p>
+                        <p class="text-sm font-medium opacity-90 mt-1">90,23 € / pers</p>
+                    </div>
+                </div>
+                <div class="stat-card-blue flex flex-col justify-between shadow-sm">
+                    <h3 class="text-base font-bold">🌐 Internet</h3>
+                    <div class="mt-4">
+                        <p class="text-3xl font-black">60,00 €</p>
+                        <p class="text-sm font-medium opacity-90 mt-1">15,00 € / pers</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NAVIGATION TO OLDER ARCHIVE -->
+            <section class="card bg-white">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                        <h3 class="font-bold text-slate-600 text-sm uppercase tracking-wider">Archives plus anciennes</h3>
+                        <p class="text-xs text-slate-400 mt-1">Septembre → Novembre 2025</p>
+                    </div>
+                    <a href="archive-nov-jan-2026.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-full text-xs font-bold text-slate-600 transition-all active:scale-95">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                        Voir Sept-Nov
+                    </a>
+                </div>
+            </section>
+
+            <!-- FOOTER NOTICE -->
+            <section class="card bg-slate-50 border-dashed">
+                <div class="text-center py-4">
+                    <p class="text-slate-400 text-sm font-medium italic">
+                        Ce dossier est clos. Pour toute réclamation sur ces montants, merci de consulter le Drive historique.
+                    </p>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="mt-12 mb-8 text-center text-slate-300 text-[10px] font-bold uppercase tracking-widest">
+            Archive • Coloc Orbey • Mars 2026
+        </footer>
+    </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            Chart.register(ChartDataLabels);
+
+            const IS_MOBILE = window.matchMedia('(max-width: 768px)').matches;
+            const COLORS = {
+                RED: '#ef4444',
+                BLUE: '#3b82f6',
+                SLATE: '#64748b',
+                DARK: '#0f172a'
+            };
+
+            const formatEuro = (v) => v.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.color = COLORS.SLATE;
+
+            // 1. TOTAL BAR CHART
+            new Chart(document.getElementById('totalBarChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Džiugas', 'Matisse', 'Shawn', 'Christos'],
+                    datasets: [{
+                        data: [105.23, 105.23, 105.23, 105.23],
+                        backgroundColor: COLORS.SLATE,
+                        borderRadius: 8,
+                        barThickness: IS_MOBILE ? 35 : 60
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        datalabels: {
+                            anchor: 'end', align: 'top', offset: 4,
+                            color: COLORS.DARK,
+                            font: { weight: '900', size: 12 },
+                            formatter: (v) => formatEuro(v)
+                        }
+                    },
+                    scales: {
+                        y: { display: false, beginAtZero: true, max: 130 },
+                        x: { grid: { display: false }, ticks: { font: { weight: '700' } } }
+                    }
+                }
+            });
+
+            // 2. COMPOSITION DONUT CHART
+            new Chart(document.getElementById('compositionDonutChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Élec', 'Web'],
+                    datasets: [{
+                        data: [360.92, 60.00],
+                        backgroundColor: [COLORS.RED, COLORS.BLUE],
+                        borderWidth: 0,
+                        cutout: '75%'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        datalabels: {
+                            color: '#fff',
+                            font: { weight: '900', size: 12 },
+                            formatter: (value, ctx) => {
+                                let sum = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                return Math.round(value * 100 / sum) + "%";
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
