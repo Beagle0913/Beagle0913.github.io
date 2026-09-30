@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2"><Document>
+<name>NE Lakes ride – Aukštaitija</name>
+<Folder><name>Day 1 · Vilnius → Zarasai</name>
+<Placemark><name>01 Vilnius</name><description>08:30 · Fill up before you leave. Swap this point for your own address in Kurviger.</description><Point><coordinates>25.279700,54.687200,0</coordinates></Point></Placemark>
+<Placemark><name>02 Dubingiai castle hill</name><description>09:20 · Radziwiłł castle site on a peninsula of Lake Asveja, Lithuania&#x27;s longest lake. Walk up for the view over the bridge. (Hill open any time; site office Sat 10:00–15:00)</description><Point><coordinates>25.444100,55.059500,0</coordinates></Point></Placemark>
+<Placemark><name>03 Molėtai – Viada fuel</name><description>10:05 · Last convenient big fuel stop before the park. Top up here; the Himalayan&#x27;s range is fine, but stations get sparse past Labanoras. (Open 05:00–23:00)</description><Point><coordinates>25.405400,55.224000,0</coordinates></Point></Placemark>
+<Placemark><name>04 Labanoras park observation tower</name><description>10:40 · The tall steel tower by Lake Siesartis, one of the best lake panoramas in the country. Free, 2 min walk from the car park. (Open any time)</description><Point><coordinates>25.560900,55.219100,0</coordinates></Point></Placemark>
+<Placemark><name>05 Labanoras visitor centre</name><description>11:35 · Good interactive exhibit on the forest and lakes. Ask staff which forest roads are open to vehicles this weekend. (Sat 10:00–15:00)</description><Point><coordinates>25.772700,55.269400,0</coordinates></Point></Placemark>
+<Placemark><name>06 Palūšė</name><description>12:35 · Park HQ and the 1750 wooden St Joseph&#x27;s church on Lake Lūšiai. Pick up the park map and ask about open campsites here. (Visitor centre Sat 10:00–15:00)</description><Point><coordinates>26.102200,55.329000,0</coordinates></Point></Placemark>
+<Placemark><name>07 Ladakalnis</name><description>13:20 · The park&#x27;s signature hill. Six lakes visible from the top. Short climb from the roadside parking. (Open any time)</description><Point><coordinates>25.990700,55.366400,0</coordinates></Point></Placemark>
+<Placemark><name>08 Ginučiai watermill</name><description>13:50 · The only mill in the park that kept its original machinery. Ginučiai hillfort is right beside it. (Wed–Sun 10:00–18:00)</description><Point><coordinates>25.994900,55.385500,0</coordinates></Point></Placemark>
+<Placemark><name>09 Bičiuliai (Šiliniškės) tower</name><description>14:10 · Old telecom mast turned into a 30 m viewing platform. Free, parking at the base. (Open any time)</description><Point><coordinates>25.974400,55.381300,0</coordinates></Point></Placemark>
+<Placemark><name>10 Stripeikiai beekeeping museum</name><description>14:45 · Ancient Beekeeping Museum with a café. You reach it on the park&#x27;s gravel road via the Papliaušys hollow pine. (Daily 10:00–18:00)</description><Point><coordinates>25.944800,55.408500,0</coordinates></Point></Placemark>
+<Placemark><name>11 Taurapilis hillfort</name><description>15:55 · View over Tauragnas, Lithuania&#x27;s deepest lake (60.5 m). No proper car park, so pull in carefully by the road. (Open any time)</description><Point><coordinates>25.869800,55.448100,0</coordinates></Point></Placemark>
+<Placemark><name>12 Salakas</name><description>17:00 · Small town between big lakes. Quick stretch before the last leg into Zarasai.</description><Point><coordinates>26.134200,55.579800,0</coordinates></Point></Placemark>
+<Placemark><name>13 Zarasai observation circle</name><description>17:35 · The curved boardwalk over Lake Zarasas. Arrive with about an hour of daylight to spare, then check in. (Open any time)</description><Point><coordinates>26.243800,55.728100,0</coordinates></Point></Placemark>
+</Folder>
+<Folder><name>Day 2 · Zarasai → Vilnius</name>
+<Placemark><name>01 Zarasai</name><description>09:30 · Replace with your actual hotel if it differs.</description><Point><coordinates>26.249500,55.732200,0</coordinates></Point></Placemark>
+<Placemark><name>02 Stelmužė oak</name><description>09:45 · Lithuania&#x27;s oldest oak, estimated at up to 1,500 years, next to a wooden church and a manor. The road in from Zarasai is a nice one. (Open any time)</description><Point><coordinates>26.217400,55.829900,0</coordinates></Point></Placemark>
+<Placemark><name>03 Dusetos &amp; Lake Sartai</name><description>11:05 · Home of the winter horse races on the lake ice. Good lakeside break before the long westward leg. (Open any time)</description><Point><coordinates>25.824900,55.752000,0</coordinates></Point></Placemark>
+<Placemark><name>04 Anykščiai treetop walk &amp; Puntukas</name><description>12:45 · Treetop walk above the Šventoji valley and the Puntukas boulder, then lunch in town. (Daily 09:30–20:00)</description><Point><coordinates>25.060300,55.485400,0</coordinates></Point></Placemark>
+<Placemark><name>05 Vilnius</name><description>15:40 · Fast roads home via Ukmergė.</description><Point><coordinates>25.279700,54.687200,0</coordinates></Point></Placemark>
+</Folder>
+</Document></kml>

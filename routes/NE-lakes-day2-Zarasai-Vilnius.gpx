@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Claude" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata><name>NE lakes · Day 2 · Zarasai → Vilnius</name></metadata>
+  <rte>
+    <name>NE lakes · Day 2 · Zarasai → Vilnius</name>
+    <rtept lat="55.732200" lon="26.249500"><name>01 Zarasai</name><desc>Replace with your actual hotel if it differs.</desc></rtept>
+    <rtept lat="55.829900" lon="26.217400"><name>02 Stelmužė oak</name><desc>Lithuania&#x27;s oldest oak, estimated at up to 1,500 years, next to a wooden church and a manor. The road in from Zarasai is a nice one.</desc></rtept>
+    <rtept lat="55.752000" lon="25.824900"><name>03 Dusetos &amp; Lake Sartai</name><desc>Home of the winter horse races on the lake ice. Good lakeside break before the long westward leg.</desc></rtept>
+    <rtept lat="55.485400" lon="25.060300"><name>04 Anykščiai treetop walk &amp; Puntukas</name><desc>Treetop walk above the Šventoji valley and the Puntukas boulder, then lunch in town.</desc></rtept>
+    <rtept lat="54.687200" lon="25.279700"><name>05 Vilnius</name><desc>Fast roads home via Ukmergė.</desc></rtept>
+  </rte>
+</gpx>
