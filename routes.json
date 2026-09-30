@@ -1,0 +1,40 @@
+{
+  "site": {
+    "title": "Vilnius Moto Routes"
+  },
+  "routes": [
+    {
+      "id": "aukstaitija-lakes",
+      "name": "Aukštaitija Lakes Ride",
+      "path": "routes/aukstaitija-lakes/",
+      "days": 2,
+      "distance_km": 477,
+      "start": "Vilnius",
+      "via": "Vilnius → Asveja → Molėtai → Labanoras → Aukštaitija NP → Zarasai",
+      "summary": "A full Saturday through the lake country with the national park's gravel roads in the afternoon, a night in Zarasai, and a relaxed paved return on Sunday.",
+      "tags": ["Overnight", "Park gravel", "Lakes"],
+      "files": [
+        { "label": "Day 1 GPX", "href": "NE-lakes-day1-Vilnius-Zarasai.gpx" },
+        { "label": "Day 2 GPX", "href": "NE-lakes-day2-Zarasai-Vilnius.gpx" },
+        { "label": "KML (all stops)", "href": "NE-lakes-stops.kml" }
+      ],
+      "added": "2026-09-30"
+    },
+    {
+      "id": "asveja-loop",
+      "name": "Asveja Twisties Loop",
+      "path": "routes/asveja-loop/",
+      "days": 1,
+      "distance_km": 248,
+      "start": "Vilnius",
+      "via": "Vilnius → Kernavė → Širvintos → Dubingiai → Molėtai → Labanoras → Pabradė → Vilnius",
+      "summary": "A riding-first day loop over the two best-rated corner roads in Lithuania, back through Labanoras forest. Stops are fuel, lunch and a couple of five-minute views.",
+      "tags": ["Day loop", "Twisties", "Forest gravel"],
+      "files": [
+        { "label": "Loop GPX", "href": "Asveja-Moletai-loop.gpx" },
+        { "label": "KML (all points)", "href": "Asveja-Moletai-loop-stops.kml" }
+      ],
+      "added": "2026-09-30"
+    }
+  ]
+}
