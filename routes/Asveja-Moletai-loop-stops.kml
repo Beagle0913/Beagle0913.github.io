@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2"><Document>
+<name>NE Lakes ride – Aukštaitija</name>
+<Folder><name>Asveja &amp; Molėtai lakes loop</name>
+<Placemark><name>01 Vilnius</name><description>09:30 · Leave north through Avižieniai toward Kernavė. Swap this point for your own address.</description><Point><coordinates>25.279700,54.687200,0</coordinates></Point></Placemark>
+<Placemark><name>02 Kernavė hillfort viewpoint</name><description>10:18 · The Neris valley and the five hillforts from the car park lookout. Five minutes, then back on the bike.</description><Point><coordinates>24.852300,54.884300,0</coordinates></Point></Placemark>
+<Placemark><name>03 Širvintos – Viada</name><description>10:47 · Top up here. The next stretch is the good one. (05:00–24:00)</description><Point><coordinates>24.942600,55.045700,0</coordinates></Point></Placemark>
+<Placemark><name>04 Giedraičiai</name><description>11:24 · End of the Širvintos–Giedraičiai country road. Riders use it to reach Dubingiai without the main road.</description><Point><coordinates>25.258800,55.074600,0</coordinates></Point></Placemark>
+<Placemark><name>05 Dubingiai bridge</name><description>11:39 · Wooden bridge over Lake Asveja below the castle hill. The twisty section starts here.</description><Point><coordinates>25.443800,55.057200,0</coordinates></Point></Placemark>
+<Placemark><name>06 Bijutiškis</name><description>11:56 · End of the Dubingiai road, rated the curviest in Lithuania. Blind corners, keep your speed in check.</description><Point><coordinates>25.397300,55.119700,0</coordinates></Point></Placemark>
+<Placemark><name>07 Molėtai – Viada</name><description>12:09 · Second twisty stretch done: corners with a near-perfect surface. Fuel up and eat in town. (05:00–23:00)</description><Point><coordinates>25.405400,55.224000,0</coordinates></Point></Placemark>
+<Placemark><name>08 Labanoras park tower</name><description>13:07 · Tall tower over Lake Siesartis. Two minutes&#x27; walk from the car park, or just ride past.</description><Point><coordinates>25.560900,55.219100,0</coordinates></Point></Placemark>
+<Placemark><name>09 Labanoras</name><description>13:39 · Into Labanoras forest. Riders mention lots of bends and hills here.</description><Point><coordinates>25.773900,55.267300,0</coordinates></Point></Placemark>
+<Placemark><name>10 Pabradė</name><description>14:31 · Forest road 4428 then road 173. Military vehicles use this area, so expect convoys.</description><Point><coordinates>25.761400,54.980600,0</coordinates></Point></Placemark>
+<Placemark><name>11 Nemenčinė</name><description>15:05 · Fast road back toward the city.</description><Point><coordinates>25.468500,54.849300,0</coordinates></Point></Placemark>
+<Placemark><name>12 Vilnius</name><description>15:35 · Home.</description><Point><coordinates>25.279700,54.687200,0</coordinates></Point></Placemark>
+</Folder>
+</Document></kml>

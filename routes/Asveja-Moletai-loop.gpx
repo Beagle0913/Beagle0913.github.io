@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Claude" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata><name>Asveja &amp; Molėtai lakes loop</name></metadata>
+  <rte>
+    <name>Asveja &amp; Molėtai lakes loop</name>
+    <rtept lat="54.687200" lon="25.279700"><name>01 Vilnius</name><desc>Leave north through Avižieniai toward Kernavė. Swap this point for your own address.</desc></rtept>
+    <rtept lat="54.884300" lon="24.852300"><name>02 Kernavė hillfort viewpoint</name><desc>The Neris valley and the five hillforts from the car park lookout. Five minutes, then back on the bike.</desc></rtept>
+    <rtept lat="55.045700" lon="24.942600"><name>03 Širvintos – Viada</name><desc>Top up here. The next stretch is the good one.</desc></rtept>
+    <rtept lat="55.074600" lon="25.258800"><name>04 Giedraičiai</name><desc>End of the Širvintos–Giedraičiai country road. Riders use it to reach Dubingiai without the main road.</desc></rtept>
+    <rtept lat="55.057200" lon="25.443800"><name>05 Dubingiai bridge</name><desc>Wooden bridge over Lake Asveja below the castle hill. The twisty section starts here.</desc></rtept>
+    <rtept lat="55.119700" lon="25.397300"><name>06 Bijutiškis</name><desc>End of the Dubingiai road, rated the curviest in Lithuania. Blind corners, keep your speed in check.</desc></rtept>
+    <rtept lat="55.224000" lon="25.405400"><name>07 Molėtai – Viada</name><desc>Second twisty stretch done: corners with a near-perfect surface. Fuel up and eat in town.</desc></rtept>
+    <rtept lat="55.219100" lon="25.560900"><name>08 Labanoras park tower</name><desc>Tall tower over Lake Siesartis. Two minutes&#x27; walk from the car park, or just ride past.</desc></rtept>
+    <rtept lat="55.267300" lon="25.773900"><name>09 Labanoras</name><desc>Into Labanoras forest. Riders mention lots of bends and hills here.</desc></rtept>
+    <rtept lat="54.980600" lon="25.761400"><name>10 Pabradė</name><desc>Forest road 4428 then road 173. Military vehicles use this area, so expect convoys.</desc></rtept>
+    <rtept lat="54.849300" lon="25.468500"><name>11 Nemenčinė</name><desc>Fast road back toward the city.</desc></rtept>
+    <rtept lat="54.687200" lon="25.279700"><name>12 Vilnius</name><desc>Home.</desc></rtept>
+  </rte>
+</gpx>
