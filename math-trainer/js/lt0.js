@@ -129,7 +129,7 @@ regLT('meaning', 'Kurios išraiškos turi prasmę?',
     let qs; do { qs = shuffle(bank).slice(0, 6); } while (qs.every(x => x[1]) || !qs.some(x => x[1]));
     return {
       q: `Paaiškinkite, kurios iš pateiktų išraiškų turi prasmę, o kurios – ne. Čia ${a}, ${b}, ${c} – vektoriai, o · žymi skaliarinę sandaugą.`,
-      steps: [st('Pažymėkite visas išraiškas, kurios turi prasmę:', [checks(qs.map(x => x[0]))], [qs.map(x => x[1])], 'Kiekvienai išraiškai žingsnis po žingsnio nustatykite, ar dalis yra skaičius, ar vektorius.', qs.map(x => `${x[0]}: ${x[1] ? '✓' : '✗'} ${x[2]}`).join(' &nbsp;·&nbsp; '))]
+      steps: [st('Pažymėkite visas išraiškas, kurios turi prasmę:', [checks(qs.map(x => x[0]))], [qs.map(x => x[1])], 'Kiekvienai išraiškai žingsnis po žingsnio nustatykite, ar dalis yra skaičius, ar vektorius.', qs.map(x => `${x[0]}: ${x[1] ? '✓' : '✗'} ${x[2]}`).join('<br>'))]
     };
   });
 

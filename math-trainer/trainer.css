@@ -168,7 +168,7 @@ sup .fr, sub .fr { font-size: .8em; }
 .lim > span:last-child { font-size: .72em; }
 .nw { white-space: nowrap; }
 .rt { white-space: nowrap; }
-.rt > .rd { border-top: 1.5px solid currentColor; padding: 0 .15em; }
+.rt > .rd { display: inline-block; border-top: 1.5px solid currentColor; padding: .08em .15em 0; line-height: 1.25; }   /* inline-block keeps the bar above any exponent */
 .rt > sup { font-size: .6em; margin-right: -.25em; vertical-align: .9em; }
 .bar { border-top: 1.5px solid currentColor; }
 .dot { margin: 0 .13em; font-weight: 700; }
@@ -189,6 +189,8 @@ svg.dia { max-width: none; display: block; }
   .sheet { padding: 16px 14px 20px; }
   .math { font-size: 17.5px; }
   .step { grid-template-columns: 30px minmax(0, 1fr); gap: 8px; }
+  .fld { flex-wrap: wrap; }
+  .fld .lbl { white-space: normal; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .step.active { animation: rise .18s ease-out; }

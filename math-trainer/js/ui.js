@@ -42,7 +42,7 @@
   let cur = null, lastId = null, interacted = false;
 
   function applyLang() {
-    S_ = STR[lang]; document.documentElement.lang = lang; document.title = S_.title;
+    S_ = STR[lang]; DECIMAL = lang === 'lt' ? ',' : '.'; document.documentElement.lang = lang; document.title = S_.title;
     $('#brand').innerHTML = S_.brand; $('#reset').textContent = S_.reset; $('#navtoggle span').textContent = S_.choose; $('#nav').setAttribute('aria-label', S_.nav); $('#keys').innerHTML = S_.keys;
     $('#langs').setAttribute('aria-label', S_.lang);
     document.querySelectorAll('#langs button').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false'));
@@ -107,17 +107,19 @@
     if (interacted) window.scrollTo({ top: Math.max(0, sheet.getBoundingClientRect().top + window.scrollY - 12), behavior: 'auto' });
   }
 
+  // a box grows with what is typed or revealed, so a long answer such as -3sqrt(3)/2 is never cut off
+  const grow = i => i.style.setProperty('--w', Math.max(+i.dataset.w, i.value.length + 1));
   function fieldDom(f, k, fi) {
     const wrap = el('span', 'fld'); const id = `s${k}f${fi}`;
     const lbl = el('span', 'lbl', f.label || ''); wrap.append(lbl);
     const plain = (f.label || S_.answer).replace(/<[^>]+>/g, '').trim() || S_.answer;
     if (f.k === 'num') {
-      const i = el('input', 'in'); i.type = 'text'; i.id = id; i.autocomplete = 'off'; i.spellcheck = false; i.setAttribute('autocapitalize', 'off'); i.setAttribute('aria-label', plain); if (f.w) i.style.setProperty('--w', f.w);
+      const i = el('input', 'in'); i.type = 'text'; i.id = id; i.autocomplete = 'off'; i.spellcheck = false; i.setAttribute('autocapitalize', 'off'); i.setAttribute('aria-label', plain); i.dataset.w = f.w || 8; if (f.w) i.style.setProperty('--w', f.w);
       wrap.append(i, el('span', 'aft', f.after || ''));
       if (f.inf) for (const [t, v] of [['+∞', 'inf'], ['−∞', '-inf']]) { const c = el('button', 'chip', t); c.type = 'button'; c.setAttribute('aria-label', S_.enter(t)); c.addEventListener('click', () => { i.value = v; i.focus(); }); wrap.append(c); }
     } else if (f.k === 'mat') {
       const mx = el('span', 'mx inp'), g = el('span', 'mg c' + f.c);
-      for (let a = 0; a < f.r; a++) for (let b = 0; b < f.c; b++) { const i = el('input', 'in'); i.type = 'text'; i.id = `${id}r${a}c${b}`; i.autocomplete = 'off'; i.spellcheck = false; i.setAttribute('autocapitalize', 'off'); i.setAttribute('aria-label', `${plain} ${S_.row} ${a + 1} ${S_.col} ${b + 1}`); i.style.setProperty('--w', 4); i.dataset.r = a; i.dataset.c = b; g.append(i); }
+      for (let a = 0; a < f.r; a++) for (let b = 0; b < f.c; b++) { const i = el('input', 'in'); i.type = 'text'; i.id = `${id}r${a}c${b}`; i.autocomplete = 'off'; i.spellcheck = false; i.setAttribute('autocapitalize', 'off'); i.setAttribute('aria-label', `${plain} ${S_.row} ${a + 1} ${S_.col} ${b + 1}`); i.dataset.w = 4; i.style.setProperty('--w', 4); i.dataset.r = a; i.dataset.c = b; g.append(i); }
       mx.append(g); wrap.append(mx); wrap.style.whiteSpace = 'normal';
     } else {
       const box = el('span', 'opts'); box.setAttribute('role', 'group'); wrap.style.whiteSpace = 'normal';
@@ -149,8 +151,8 @@
   function fill(step, li, ans) {
     step.fields.forEach((f, fi) => {
       const w = li.querySelectorAll('.fields > .fld')[fi], a = ans[fi];
-      if (f.k === 'num') w.querySelector('input').value = S(a);
-      else if (f.k === 'mat') w.querySelectorAll('input').forEach(i => { i.value = S(a[+i.dataset.r][+i.dataset.c]); });
+      if (f.k === 'num') { const i = w.querySelector('input'); i.value = S(a); grow(i); }
+      else if (f.k === 'mat') w.querySelectorAll('input').forEach(i => { i.value = S(a[+i.dataset.r][+i.dataset.c]); grow(i); });
       else w.querySelectorAll('.opt').forEach((b, n) => b.setAttribute('aria-pressed', (f.k === 'choice' ? n === a : !!a[n]) ? 'true' : 'false'));
     });
   }
@@ -204,7 +206,7 @@
       const to = e.key === 'ArrowUp' ? [r - 1, c] : e.key === 'ArrowDown' ? [r + 1, c] : (e.key === 'ArrowLeft' && atStart) ? [r, c - 1] : (e.key === 'ArrowRight' && atEnd) ? [r, c + 1] : null;
       if (!to) return; const nx = t.closest('.mg').querySelector(`input[data-r="${to[0]}"][data-c="${to[1]}"]`); if (nx) { e.preventDefault(); nx.focus(); nx.select(); }
     });
-    li.addEventListener('input', e => { e.target.classList.remove('bad'); });
+    li.addEventListener('input', e => { e.target.classList.remove('bad'); if (e.target.matches('input.in')) grow(e.target); });
     if (step.fields.length === 1 && step.fields[0].k === 'choice') { bCheck.hidden = true; li.addEventListener('picked', check); }
     if (interacted) { const first = li.querySelector('input:not(:disabled), .opt'); if (first) first.focus({ preventScroll: true }); li.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
   }

@@ -12,8 +12,8 @@ reg('cbasic', 6, 'Add, subtract, multiply', 'Veiksmai su kompleksiniais skaičia
     const ops = [
       [`${z1} + ${z2}`, sm, 'Add real parts and imaginary parts separately.'],
       [`${z1} − ${z2}`, [a[0] - b[0], a[1] - b[1]], 'Subtract real parts and imaginary parts separately.'],
-      [`${z1}·${z2}`, cmul(a, b), `(${Z(a)})(${Z(b)}) = ${a[0] * b[0]} ${a[0] * b[1] < 0 ? '−' : '+'} ${Math.abs(a[0] * b[1])}i ${a[1] * b[0] < 0 ? '−' : '+'} ${Math.abs(a[1] * b[0])}i ${a[1] * b[1] < 0 ? '−' : '+'} ${Math.abs(a[1] * b[1])}i², and i² = −1.`],
-      [`${z1}·${z2}`, cmul(a, b), `(${Z(a)})(${Z(b)}) = ${a[0] * b[0]} ${a[0] * b[1] < 0 ? '−' : '+'} ${Math.abs(a[0] * b[1])}i ${a[1] * b[0] < 0 ? '−' : '+'} ${Math.abs(a[1] * b[0])}i ${a[1] * b[1] < 0 ? '−' : '+'} ${Math.abs(a[1] * b[1])}i², and i² = −1.`],
+      [`${z1}·${z2}`, cmul(a, b), `(${Z(a)})(${Z(b)}) = ${cmulHow(a, b)}, and i² = −1.`],
+      [`${z1}·${z2}`, cmul(a, b), `(${Z(a)})(${Z(b)}) = ${cmulHow(a, b)}, and i² = −1.`],
       [`${z1}·${bar(z2)}`, cmul(a, cb), `The conjugate of ${z2} is ${Z(cb)}. Then multiply out.`],
       [`${bar(z1)}·${z2}`, cmul(ca, b), `The conjugate of ${z1} is ${Z(ca)}. Then multiply out.`],
       [`${z1}<sup>2</sup>`, cmul(a, a), '(a + bi)² = a² − b² + 2abi'],
@@ -29,7 +29,7 @@ reg('cdiv', 6, 'Divide complex numbers', 'Kompleksinių skaičių dalyba',
     return { v: { a, b }, q: `Compute ${big(Z(a), Z(b))}.`,
       steps: [
         st(`Multiply the numerator by the conjugate of the denominator: (${Z(a)})(${Z(cb)}) =`, ReIm(), t, '(a + bi)(c + di) = (ac − bd) + (ad + bc)i, with i² = −1.', `(${Z(a)})(${Z(cb)}) = ${Z(t)}`),
-        st(`The denominator becomes (${Z(b)})(${Z(cb)}) =`, [num('')], [dn], 'c² + d²', `${b[0]}² + ${Math.abs(b[1])}² = ${dn}`),
+        st(`The denominator becomes (${Z(b)})(${Z(cb)}) =`, [num('')], [dn], 'c² + d²', `${P(b[0])}² + ${P(b[1])}² = ${dn}`),
         st('Divide both parts (fractions like 5/17 are fine):', ReIm(), r, `${Z(t)} divided by ${dn}.`, `${big(Z(a), Z(b))} = ${cx(r[0], r[1])}`)
       ]
     };
@@ -106,7 +106,7 @@ reg('cquad', 6, 'Quadratic with complex roots', 'Kvadratinė lygtis, kai D < 0',
       steps: [
         st('Discriminant:', [num(`${I('D')} =`)], [Dv], 'D = b² − 4ac', `${I('D')} = ${P(p)}² − 4·${q} = ${H(Dv)}`),
         st(`Since D &lt; 0, √D is imaginary:`, [num(`√${I('D')} =`, { after: I('i') })], [2 * b], `√(${H(Dv)}) = √${-Dv}·i`, `√${I('D')} = ${2 * b}${I('i')}`),
-        st('The roots:', [num(`${I('z')} =`, { w: 4 }), num('±', { after: I('i'), w: 4 })], [a, b], `z = (−b ± √D)/2 = (${H(-p)} ± ${2 * b}i)/2. Enter the imaginary part as a positive number.`, `${sub('z', '1,2')} = ${H(a)} ± ${b}${I('i')}`, { val: v => (close(v[0], a) && close(Math.abs(v[1]), b)) ? true : { bad: [close(v[0], a) ? null : { f: 0 }, close(Math.abs(v[1]), b) ? null : { f: 1 }].filter(Boolean) } })
+        st('The roots:', [num(`${I('z')} =`, { w: 4 }), num('±', { after: I('i'), w: 4 })], [a, b], `z = (−b ± √D)/2 = (${H(-p)} ± ${2 * b}i)/2. Enter the imaginary part as a positive number.`, `${sub('z', '1,2')} = ${a === 0 ? '' : H(a) + ' '}± ${b === 1 ? '' : b}${I('i')}`, { val: v => (close(v[0], a) && close(Math.abs(v[1]), b)) ? true : { bad: [close(v[0], a) ? null : { f: 0 }, close(Math.abs(v[1]), b) ? null : { f: 1 }].filter(Boolean) } })
       ]
     };
   });
@@ -115,12 +115,12 @@ reg('reduction', 6, 'Reduction formulas', 'Redukcijos formulės',
   'Two rules. (1) Name: π/2 or 3π/2 in the angle swaps sin ↔ cos; π or 2π keeps the name. (2) Sign: pretend α is a small acute angle, see which quadrant the whole angle falls in, and take the sign the <b>original</b> function has there.',
   () => {
     const f = pick(['sin', 'cos']), b = pick([1, 2, 3, 4]), s = pick([1, -1]), extra = pick([0, 0, 0, 2, 4]);
-    const base = ang(new Q(b, 2)).h, exh = `${f}(${extra ? extra + 'π + ' : ''}${base} ${s > 0 ? '+' : '−'} α)`;
+    const merged = b === 4 && extra > 0, base = merged ? (extra + 2) + 'π' : ang(new Q(b, 2)).h, exh = `${f}(${extra && !merged ? extra + 'π + ' : ''}${base} ${s > 0 ? '+' : '−'} α)`;   // 2π + 2π is written as 4π
     const al = 0.37, x = b * PI / 2 + s * al, v = f === 'sin' ? Math.sin(x) : Math.cos(x);
     const opts = [['sin α', Math.sin(al)], ['−sin α', -Math.sin(al)], ['cos α', Math.cos(al)], ['−cos α', -Math.cos(al)]], ans = opts.findIndex(o => Math.abs(o[1] - v) < 1e-9);
     const qd = ((b + (s > 0 ? 0 : -1)) % 4 + 4) % 4, qn = ['I', 'II', 'III', 'IV'][qd], swap = b % 2 === 1, pos = v > 0;
     return { v: { f, b, s, extra }, q: `Simplify ${exh}.`,
-      steps: [st('', [choice(opts.map(o => o[0]))], [ans], `${extra ? `Drop ${extra}π first (full turns change nothing). ` : ''}Does ${base} swap the function name? Which quadrant is ${base} ${s > 0 ? '+' : '−'} α in when α is small?`,
+      steps: [st('', [choice(opts.map(o => o[0]))], [ans], `${extra && !merged ? `Drop ${extra}π first (full turns change nothing). ` : ''}Does ${base} swap the function name? Which quadrant is ${base} ${s > 0 ? '+' : '−'} α in when α is small?`,
         `${swap ? `${base} swaps ${f} to ${f === 'sin' ? 'cos' : 'sin'}` : `${base} keeps ${f}`}. The angle is in quadrant ${qn}, where ${f} is ${pos ? 'positive' : 'negative'}. Result: ${opts[ans][0]}.`)]
     };
   });
@@ -150,16 +150,16 @@ const isEigVec = (A, l, v) => {
 };
 const vecStep = (A, l, v, name) => {
   const n = A.length, Sx = shiftM(A, l), xs = ['x', 'y', 'z'].slice(0, n).map(c => n === 2 ? sub('x', c === 'x' ? 1 : 2) : I(c));
-  return st(`Eigenvector for λ = ${H(l)}. Solve (${I('A')} − ${P(l)}${I('I')})${I('v')} = 0; any non-zero solution is accepted.`, [mat(n, 1, `${name} =`)], [v.map(x => [x])],
-    `${I('A')} − ${P(l)}${I('I')} = ${M(Sx)}. The equations are multiples of each other, so use one, set one unknown to 1 and solve for the rest.`,
+  return st(`Eigenvector for λ = ${H(l)}. Solve (${AmL(l)})${I('v')} = 0; any non-zero solution is accepted.`, [mat(n, 1, `${name} =`)], [v.map(x => [x])],
+    `${AmL(l)} = ${M(Sx)}. The equations are multiples of each other, so use one, set one unknown to 1 and solve for the rest.`,
     `${sys(Sx.map(r => terms(r.map((c, j) => [c, xs[j]])) + ' = 0'))} &nbsp;⇒&nbsp; for example ${name} = ${V(v)} (any multiple works).`,
     { val: vals => isEigVec(A, l, vals[0].map(r => r[0])) });
 };
 const lamSet = (l, labels) => st('Solve it. Enter the eigenvalues in any order:', l.map((_, k) => num(`λ<sub>${k + 1}</sub> =`)), l, labels.hint, labels.sol,
   { val: v => { const a = v.slice().sort((x, y) => x - y), b = l.slice().sort((x, y) => x - y); return a.every((x, k) => close(x, b[k])) ? true : 'Those are not the roots of the characteristic equation. Check the factorisation or the discriminant.'; } });
 const charStep = e => st(`Characteristic equation |${I('A')} − λ${I('I')}| = 0. Expand it into the form:`, [num('λ<sup>2</sup> +', { after: 'λ', w: 4 }), num('+', { after: '= 0', w: 4 })], [-e.t, e.d],
-  `${D([[`${H(e.A[0][0])} − λ`, e.A[0][1]], [e.A[1][0], `${H(e.A[1][1])} − λ`]])} = (${H(e.A[0][0])} − λ)(${H(e.A[1][1])} − λ) − ${P(e.A[0][1])}·${P(e.A[1][0])}. Shortcut: λ² − (trace)λ + det.`,
-  `${poly([e.d, -e.t, 1], 'λ').replace(/<i>λ<\/i>/g, 'λ')} = 0 &nbsp; (trace = ${H(e.t)}, det = ${H(e.d)})`);
+  `${D([[dl(e.A[0][0]), e.A[0][1]], [e.A[1][0], dl(e.A[1][1])]])} = ${gl(e.A[0][0])}${gl(e.A[1][1])} − ${P(e.A[0][1])}·${P(e.A[1][0])}. Shortcut: λ² − (trace)λ + det.`,
+  `${lamPoly(e)} = 0 &nbsp; (trace = ${H(e.t)}, det = ${H(e.d)})`);
 const EIG = 'Eigenvalues: solve |A − λI| = 0. For 2×2 this is λ² − (a + d)λ + (ad − bc) = 0. Eigenvector for each λ: put λ into (A − λI)v = 0. The equations become proportional, so keep one, choose one unknown freely (for example 1) and solve the other. Any non-zero multiple is a valid eigenvector.';
 
 reg('eig2', 7, 'Eigenvalues and eigenvectors 2×2', 'Tikrinės reikšmės ir vektoriai 2×2', EIG,
@@ -171,6 +171,10 @@ reg('eig2', 7, 'Eigenvalues and eigenvectors 2×2', 'Tikrinės reikšmės ir vek
     };
   });
 
+const gl = g => g === 0 ? '(−λ)' : `(${H(g)} − λ)`;
+const dl = a => a === 0 ? '−λ' : `${H(a)} − λ`;                        // a diagonal entry of A − λI
+const lamPoly = e => poly([e.d, -e.t, 1], 'λ').replace(/<i>λ<\/i>/g, 'λ');   // λ² − (trace)λ + det, written out
+const cmulHow = (a, b) => terms([[a[0] * b[0], ''], [a[0] * b[1], 'i'], [a[1] * b[0], 'i'], [a[1] * b[1], 'i²']]);   // the four products of (a + bi)(c + di)      // the factor (g − λ), written (−λ) when g is 0
 function eig3A() {
   for (;;) {
     const e = eigA(), g = ri(-3, 5); if (e.l.includes(g)) continue;
@@ -185,7 +189,7 @@ reg('eig3', 7, 'Eigenvalues and eigenvectors 3×3', 'Tikrinės reikšmės ir vek
   () => {
     const t = eig3A(), q2 = poly([t.e.d, -t.e.t, 1], 'λ').replace(/<i>λ<\/i>/g, 'λ');
     return { v: { A: t.A }, q: `Find the eigenvalues and eigenvectors of ${E('A', M(t.A))}.`,
-      steps: [lamSet(t.l, { hint: `Expand |A − λI| along ${t.low ? 'column 3' : 'row 3'}: (${H(t.g)} − λ)·${D([[`${H(t.e.A[0][0])} − λ`, t.e.A[0][1]], [t.e.A[1][0], `${H(t.e.A[1][1])} − λ`]])} = 0.`, sol: `(${H(t.g)} − λ)(${q2}) = 0 &nbsp;⇒&nbsp; λ = ${t.l.map(H).join(', ')}` }),
+      steps: [lamSet(t.l, { hint: `Expand |A − λI| along ${t.low ? 'column 3' : 'row 3'}: ${gl(t.g)}·${D([[dl(t.e.A[0][0]), t.e.A[0][1]], [t.e.A[1][0], dl(t.e.A[1][1])]])} = 0.`, sol: `${gl(t.g)}(${q2}) = 0 &nbsp;⇒&nbsp; λ = ${t.l.map(H).join(', ')}` }),
       ...t.l.map((l, k) => vecStep(t.A, l, t.vs[k], sub('v', k + 1)))]
     };
   });
@@ -199,7 +203,7 @@ reg('iseig', 7, 'Is k an eigenvalue?', 'Ar k yra tikrinė reikšmė?',
     const Sx = shiftM(A, k), d = det(Sx), yes = d === 0;
     return { v: { A, k }, q: `Is ${I('k')} = ${H(k)} an eigenvalue of ${E('A', M(A))}?`,
       steps: [
-        st(`Subtract ${H(k)} from the diagonal and take the determinant:`, [num(`det(${I('A')} − ${P(k)}${I('I')}) =`)], [d], `${I('A')} − ${P(k)}${I('I')} = ${M(Sx)}`, `${D(Sx)} = ${big3 ? detSol(Sx) : d2s(Sx) + ' = ' + H(d)}`),
+        st(`Subtract ${H(k)} from the diagonal and take the determinant:`, [num(`det(${AmL(k)}) =`)], [d], `${AmL(k)} = ${M(Sx)}`, `${D(Sx)} = ${big3 ? detSol(Sx) : d2s(Sx) + ' = ' + H(d)}`),
         st('So is it an eigenvalue?', [choice(['Yes', 'No'])], [yes ? 0 : 1], 'Eigenvalue ⇔ determinant equals 0.', yes ? 'The determinant is 0, so yes.' : 'The determinant is not 0, so no.')
       ]
     };
@@ -213,13 +217,13 @@ reg('pdp', 8, 'Diagonalise: A = PDP⁻¹', 'Diagonalizavimas A = PDP⁻¹',
     const Dm = [[l[0], 0], [0, l[1]]], Pi = inv2(Pm);
     return { v: { A: e.A }, q: `Write ${E('A', M(e.A))} as ${I('A')} = ${I('PDP')}<sup>−1</sup>.`,
       steps: [
-        lamSet(e.l, { hint: `λ² − (${H(e.t)})λ + (${H(e.d)}) = 0`, sol: `${poly([e.d, -e.t, 1], 'λ').replace(/<i>λ<\/i>/g, 'λ')} = 0 &nbsp;⇒&nbsp; λ = ${H(e.l[0])}, ${H(e.l[1])}` }),
+        lamSet(e.l, { hint: `${lamPoly(e)} = 0`, sol: `${poly([e.d, -e.t, 1], 'λ').replace(/<i>λ<\/i>/g, 'λ')} = 0 &nbsp;⇒&nbsp; λ = ${H(e.l[0])}, ${H(e.l[1])}` }),
         st('Diagonal matrix of eigenvalues (either order):', [mat(2, 2, `${I('D')} =`)], [Dm], 'Eigenvalues on the diagonal, zeros elsewhere.', E('D', M(Dm)),
           { val: (v, ctx) => { const [[a, b], [c, d]] = v[0]; if (!close(b, 0) || !close(c, 0)) return { bad: [{ f: 0, cells: [[0, 1], [1, 0]].filter(([i, j]) => !close(v[0][i][j], 0)) }], msg: 'The off-diagonal entries of D are 0.' }; const ok = (close(a, l[0]) && close(d, l[1])) || (close(a, l[1]) && close(d, l[0])); if (ok) ctx.D = [a, d]; return ok ? true : 'The diagonal should hold the two eigenvalues.'; }, save: ctx => { ctx.D = ctx.D || l; } }),
         st(ctx => `Eigenvectors as columns, in the same order as in ${I('D')}: column 1 for λ = ${H(ctx.D[0])}, column 2 for λ = ${H(ctx.D[1])}.`, [mat(2, 2, `${I('P')} =`)], [Pm], 'Solve (A − λI)v = 0 for each eigenvalue and write the vectors side by side.', ctx => { const p = T(ctx.D.map(v => eigvec2(e.A, v))); return `For example ${E('P', M(p))} (columns may be scaled).`; },
           { val: (v, ctx) => { const p = v[0], c1 = isEigVec(e.A, ctx.D[0], [p[0][0], p[1][0]]), c2 = isEigVec(e.A, ctx.D[1], [p[0][1], p[1][1]]); if (c1 !== true) return { bad: [{ f: 0, cells: [[0, 0], [1, 0]] }], msg: `Column 1 is not an eigenvector for λ = ${H(ctx.D[0])}.` }; if (c2 !== true) return { bad: [{ f: 0, cells: [[0, 1], [1, 1]] }], msg: `Column 2 is not an eigenvector for λ = ${H(ctx.D[1])}.` }; ctx.P = p; return true; }, save: ctx => { ctx.P = ctx.P || T(ctx.D.map(v => eigvec2(e.A, v))); }, ansFn: ctx => [T(ctx.D.map(v => eigvec2(e.A, v)))] }),
         st(ctx => `Invert your ${E('P', M(ctx.P))}:`, [mat(2, 2, `${I('P')}<sup>−1</sup> =`)], [Pi], INV2, ctx => { const p = ctx.P, d = det2(p); return `det P = ${H(fr(d))}, &nbsp; ${I('P')}<sup>−1</sup> = ${M([[p[1][1] / d, -p[0][1] / d], [-p[1][0] / d, p[0][0] / d]].map(r => r.map(fr)))}`; },
-          { val: (v, ctx) => { const x = v[0], p = ctx.P, pr = [[p[0][0] * x[0][0] + p[0][1] * x[1][0], p[0][0] * x[0][1] + p[0][1] * x[1][1]], [p[1][0] * x[0][0] + p[1][1] * x[1][0], p[1][0] * x[0][1] + p[1][1] * x[1][1]]]; return (close(pr[0][0], 1) && close(pr[1][1], 1) && Math.abs(pr[0][1]) < 1e-6 && Math.abs(pr[1][0]) < 1e-6) ? true : 'P times this matrix is not the identity. Use (1/det P)·[d, −b; −c, a].'; }, ansFn: ctx => { const p = ctx.P, d = det2(p); return [[[p[1][1] / d, -p[0][1] / d], [-p[1][0] / d, p[0][0] / d]]]; } })
+          { val: (v, ctx) => { const x = v[0], p = ctx.P, pr = [[p[0][0] * x[0][0] + p[0][1] * x[1][0], p[0][0] * x[0][1] + p[0][1] * x[1][1]], [p[1][0] * x[0][0] + p[1][1] * x[1][0], p[1][0] * x[0][1] + p[1][1] * x[1][1]]]; return (close(pr[0][0], 1) && close(pr[1][1], 1) && Math.abs(pr[0][1]) < 1e-6 && Math.abs(pr[1][0]) < 1e-6) ? true : 'P times this matrix is not the identity. Use (1/det P)·[d, −b; −c, a].'; }, ansFn: ctx => { const p = ctx.P, d = det2(p); return [[[p[1][1] / d, -p[0][1] / d], [-p[1][0] / d, p[0][0] / d]].map(r => r.map(fr))]; } })
       ]
     };
   });
@@ -233,14 +237,14 @@ reg('closed', 8, 'Solution n<sub>t</sub> from eigenvalues', 'Rekurentinės lygti
       nT = [[n0[0]], [n0[1]]]; for (let k = 0; k < Tt; k++) nT = mmul(e.A, nT);
     } while (Math.max(Math.abs(nT[0][0]), Math.abs(nT[1][0])) > 300 || Math.max(...e.l.map(Math.abs)) > 5);
     const solveC = (v, w) => { const d = v[0] * w[1] - w[0] * v[1]; return [(n0[0] * w[1] - w[0] * n0[1]) / d, (v[0] * n0[1] - n0[0] * v[1]) / d]; };
-    return { v: { A: e.A, n0, Tt }, q: `Let ${I('n')}<sub>t+1</sub> = ${I('A')}${I('n')}<sub>t</sub> with ${E('A', M(e.A))} and ${I('n')}<sub>0</sub> = ${V(n0)}. Write the solution ${I('n')}<sub>t</sub> = ${sub('c', 1)}λ<sub>1</sub><sup>t</sup>${sub('v', 1)} + ${sub('c', 2)}λ<sub>2</sub><sup>t</sup>${sub('v', 2)}.`,
+    return { v: { A: e.A, n0, Tt }, q: `Let ${I('n')}<sub>t+1</sub> = ${I('A')}${I('n')}<sub>t</sub> with ${E('A', M(e.A))} and ${I('n')}<sub>0</sub> = ${V(n0)}. Write the solution <span class="nw">${I('n')}<sub>t</sub> = ${sub('c', 1)}λ<sub>1</sub><sup>t</sup>${sub('v', 1)} + ${sub('c', 2)}λ<sub>2</sub><sup>t</sup>${sub('v', 2)}</span>.`,
       steps: [
-        st('Eigenvalues (choose your own order, and keep it):', [num('λ<sub>1</sub> ='), num('λ<sub>2</sub> =')], e.l, `|A − λI| = λ² − (${H(e.t)})λ + (${H(e.d)}) = 0`, `λ = ${H(e.l[0])} and ${H(e.l[1])}`,
+        st('Eigenvalues (choose your own order, and keep it):', [num('λ<sub>1</sub> ='), num('λ<sub>2</sub> =')], e.l, `|A − λI| = ${lamPoly(e)} = 0`, `λ = ${H(e.l[0])} and ${H(e.l[1])}`,
           { val: (v, ctx) => { const ok = (close(v[0], e.l[0]) && close(v[1], e.l[1])) || (close(v[0], e.l[1]) && close(v[1], e.l[0])); if (ok) ctx.l = [v[0], v[1]]; return ok ? true : 'Those are not the roots of the characteristic equation.'; }, save: ctx => { ctx.l = ctx.l || e.l; } }),
         st(ctx => `Eigenvectors: ${sub('v', 1)} for λ<sub>1</sub> = ${H(ctx.l[0])} and ${sub('v', 2)} for λ<sub>2</sub> = ${H(ctx.l[1])}.`, [mat(2, 1, `${sub('v', 1)} =`), mat(2, 1, `${sub('v', 2)} =`)], [vs[0].map(x => [x]), vs[1].map(x => [x])], '(A − λI)v = 0 for each λ. Any non-zero multiple is fine.', ctx => `For example ${sub('v', 1)} = ${V(eigvec2(e.A, ctx.l[0]))}, ${sub('v', 2)} = ${V(eigvec2(e.A, ctx.l[1]))}.`,
           { val: (v, ctx) => { const a = v[0].map(r => r[0]), b = v[1].map(r => r[0]), c1 = isEigVec(e.A, ctx.l[0], a), c2 = isEigVec(e.A, ctx.l[1], b); if (c1 !== true) return { bad: [{ f: 0 }], msg: c1 }; if (c2 !== true) return { bad: [{ f: 1 }], msg: c2 }; ctx.v = [a, b]; return true; }, save: ctx => { ctx.v = ctx.v || ctx.l.map(l => eigvec2(e.A, l)); }, ansFn: ctx => ctx.l.map(l => eigvec2(e.A, l).map(x => [x])) }),
         st(ctx => `Constants from the start: ${sub('c', 1)}${V(ctx.v[0])} + ${sub('c', 2)}${V(ctx.v[1])} = ${V(n0)}.`, [num(`${sub('c', 1)} =`), num(`${sub('c', 2)} =`)], c, 'Two equations, one per row. Solve by substitution or elimination.', ctx => { const s = solveC(ctx.v[0], ctx.v[1]); return `${sub('c', 1)} = ${H(fr(s[0]))}, ${sub('c', 2)} = ${H(fr(s[1]))}, so ${I('n')}<sub>t</sub> = ${P(fr(s[0]))}·${P(ctx.l[0])}<sup>t</sup>${V(ctx.v[0].map(fr))} + ${P(fr(s[1]))}·${P(ctx.l[1])}<sup>t</sup>${V(ctx.v[1].map(fr))}`; },
-          { val: (v, ctx) => { const s = solveC(ctx.v[0], ctx.v[1]); return (close(v[0], s[0]) && close(v[1], s[1])) ? true : { bad: [close(v[0], s[0]) ? null : { f: 0 }, close(v[1], s[1]) ? null : { f: 1 }].filter(Boolean), msg: 'Put your constants back in: c₁v₁ + c₂v₂ must equal n₀ in both rows.' }; }, ansFn: ctx => solveC(ctx.v[0], ctx.v[1]) }),
+          { val: (v, ctx) => { const s = solveC(ctx.v[0], ctx.v[1]); return (close(v[0], s[0]) && close(v[1], s[1])) ? true : { bad: [close(v[0], s[0]) ? null : { f: 0 }, close(v[1], s[1]) ? null : { f: 1 }].filter(Boolean), msg: 'Put your constants back in: c₁v₁ + c₂v₂ must equal n₀ in both rows.' }; }, ansFn: ctx => solveC(ctx.v[0], ctx.v[1]).map(fr) }),
         st(`Use your formula with ${I('t')} = ${Tt}:`, [mat(2, 1, `${I('n')}<sub>${Tt}</sub> =`)], [nT], `c₁·λ₁<sup>${Tt}</sup>·v₁ + c₂·λ₂<sup>${Tt}</sup>·v₂`, `${I('n')}<sub>${Tt}</sub> = ${M(nT)} (the same as multiplying by A ${Tt} times).`)
       ]
     };
@@ -283,8 +287,8 @@ reg('limsym', 9, 'Quick forms: number/∞, number/0, 0/0', 'Simbolinės išraiš
   'number/∞ = 0. number/0 = ∞. a<sup>+∞</sup> = ∞ and a<sup>−∞</sup> = 0 when a &gt; 1. The forms 0/0, ∞/∞ and ∞ − ∞ are indeterminate: you must simplify first (factor, multiply by the conjugate, or divide by the highest power).',
   () => {
     const c = ri(2, 9), a = ri(2, 5), bank = [
-      [big(c, '+∞'), 0], [big(-c, '+∞'), 0], [big(0, '∞'), 0], [`${a}<sup>−∞</sup>`, 0], [`${FR(1, a)}<sup>+∞</sup>`, 0], [big(c, `${a}<sup>+∞</sup>`), 0],
-      [`${a}<sup>+∞</sup>`, 1], [`${c}·(+∞)`, 1], ['(+∞) + (+∞)', 1], ['(+∞)·(+∞)', 1], [big('+∞', c), 1], [`${FR(1, a)}<sup>−∞</sup>`, 1],
+      [big(c, '+∞'), 0], [big(-c, '+∞'), 0], [big(0, '∞'), 0], [`${a}<sup>−∞</sup>`, 0], [`(${FR(1, a)})<sup>+∞</sup>`, 0], [big(c, `${a}<sup>+∞</sup>`), 0],
+      [`${a}<sup>+∞</sup>`, 1], [`${c}·(+∞)`, 1], ['(+∞) + (+∞)', 1], ['(+∞)·(+∞)', 1], [big('+∞', c), 1], [`(${FR(1, a)})<sup>−∞</sup>`, 1],
       [`${MIN}${c}·(+∞)`, 2], [big('−∞', c), 2], ['(+∞)·(−∞)', 2],
       [big(0, 0), 3], [big('∞', '∞'), 3], ['(+∞) − (+∞)', 3], ['0·∞', 3]];
     const qs = shuffle(bank).slice(0, 4);
@@ -365,7 +369,7 @@ reg('limconj', 9, '0/0 with a square root: conjugate', '0/0 su šaknimi: jungtin
       steps: [
         st(`Multiply top and bottom by the conjugate ${rt} + ${r}. Then (${rt} − ${r})(${rt} + ${r}) simplifies to:`, [num('', { after: `·(${lin(a)})`, w: 4 })], [p], `(${terms([[p, I('x')], [q, '']])}) − ${r * r} = ${terms([[p, I('x')], [q - r * r, '']])}. Take the common factor out.`, `${terms([[p, I('x')], [q - r * r, '']])} = ${p}(${lin(a)})`),
         st(`After cancelling (${lin(a)}), the conjugate is left. At ${I('x')} = ${H(a)}: ${rt} + ${r} =`, [num('')], [2 * r], `√(${p}·${P(a)} ${q < 0 ? '−' : '+'} ${Math.abs(q)}) + ${r}`, `√${r * r} + ${r} = ${2 * r}`),
-        st('So the limit is:', [num('limit =', INF)], [ans], flip ? `What is left is (√… + ${r})/${p}.` : `What is left is ${p}/(√… + ${r}).`, flip ? `${big(2 * r, p)} = ${H(ans)}` : `${big(p, 2 * r)} = ${H(ans)}`)
+        st('So the limit is:', [num('limit =', INF)], [ans], flip ? `What is left is ${p === 1 ? `√… + ${r}` : `(√… + ${r})/${p}`}.` : `What is left is ${p}/(√… + ${r}).`, flip ? `${p === 1 ? '' : big(2 * r, p) + ' = '}${H(ans)}` : `${big(p, 2 * r)} = ${H(ans)}`)
       ]
     };
   });
@@ -378,8 +382,8 @@ reg('limroot', 9, 'Roots at infinity', 'Šaknys, kai x → ∞',
       const a = ri(1, 4), d = nz(-3, 4), c = ri(1, 6), e = pick(['π', '1', '3', '5']), ans = new Q(a, d), rt = root(terms([[c, ''], [a * a, pw('x', 2)]]));
       return { v: { f: x => Math.sqrt(c + a * a * x * x) / ((e === 'π' ? Math.PI : +e) + d * x), at: Infinity }, q: `Find ${limOf('x', '+∞', big(rt, `${e} ${d < 0 ? '−' : '+'} ${Math.abs(d) === 1 ? '' : Math.abs(d)}${I('x')}`))}.`,
         steps: [
-          st(`For large ${I('x')}, ${rt} behaves like:`, [num('', { after: `·${I('x')}`, w: 4 })], [a], '√(a²x²) = a·x for positive x; the constant under the root stops mattering.', `${rt} ≈ ${root(`${a * a}${pw('x', 2)}`)} = ${a}${I('x')}`),
-          st('Compare leading terms:', [num('limit =', INF)], [ans], `${big(`${a}x`, `${d}x`)}`, `${big(`${a}${I('x')}`, `${H(d)}${I('x')}`)} → ${H(ans)}`)
+          st(`For large ${I('x')}, ${rt} behaves like:`, [num('', { after: `·${I('x')}`, w: 4 })], [a], '√(a²x²) = a·x for positive x; the constant under the root stops mattering.', `${rt} ≈ ${root(terms([[a * a, pw('x', 2)]]))} = ${terms([[a, I('x')]])}`),
+          st('Compare leading terms:', [num('limit =', INF)], [ans], `${big(terms([[a, I('x')]]), terms([[d, I('x')]]))}`, `${big(terms([[a, I('x')]]), terms([[d, I('x')]]))} → ${H(ans)}`)
         ]
       };
     }
@@ -396,8 +400,8 @@ reg('limroot', 9, 'Roots at infinity', 'Šaknys, kai x → ∞',
     const ans = new Q(A0 + B, C), xm = pw('x', m);
     return { v: { f: x => (Math.pow(A * Math.pow(x, k * m) + c1 * Math.pow(x, m) + 1, 1 / k) + B * Math.pow(x, m) - (m === 2 ? 2 * x : 0)) / (Math.sqrt(1 + c2 * Math.pow(x, m) + C * C * Math.pow(x, 2 * m)) + dd), at: Infinity }, q: `Find ${limOf('x', '+∞', big(`${numRoot} ${B < 0 ? '−' : '+'} ${Math.abs(B) === 1 ? '' : Math.abs(B)}${xm}${m === 2 ? ` − 2${I('x')}` : ''}`, `${denRoot} + ${dd}`))}.`,
       steps: [
-        st(`Leading behaviour of the roots for large ${I('x')}:`, [num(`${numRoot} ≈`, { after: `·${xm}`, w: 4 }), num(`${denRoot} ≈`, { after: `·${xm}`, w: 4 })], [A0, C], `Keep only the highest power under each root: ${root(`${A}${pw('x', k * m)}`, k === 3 ? 3 : '')} and ${root(`${C * C}${pw('x', 2 * m)}`)}.`, `${numRoot} ≈ ${A0}${xm}, &nbsp; ${denRoot} ≈ ${C}${xm}`),
-        st(`Compare the coefficients of ${xm} on top and bottom:`, [num('limit =', INF)], [ans], `Top: (${A0} ${B < 0 ? '−' : '+'} ${Math.abs(B)})${xm}. Bottom: ${C}${xm}.`, `${big(`${A0} ${B < 0 ? '−' : '+'} ${Math.abs(B)}`, C)} = ${H(ans)}`)
+        st(`Leading behaviour of the roots for large ${I('x')}:`, [num(`${numRoot} ≈`, { after: `·${xm}`, w: 4 }), num(`${denRoot} ≈`, { after: `·${xm}`, w: 4 })], [A0, C], `Keep only the highest power under each root: ${root(terms([[A, pw('x', k * m)]]), k === 3 ? 3 : '')} and ${root(terms([[C * C, pw('x', 2 * m)]]))}.`, `${numRoot} ≈ ${terms([[A0, xm]])}, &nbsp; ${denRoot} ≈ ${terms([[C, xm]])}`),
+        st(`Compare the coefficients of ${xm} on top and bottom:`, [num('limit =', INF)], [ans], `Top: (${A0} ${B < 0 ? '−' : '+'} ${Math.abs(B)})${xm}. Bottom: ${terms([[C, xm]])}.`, `${C === 1 ? `${A0} ${B < 0 ? '−' : '+'} ${Math.abs(B)}` : big(`${A0} ${B < 0 ? '−' : '+'} ${Math.abs(B)}`, C)} = ${H(ans)}`)
       ]
     };
   });

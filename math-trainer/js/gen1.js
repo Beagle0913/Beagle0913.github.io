@@ -1,5 +1,5 @@
 /* ================= TOPIC 3 — matrix algebra ================= */
-const E = (n, h) => `${I(n)} = ${h}`;
+const E = (n, h) => `<span class="nw">${I(n)} = ${h}</span>`;      // “A = [matrix]” never splits across lines
 
 reg('lincomb', 3, 'Combine matrices: αA + βBᵀ', 'Veiksmai su matricomis',
   'Transpose first (rows of B become columns of Bᵀ). Multiply every entry by its number, then add entry by entry. Sizes must match.',
@@ -10,7 +10,7 @@ reg('lincomb', 3, 'Combine matrices: αA + βBᵀ', 'Veiksmai su matricomis',
     return { v: { A, B, a, b }, q: `Let ${E('A', M(A))} and ${E('B', M(B))}. Compute ${ex}.`,
       steps: [
         st(`Transpose ${I('B')}:`, [mat(2, 3, `${I('B')}<sup>T</sup> =`)], [BT], 'Row 1 of B becomes column 1 of Bᵀ, row 2 becomes column 2, and so on. A 3×2 matrix turns into a 2×3 one.', `${I('B')}<sup>T</sup> = ${M(BT)}`),
-        st(`Now multiply by the numbers and add:`, [mat(2, 3, `${ex} =`)], [R], `Each entry is ${a}·(entry of A) ${b < 0 ? '−' : '+'} ${Math.abs(b)}·(entry of Bᵀ) in the same position.`, `${a}${I('A')} = ${M(aA)}, &nbsp; ${b}${I('B')}<sup>T</sup> = ${M(bB)}, &nbsp; sum = ${M(R)}`)
+        st(`Now multiply by the numbers and add:`, [mat(2, 3, `${ex} =`)], [R], `Each entry is ${a}·(entry of A) ${b < 0 ? '−' : '+'} ${Math.abs(b)}·(entry of Bᵀ) in the same position.`, `${terms([[a, I('A')]])} = ${M(aA)}, &nbsp; ${terms([[b, I('B') + '<sup>T</sup>']])} = ${M(bB)}, &nbsp; sum = ${M(R)}`)
       ]
     };
   });
@@ -43,7 +43,7 @@ reg('possible', 3, 'Which products exist?', 'Ar įmanoma sudauginti?',
     return { v: { sh, gi, gj }, q: `Let ${Ms.map((m, i) => E(N[i], M(m))).join(', ')}.`,
       steps: [
         st('Select every product that can be computed:', [checks(pairs.map(([i, j]) => I(N[i] + N[j])))], [ok], `Sizes: ${sh.map((s, i) => `${N[i]} is ${s[0]}×${s[1]}`).join(', ')}. XY works when columns of X = rows of Y.`,
-          pairs.map(([i, j], k) => `${I(N[i] + N[j])}: (${sh[i][0]}×<b>${sh[i][1]}</b>)(<b>${sh[j][0]}</b>×${sh[j][1]}) ${ok[k] ? '✓' : '✗'}`).join(' &nbsp;·&nbsp; ')),
+          pairs.map(([i, j], k) => `${I(N[i] + N[j])}: (${sh[i][0]}×<b>${sh[i][1]}</b>)(<b>${sh[j][0]}</b>×${sh[j][1]}) ${ok[k] ? '✓' : '✗'}`).join('<br>')),
         st(`What size is ${I(N[gi] + N[gj])}?`, [num('', { after: 'rows', w: 3 }), num('×', { after: 'columns', w: 3 })], [sh[gi][0], sh[gj][1]], 'Rows of the first matrix × columns of the second.', `(${sh[gi][0]}×${sh[gi][1]})(${sh[gj][0]}×${sh[gj][1]}) gives ${sh[gi][0]}×${sh[gj][1]}.`)
       ]
     };
@@ -113,7 +113,7 @@ reg('rec2mat', 4, 'Recurrence equations → matrix', 'Rekurentinės lygtys → m
       Qm = Array.from({ length: n }, () => Array(n).fill(0));
       for (let j = 0; j < n; j++) { const stay = pick([5, 6, 7, 8, 9]), to = pick([...Array(n).keys()].filter(i => i !== j)); Qm[j][j] = stay / 10; Qm[to][j] = (10 - stay) / 10; }
     } else { do { Qm = rm(n, n, -3, 6).map(r => r.map(x => Math.random() < 0.35 ? 0 : x)); } while (Qm.some(r => r.every(x => !x))); }
-    return { v: { Qm }, q: `A model is given by ${sys(recEq(Qm, names))} Write it as ${M(names.map(v => [sub(v, 't+1')]))} = ${I('Q')}${M(names.map(v => [sub(v, 't')]))}.`,
+    return { v: { Qm }, q: `A model is given by ${sys(recEq(Qm, names))}<br>Write it as <span class="nw">${M(names.map(v => [sub(v, 't+1')]))} = ${I('Q')}${M(names.map(v => [sub(v, 't')]))}</span>.`,
       steps: [st('', [mat(n, n, `${I('Q')} =`)], [Qm], `Column order is ${names.join(', ')}. In each equation read off the coefficient of each variable; write 0 where a variable does not appear. Decimals can be typed as 0.3 or 0,3.`, E('Q', M(Qm)))]
     };
   });
@@ -143,7 +143,7 @@ reg('inverse2', 4, 'Inverse of a 2×2 matrix', 'Atvirkštinė matrica 2×2', INV
       steps: [
         st('Determinant:', [num('det A =')], [d], 'ad − bc', `${d2s(A)} = ${H(d)}`),
         st('Swap the diagonal entries and change the sign of the other two:', [mat(2, 2, '')], [ad], 'From [a, b; c, d] make [d, −b; −c, a].', M(ad)),
-        st('Divide every entry by the determinant (type fractions like 3/4):', [mat(2, 2, `${I('A')}<sup>−1</sup> =`)], [inv], `Each entry of the previous matrix divided by ${H(d)}.`, `${I('A')}<sup>−1</sup> = ${FR(1, P(d))}·${M(ad)} = ${M(inv)}`)
+        st('Divide every entry by the determinant (type fractions like 3/4):', [mat(2, 2, `${I('A')}<sup>−1</sup> =`)], [inv], `Each entry of the previous matrix divided by ${H(d)}.`, `${I('A')}<sup>−1</sup> = ${recip(d)}${M(ad)} = ${M(inv)}`)
       ]
     };
   });
@@ -179,10 +179,10 @@ reg('backstep', 4, 'Step backwards with the inverse', 'Ankstesnio sezono vektori
   'If x<sub>t+1</sub> = A·x<sub>t</sub>, then x<sub>t</sub> = A<sup>−1</sup>·x<sub>t+1</sub>. Find the 2×2 inverse, then multiply it by the known vector.',
   () => {
     const A = goodA2(-3, 6, [1, 2, 4, 5]), x = [[ri(-3, 6)], [nz(-3, 6)]], y = mmul(A, x), d = det2(A), inv = inv2(A);
-    return { v: { A, y }, q: `A population changes by ${I('x')}<sub>t+1</sub> = ${M(A)}${I('x')}<sub>t</sub>. This season the vector is ${I('x')}<sub>t+1</sub> = ${M(y)}. What was it one season earlier?`,
+    return { v: { A, y }, q: `A population changes by <span class="nw">${I('x')}<sub>t+1</sub> = ${M(A)}${I('x')}<sub>t</sub></span>. This season the vector is <span class="nw">${I('x')}<sub>t+1</sub> = ${M(y)}</span>. What was it one season earlier?`,
       steps: [
         st('Determinant of the matrix:', [num('det =')], [d], 'ad − bc', `${d2s(A)} = ${H(d)}`),
-        st('Inverse matrix:', [mat(2, 2, `${I('A')}<sup>−1</sup> =`)], [inv], INV2, `${FR(1, P(d))}·${M(adj2(A))} = ${M(inv)}`),
+        st('Inverse matrix:', [mat(2, 2, `${I('A')}<sup>−1</sup> =`)], [inv], INV2, `${recip(d)}${M(adj2(A))} = ${M(inv)}`),
         st('Multiply the inverse by this season’s vector:', [mat(2, 1, `${I('x')}<sub>t</sub> =`)], [x], 'x<sub>t</sub> = A<sup>−1</sup>·x<sub>t+1</sub>', `${M(inv)}${M(y)} = ${M(x)}`)
       ]
     };
@@ -227,7 +227,7 @@ reg('cramer2', 5, 'Cramer’s rule, 2 unknowns', 'Kramerio metodas 2×2', CRAMER
       steps: [
         st('Main determinant:', [num('Δ =')], [d], `Δ = ${D(A)}`, `Δ = ${D(A)} = ${d2s(A)} = ${H(d)}`),
         st('Replace one column at a time with the right-hand sides:', [num(`Δ<sub>x</sub> = ${D(A1)} =`), num(`Δ<sub>y</sub> = ${D(A2)} =`)], [d1, d2], 'Two more 2×2 determinants: ad − bc.', `Δ<sub>x</sub> = ${d2s(A1)} = ${H(d1)}, &nbsp; Δ<sub>y</sub> = ${d2s(A2)} = ${H(d2)}`),
-        st('Divide:', [num(`${I('x')} =`), num(`${I('y')} =`)], [new Q(d1, d), new Q(d2, d)], 'x = Δ<sub>x</sub>/Δ, y = Δ<sub>y</sub>/Δ. Fractions are fine.', `${I('x')} = ${FR(H(d1), H(d))} = ${H(new Q(d1, d))}, &nbsp; ${I('y')} = ${FR(H(d2), H(d))} = ${H(new Q(d2, d))}`)
+        st('Divide:', [num(`${I('x')} =`), num(`${I('y')} =`)], [new Q(d1, d), new Q(d2, d)], 'x = Δ<sub>x</sub>/Δ, y = Δ<sub>y</sub>/Δ. Fractions are fine.', `${I('x')} = ${d === 1 ? '' : FR(H(d1), H(d)) + ' = '}${H(new Q(d1, d))}, &nbsp; ${I('y')} = ${d === 1 ? '' : FR(H(d2), H(d)) + ' = '}${H(new Q(d2, d))}`)
       ]
     };
   });
@@ -272,7 +272,7 @@ reg('param3', 5, 'Infinitely many solutions: parametrise', 'Be galo daug sprendi
     const vn = ['x', 'y', 'z'], lhs = [0, 1].map(i => terms([[A[i][0], I('x')], [A[i][1], I('y')]]));
     const x0 = new Q(b[0] * r2[1] - r1[1] * b[1], D), x1 = new Q(-r1[2] * r2[1] + r1[1] * r2[2], D), y0 = new Q(r1[0] * b[1] - r2[0] * b[0], D), y1 = new Q(-r1[0] * r2[2] + r2[0] * r1[2], D);
     const two = sys([0, 1].map(i => `${lhs[i]} = ${terms([[b[i], ''], [-A[i][2], I('t')]])}`)), tf = { after: `·${I('t')}`, w: 4 };
-    return { v: { A, b }, q: `The system ${sys(A.map((r, i) => eqn(r, vn, b[i])))} has Δ = Δ<sub>x</sub> = Δ<sub>y</sub> = Δ<sub>z</sub> = 0, so it has infinitely many solutions. Find all of them using the parameter ${I('z')} = ${I('t')}.`,
+    return { v: { A, b }, q: `For the system ${sys(A.map((r, i) => eqn(r, vn, b[i])))}<br>all four determinants are zero, <span class="nw">Δ = Δ<sub>x</sub> = Δ<sub>y</sub> = Δ<sub>z</sub> = 0</span>, so it has infinitely many solutions. Find all of them using the parameter ${I('z')} = ${I('t')}.`,
       steps: [
         st('Put z = t and move the t-terms to the right. Right-hand sides of the first two equations (a negative number goes into the box with its minus):', [num(`${lhs[0]} =`, { w: 4 }), num('+', tf), num(`${lhs[1]} =`, { w: 4, br: true }), num('+', tf)], [b[0], -A[0][2], b[1], -A[1][2]], `Equation 1 is ${eqn(A[0], vn, b[0])}. With z = t, the term with t changes sign when it crosses to the right. The third equation can be crossed out: it is a combination of the first two.`, two),
         st('Solve these two equations for x and y in terms of t (elimination, or Cramer’s rule carrying t along):', [num(`${I('x')} =`, { w: 4 }), num('+', tf), num(`${I('y')} =`, { w: 4, br: true }), num('+', tf)], [x0, x1, y0, y1], `The determinant of the left-hand sides is ${H(D)}. x = Δ<sub>x</sub>/${P(D)}, with the right-hand sides put in the x-column; the same for y.`, `(${I('x')}, ${I('y')}, ${I('z')}) = (${terms([[x0, ''], [x1, I('t')]])}; &nbsp;${terms([[y0, ''], [y1, I('t')]])}; &nbsp;${I('t')}), ${I('t')} ∈ ℝ`)
@@ -287,8 +287,8 @@ reg('syskind', 5, 'System with a parameter k', 'Sistema su parametru k',
     const x1 = sub('x', 1), x2 = sub('x', 2);
     return { v: { a, b, d, p, q, inf }, q: `For which ${I('k')} does the system have one solution, none, or infinitely many? ${sys([`${terms([[a, x1], [b, x2]])} = ${H(p)}`, `${terms([[1, I('k') + x1], [d, x2]])} = ${H(q)}`])}`,
       steps: [
-        st(`The determinant ${D([[a, b], [I('k'), d]])} has the form:`, [num('det ='), num(`${MIN}`, { after: `·${I('k')}` })], [a * d, b], 'ad − bc with c = k.', `det = ${P(a)}·${P(d)} − ${P(b)}·${I('k')} = ${H(a * d)} − ${P(b)}${I('k')}`),
-        st('For which k is the determinant zero?', [num(`${I('k')} =`)], [k0], `Solve ${H(a * d)} − ${P(b)}k = 0.`, `${I('k')} = ${H(a * d)}/${P(b)} = ${H(k0)}. For every other k there is exactly one solution.`),
+        st(`The determinant ${D([[a, b], [I('k'), d]])} has the form:`, [num('det ='), num(`${MIN}`, { after: `·${I('k')}` })], [a * d, b], 'ad − bc with c = k.', `det = ${P(a)}·${P(d)} − ${P(b)}·${I('k')} = ${terms([[a * d, ''], [-b, I('k')]])}`),
+        st('For which k is the determinant zero?', [num(`${I('k')} =`)], [k0], `Solve ${terms([[a * d, ''], [-b, I('k')]])} = 0.`, `${I('k')} = ${H(a * d)}/${P(b)} = ${H(k0)}. For every other k there is exactly one solution.`),
         st(`What happens at ${I('k')} = ${H(k0)}?`, [choice(['No solutions', 'Infinitely many solutions'])], [inf ? 1 : 0], `With k = ${H(k0)} the left side of equation 2 is ${H(m)} times the left side of equation 1. Is the right side also ${H(m)} times ${H(p)}?`, `${H(m)}·${P(p)} = ${H(m * p)}; the right side is ${H(q)}. ${inf ? 'The equations are the same line: infinitely many solutions.' : 'Parallel lines that never meet: no solutions.'}`)
       ]
     };
@@ -304,8 +304,8 @@ reg('inv3', 5, 'Solve by the inverse-matrix method', 'Atvirkštinės matricos me
       steps: [
         st('Determinant:', [num('det A =')], [d], 'Triangle rule.', `det A = ${detSol(A)}`),
         st('Matrix of cofactors (each entry: cross out its row and column, take the 2×2 determinant, apply the sign pattern + − + / − + − / + − +):', [mat(3, 3, `${I('C')} =`)], [C], `Example: ${sub('A', 11)} = +${D(minorM(A, 0, 0))}, ${sub('A', 12)} = −${D(minorM(A, 0, 1))}.`, E('C', M(C))),
-        st('Transpose it:', [mat(3, 3, `${I('C')}<sup>T</sup> =`)], [adj], 'Rows become columns.', `${I('C')}<sup>T</sup> = ${M(adj)}, so ${I('A')}<sup>−1</sup> = ${FR(1, P(d))}·${M(adj)}`),
-        st(`${I('X')} = ${I('A')}<sup>−1</sup>${I('B')} = ${FR(1, P(d))}·${I('C')}<sup>T</sup>${I('B')}:`, [mat(3, 1, `${I('X')} =`)], [x.map(v => [v])], `First multiply Cᵀ by B, then divide each entry by ${H(d)}.`, `${I('C')}<sup>T</sup>${I('B')} = ${M(ab)}, divided by ${H(d)}: ${I('X')} = ${V(x)}`)
+        st('Transpose it:', [mat(3, 3, `${I('C')}<sup>T</sup> =`)], [adj], 'Rows become columns.', `${I('C')}<sup>T</sup> = ${M(adj)}, so ${I('A')}<sup>−1</sup> = ${recip(d)}${M(adj)}`),
+        st(`${I('X')} = ${I('A')}<sup>−1</sup>${I('B')} = ${recip(d)}${I('C')}<sup>T</sup>${I('B')}:`, [mat(3, 1, `${I('X')} =`)], [x.map(v => [v])], `First multiply Cᵀ by B, then divide each entry by ${H(d)}.`, `${I('C')}<sup>T</sup>${I('B')} = ${M(ab)}, divided by ${H(d)}: ${I('X')} = ${V(x)}`)
       ]
     };
   });
