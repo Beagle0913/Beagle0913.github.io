@@ -10,6 +10,7 @@ index.html        Home page. Lists every project from projects.json.
 projects.json     The list of projects. The home page and the project bar both read this file.
 hub/hub.css       Styles for the home page and the project bar.
 hub/hub.js        Draws the project list (home page) and the project bar (project pages).
+404.html          Shown for addresses that do not exist; lists the projects.
 math-trainer/     GMC Math Trainer (see its README).
 moto-routes/      Vilnius Moto Routes (see its README).
 routes/, asveja-loop.html   Redirects from the addresses the moto routes had before they moved.

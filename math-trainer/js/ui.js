@@ -149,7 +149,7 @@
     const step = cur.prob.steps[cur.k], k = cur.k, li = el('li', 'step active');
     const body = el('div', 'math');
     body.append(el('div', 'sq', fn(step.q, cur.ctx)));
-    const fields = el('div', 'fields'); step.fields.forEach((f, fi) => fields.append(fieldDom(f, k, fi))); body.append(fields);
+    const fields = el('div', 'fields'); step.fields.forEach((f, fi) => { if (f.br) fields.append(el('span', 'brk')); fields.append(fieldDom(f, k, fi)); }); body.append(fields);
     const acts = el('div', 'acts'), bCheck = el('button', 'btn primary', S_.check), bHint = el('button', 'btn', S_.hint), bShow = el('button', 'btn', S_.show), fb = el('span', 'fb');
     [bCheck, bHint, bShow].forEach(b => { b.type = 'button'; }); fb.setAttribute('role', 'status');
     bCheck.dataset.act = 'check'; bHint.dataset.act = 'hint'; bShow.dataset.act = 'show';

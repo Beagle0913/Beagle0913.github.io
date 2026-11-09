@@ -244,6 +244,25 @@ regLT('cramer0', 'Kai Δ = 0: sprendinių nėra ar be galo daug?', CRAMERL,
     };
   });
 
+regLT('param3', 'Be galo daug sprendinių: parametrizavimas',
+  'Kai Δ = 0 ir Δ<sub>x</sub> = Δ<sub>y</sub> = Δ<sub>z</sub> = 0, viena lygtis yra kitų darinys ir ją galima išbraukti. Vieną nežinomąjį pažymėkite t (čia z = t), narius su t perkelkite į dešiniąją pusę ir iš likusių dviejų lygčių išreikškite x ir y per t. Atsakymą užrašykite (x, y, z) = (…, …, t).',
+  () => {
+    let r1, r2, al, be, D, A;
+    do { r1 = [nz(-3, 3), ri(-3, 3), nz(-3, 4)]; r2 = [ri(-3, 3), nz(-3, 3), ri(-3, 4)]; al = nz(-1, 2); be = nz(-1, 2); D = r1[0] * r2[1] - r1[1] * r2[0]; A = [r1, r2, r1.map((x, j) => al * x + be * r2[j])]; }
+    while (![1, 2, 3].includes(Math.abs(D)) || A[2].some(x => Math.abs(x) > 7));
+    const b = [ri(-5, 7), ri(-5, 7)]; b.push(al * b[0] + be * b[1]);
+    const vn = ['x', 'y', 'z'], lhs = [0, 1].map(i => terms([[A[i][0], I('x')], [A[i][1], I('y')]]));
+    const x0 = new Q(b[0] * r2[1] - r1[1] * b[1], D), x1 = new Q(-r1[2] * r2[1] + r1[1] * r2[2], D), y0 = new Q(r1[0] * b[1] - r2[0] * b[0], D), y1 = new Q(-r1[0] * r2[2] + r2[0] * r1[2], D);
+    const two = sys([0, 1].map(i => `${lhs[i]} = ${terms([[b[i], ''], [-A[i][2], I('t')]])}`)), tf = { after: `·${I('t')}`, w: 4 };
+    return {
+      q: `Tiesinių lygčių sistemos ${sys(A.map((r, i) => eqn(r, vn, b[i])))} determinantai Δ = Δ<sub>x</sub> = Δ<sub>y</sub> = Δ<sub>z</sub> = 0, todėl ji turi be galo daug sprendinių. Raskite juos parametrizuodami: ${I('z')} = ${I('t')}.`,
+      steps: [
+        st('Įstatykite z = t ir narius su t perkelkite į dešinę. Pirmųjų dviejų lygčių dešiniosios pusės (neigiamą skaičių rašykite su minusu langelyje):', [num(`${lhs[0]} =`, { w: 4 }), num('+', tf), num(`${lhs[1]} =`, { w: 4, br: true }), num('+', tf)], [b[0], -A[0][2], b[1], -A[1][2]], `Pirmoji lygtis yra ${eqn(A[0], vn, b[0])}. Kai z = t, perkeliant narį su t į dešinę jo ženklas pasikeičia. Trečiąją lygtį galima išbraukti – ji yra pirmųjų dviejų darinys.`, two),
+        st('Iš šių dviejų lygčių išreikškite x ir y per t (sudėties būdu arba Kramerio metodu):', [num(`${I('x')} =`, { w: 4 }), num('+', tf), num(`${I('y')} =`, { w: 4, br: true }), num('+', tf)], [x0, x1, y0, y1], `Kairiųjų pusių determinantas lygus ${H(D)}. x = Δ<sub>x</sub>/${P(D)}, kai x stulpelyje įrašytos dešiniosios pusės; analogiškai y.`, `(${I('x')}, ${I('y')}, ${I('z')}) = (${terms([[x0, ''], [x1, I('t')]])}; &nbsp;${terms([[y0, ''], [y1, I('t')]])}; &nbsp;${I('t')}), ${I('t')} ∈ ℝ`)
+      ]
+    };
+  });
+
 regLT('syskind', 'Sistema su parametru k',
   'Apskaičiuokite determinantą kaip reiškinį su k. Kai det ≠ 0, sistema turi vienintelį sprendinį. Su ta k reikšme, kai det = 0, palyginkite abi lygtis: jei viena yra kitos kartotinis (įskaitant dešiniąsias puses), sprendinių be galo daug, kitu atveju jų nėra.',
   () => {
@@ -266,7 +285,7 @@ regLT('inv3', 'Atvirkštinės matricos metodas 3×3',
     const x = [ri(-3, 5), ri(-3, 5), ri(-3, 5)], b = A.map(r => r.reduce((s, c, j) => s + c * x[j], 0)), d = det(A), vn = ['x', 'y', 'z'];
     const C = A.map((r, i) => r.map((_, j) => ((i + j) % 2 ? -1 : 1) * det2(minorM(A, i, j)))), adj = T(C), ab = mmul(adj, b.map(v => [v]));
     return {
-      q: `Išspręskite tiesinių lygčių sistemą atvirkštinės matricos metodu: ${sys(A.map((r, i) => eqn(r, vn, b[i])))} Čia ${E('A', M(A))}, ${E('B', V(b))}.`,
+      q: `Išspręskite tiesinių lygčių sistemą atvirkštinės matricos metodu: ${sys(A.map((r, i) => eqn(r, vn, b[i])))}<br>Čia ${E('A', M(A))}, ${E('B', V(b))}.`,
       steps: [
         st('Determinantas:', [num('det A =')], [d], 'Trikampių taisyklė.', `det A = ${detSol(A)}`),
         st('Adjunktų matrica (kiekvienam elementui: išbraukite jo eilutę ir stulpelį, apskaičiuokite 2×2 determinantą, pritaikykite ženklus + − + / − + − / + − +):', [mat(3, 3, `${I('C')} =`)], [C], `Pavyzdžiui: ${sub('A', 11)} = +${D(minorM(A, 0, 0))}, ${sub('A', 12)} = −${D(minorM(A, 0, 1))}.`, E('C', M(C))),

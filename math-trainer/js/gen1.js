@@ -277,6 +277,25 @@ reg('cramer0', 5, 'Δ = 0: none or infinitely many?', 'Kai Δ = 0: sprendinių s
     };
   });
 
+reg('param3', 5, 'Infinitely many solutions: parametrise', 'Be galo daug sprendinių: parametrizavimas',
+  'When Δ = 0 and Δ<sub>x</sub> = Δ<sub>y</sub> = Δ<sub>z</sub> = 0, one equation is a combination of the others and can be crossed out. Call one unknown t (here z = t), move the t-terms to the right-hand side, and solve the remaining two equations for x and y in terms of t. Write the answer as (x, y, z) = (…, …, t).',
+  () => {
+    let r1, r2, al, be, D, A;
+    do { r1 = [nz(-3, 3), ri(-3, 3), nz(-3, 4)]; r2 = [ri(-3, 3), nz(-3, 3), ri(-3, 4)]; al = nz(-1, 2); be = nz(-1, 2); D = r1[0] * r2[1] - r1[1] * r2[0]; A = [r1, r2, r1.map((x, j) => al * x + be * r2[j])]; }
+    while (![1, 2, 3].includes(Math.abs(D)) || A[2].some(x => Math.abs(x) > 7));
+    const b = [ri(-5, 7), ri(-5, 7)]; b.push(al * b[0] + be * b[1]);
+    const vn = ['x', 'y', 'z'], lhs = [0, 1].map(i => terms([[A[i][0], I('x')], [A[i][1], I('y')]]));
+    const x0 = new Q(b[0] * r2[1] - r1[1] * b[1], D), x1 = new Q(-r1[2] * r2[1] + r1[1] * r2[2], D), y0 = new Q(r1[0] * b[1] - r2[0] * b[0], D), y1 = new Q(-r1[0] * r2[2] + r2[0] * r1[2], D);
+    const two = sys([0, 1].map(i => `${lhs[i]} = ${terms([[b[i], ''], [-A[i][2], I('t')]])}`)), tf = { after: `·${I('t')}`, w: 4 };
+    return {
+      q: `The system ${sys(A.map((r, i) => eqn(r, vn, b[i])))} has Δ = Δ<sub>x</sub> = Δ<sub>y</sub> = Δ<sub>z</sub> = 0, so it has infinitely many solutions. Find all of them using the parameter ${I('z')} = ${I('t')}.`,
+      steps: [
+        st('Put z = t and move the t-terms to the right. Right-hand sides of the first two equations (a negative number goes into the box with its minus):', [num(`${lhs[0]} =`, { w: 4 }), num('+', tf), num(`${lhs[1]} =`, { w: 4, br: true }), num('+', tf)], [b[0], -A[0][2], b[1], -A[1][2]], `Equation 1 is ${eqn(A[0], vn, b[0])}. With z = t, the term with t changes sign when it crosses to the right. The third equation can be crossed out: it is a combination of the first two.`, two),
+        st('Solve these two equations for x and y in terms of t (elimination, or Cramer’s rule carrying t along):', [num(`${I('x')} =`, { w: 4 }), num('+', tf), num(`${I('y')} =`, { w: 4, br: true }), num('+', tf)], [x0, x1, y0, y1], `The determinant of the left-hand sides is ${H(D)}. x = Δ<sub>x</sub>/${P(D)}, with the right-hand sides put in the x-column; the same for y.`, `(${I('x')}, ${I('y')}, ${I('z')}) = (${terms([[x0, ''], [x1, I('t')]])}; &nbsp;${terms([[y0, ''], [y1, I('t')]])}; &nbsp;${I('t')}), ${I('t')} ∈ ℝ`)
+      ]
+    };
+  });
+
 reg('syskind', 5, 'System with a parameter k', 'Sistema su parametru k',
   'Compute the determinant as an expression in k. Where det ≠ 0 the system has exactly one solution. At the k that makes det = 0, compare the two equations: if one is a multiple of the other (right-hand sides included) there are infinitely many solutions, otherwise none.',
   () => {
@@ -299,7 +318,7 @@ reg('inv3', 5, 'Solve by the inverse-matrix method', 'Atvirkštinės matricos me
     const x = [ri(-3, 5), ri(-3, 5), ri(-3, 5)], b = A.map(r => r.reduce((s, c, j) => s + c * x[j], 0)), d = det(A), vn = ['x', 'y', 'z'];
     const C = A.map((r, i) => r.map((_, j) => ((i + j) % 2 ? -1 : 1) * det2(minorM(A, i, j)))), adj = T(C), ab = mmul(adj, b.map(v => [v]));
     return {
-      q: `Solve by the inverse-matrix method: ${sys(A.map((r, i) => eqn(r, vn, b[i])))} Here ${E('A', M(A))}, ${E('B', V(b))}.`,
+      q: `Solve by the inverse-matrix method: ${sys(A.map((r, i) => eqn(r, vn, b[i])))}<br>Here ${E('A', M(A))}, ${E('B', V(b))}.`,
       steps: [
         st('Determinant:', [num('det A =')], [d], 'Triangle rule.', `det A = ${detSol(A)}`),
         st('Matrix of cofactors (each entry: cross out its row and column, take the 2×2 determinant, apply the sign pattern + − + / − + − / + − +):', [mat(3, 3, `${I('C')} =`)], [C], `Example: ${sub('A', 11)} = +${D(minorM(A, 0, 0))}, ${sub('A', 12)} = −${D(minorM(A, 0, 1))}.`, E('C', M(C))),
