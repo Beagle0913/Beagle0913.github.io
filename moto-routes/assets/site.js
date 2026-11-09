@@ -26,7 +26,13 @@
     return n;
   }
 
-  function routeUrl(r) { return new URL(r.path, ROOT).href; }
+  // Route pages and their files must stay on this site; anything else falls back to the routes home page.
+  function onSite(href, base) {
+    try { var u = new URL(href, base); return u.origin === ROOT.origin ? u.href : ROOT.href; }
+    catch (e) { return ROOT.href; }
+  }
+
+  function routeUrl(r) { return onSite(r.path, ROOT); }
 
   function daysLabel(r) { return r.days === 1 ? '1 day' : r.days + ' days'; }
 
@@ -75,7 +81,7 @@
       slot.replaceChildren.apply(slot, files.map(function (f, k) {
         return el('a', {
           class: 'btn' + (k < files.length - 1 ? ' primary' : ''),
-          href: new URL(f.href, routeUrl(route)).href,
+          href: onSite(f.href, routeUrl(route)),
           download: '',
           text: 'Download ' + f.label
         });

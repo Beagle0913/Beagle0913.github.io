@@ -50,6 +50,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .app { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 20px; max-width: 1180px; margin: 0 auto; padding: 0 20px 48px; align-items: start; }
 .navtoggle { display: none; }
 #nav { display: flex; flex-direction: column; gap: 14px; }
+@media (min-width: 861px) {
+  /* the list of 54 exercise types scrolls on its own, so the problem sheet always stays in view */
+  #nav { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; overscroll-behavior: contain; padding: 2px 6px 12px 2px; scrollbar-width: thin; }
+}
 .mixes { display: grid; gap: 6px; }
 .navb { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; width: 100%; text-align: left; background: none; border: 1px solid transparent; border-radius: 6px; padding: 5px 9px; line-height: 1.3; }
 .navb:hover { background: color-mix(in srgb, var(--accent) 9%, transparent); }
@@ -69,6 +73,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .tag { font: 700 22px/1 var(--hand); color: var(--pen); }
 .phead h2 { font: 600 20px/1.25 var(--ui); margin: 0; text-wrap: balance; }
 .phead .lt { color: var(--ink2); font-size: 13px; }
+.phead .prog { margin-left: auto; color: var(--ink2); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.phead .skip { white-space: nowrap; }
 .method { margin: 8px 0 14px; border-left: 3px solid var(--pen); padding: 2px 0 2px 12px; max-width: 70ch; }
 .method summary { cursor: pointer; color: var(--pen); font-weight: 600; font-size: 14px; }
 .method p { margin: 6px 0 2px; font-size: 14.5px; }
@@ -127,6 +133,10 @@ input.in:disabled { border-color: transparent; background: transparent; opacity:
 .mx::after { right: 0; border-left: 0; }
 .mx.det::before, .mx.det::after { width: 0; border-top: 0; border-bottom: 0; }
 .mx.det::before { border-left: 0; }
+.mg.c1 { grid-template-columns: auto; }
+.mg.c2 { grid-template-columns: repeat(2, auto); }
+.mg.c3 { grid-template-columns: repeat(3, auto); }
+.mg.c4 { grid-template-columns: repeat(4, auto); }
 .mg { display: inline-grid; gap: .2em .85em; justify-items: center; align-items: center; }
 .mg > .hl { background: var(--hl); border-radius: 3px; padding: 0 .25em; margin: 0 -.25em; }
 .mx.inp { padding: .35em .6em; }

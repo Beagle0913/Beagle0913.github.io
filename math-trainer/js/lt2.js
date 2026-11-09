@@ -1,6 +1,6 @@
 /* ================= Lietuviška versija: 6–9 temos ================= */
 const NEGIML = 'Jei menamoji dalis neigiama, minusą rašykite antrajame langelyje (skaičiui 3 − 2i įveskite 3 ir -2).';
-const PHIL = 'Kampus rašykite 7pi/6, pi/4, pi ir pan.';
+const PHIL = 'Kampus rašykite taip: 7pi/6, pi/4, pi ir pan.';
 const quadL = m => m % 6 === 0 ? ['teigiamojoje realiojoje pusašėje', 'teigiamojoje menamojoje pusašėje', 'neigiamojoje realiojoje pusašėje', 'neigiamojoje menamojoje pusašėje'][m / 6] : ['I', 'II', 'III', 'IV'][Math.floor(m / 6)] + ' ketvirtyje';
 const rPhiL = z => `r = √(${H(Math.round(z.re.v * z.re.v))} + ${H(Math.round(z.im.v * z.im.v))}) = ${z.r.h}, taškas yra ${quadL(z.m)}, φ = ${z.phi.h}`;
 
@@ -30,7 +30,7 @@ regLT('cdiv', 'Kompleksinių skaičių dalyba',
       steps: [
         st(`Skaitiklį padauginkite iš vardiklio jungtinio skaičiaus: (${Z(a)})(${Z(cb)}) =`, ReIm(), t, '(a + bi)(c + di) = (ac − bd) + (ad + bc)i, nes i² = −1.', `(${Z(a)})(${Z(cb)}) = ${Z(t)}`),
         st(`Vardiklis tampa (${Z(b)})(${Z(cb)}) =`, [num('')], [dn], 'c² + d²', `${b[0]}² + ${Math.abs(b[1])}² = ${dn}`),
-        st('Padalykite abi dalis (galima rašyti trupmenas, pvz., 5/17):', ReIm(), r, `${Z(t)} padalyta iš ${dn}.`, `${big(Z(a), Z(b))} = ${cx(r[0], r[1])}`)
+        st('Padalykite abi dalis (galima rašyti trupmenas, pvz., 5/17):', ReIm(), r, `Padalykite ${Z(t)} iš ${dn}.`, `${big(Z(a), Z(b))} = ${cx(r[0], r[1])}`)
       ]
     };
   });
@@ -55,7 +55,7 @@ regLT('ctrig', 'Trigonometrinė forma',
     return {
       q: `Užrašykite kompleksinį skaičių ${I('z')} = ${cxSd(z.re, z.im)} trigonometrine forma ${I('r')}(cos φ + ${I('i')} sin φ), kai 0 ≤ φ &lt; 2π.`,
       steps: [
-        st('Modulis (šaknis galima rašyti 3sqrt(2)):', [num(`${I('r')} =`)], [z.r], `r = √(a² + b²) = √(${H(Math.round(z.re.v * z.re.v))} + ${H(Math.round(z.im.v * z.im.v))})`, `${I('r')} = ${z.r.h}`),
+        st('Modulis (šaknį galima rašyti taip: 3sqrt(2)):', [num(`${I('r')} =`)], [z.r], `r = √(a² + b²) = √(${H(Math.round(z.re.v * z.re.v))} + ${H(Math.round(z.im.v * z.im.v))})`, `${I('r')} = ${z.r.h}`),
         st(`Argumentas. ${PHIL}`, [num('φ =', { mod: 2 * PI })], [z.phi], `Taškas yra ${quadL(z.m)}. cos φ = ${sdH(cosE(z.m))}, sin φ = ${sdH(sinE(z.m))}.`, `${I('z')} = ${z.r.h}(cos ${z.phi.h} + ${I('i')} sin ${z.phi.h})`)
       ]
     };
@@ -88,7 +88,7 @@ regLT('croots', 'n-tojo laipsnio šaknys',
         st(`Skaičiaus ${wh} trigonometrinė forma. ${PHIL}`, [num('modulis ='), num('argumentas θ =', { mod: 2 * PI })], [aw, angM(mw)], 'Teigiamo realiojo skaičiaus argumentas lygus 0, neigiamo – π, teigiamo i kartotinio – π/2, neigiamo – 3π/2.', `${wh} = ${aw}(cos ${angM(mw).h} + ${I('i')} sin ${angM(mw).h})`),
         st('Šaknys:', [num('kiek yra šaknų?', { w: 3 }), num('kiekvienos šaknies modulis =')], [n, rho], `n-tojo laipsnio šaknų yra n, kiekvienos modulis lygus ⁿ√ρ.`, `Šaknų yra ${n}, kiekvienos modulis ${root(aw, n)} = ${rho}`),
         st('Jų argumentai:', [num(`pirmoji šaknis (${I('k')} = 0): φ<sub>0</sub> =`, { mod: 2 * PI }), num('kampas tarp gretimų šaknų =')], [angM(m0), angM(stepm)], 'Pirmoji: θ/n. Žingsnis: 2π/n.', `φ<sub>0</sub> = ${angM(m0).h}, toliau vis pridedame ${angM(stepm).h}: ${[...Array(n).keys()].map(k => angM(m0 + stepm * k).h).join(', ')}`),
-        st(`Šaknį, kai ${I('k')} = ${K} (argumentas ${angM(rk.m).h}), užrašykite pavidalu a + bi. Šaknis rašykite sqrt(3)/2. ${NEGIML}`, ReIm(), [rk.re, rk.im], `cos ${angM(rk.m).h} = ${sdH(cosE(rk.m))}, sin ${angM(rk.m).h} = ${sdH(sinE(rk.m))}; padauginkite iš modulio ${rho}.`, 'Visos šaknys: ' + [...Array(n).keys()].map(k => cxSd(rt(k).re, rt(k).im)).join('; &nbsp;'))
+        st(`Šaknį, kai ${I('k')} = ${K} (argumentas ${angM(rk.m).h}), užrašykite pavidalu a + bi. Šaknis rašykite taip: sqrt(3)/2. ${NEGIML}`, ReIm(), [rk.re, rk.im], `cos ${angM(rk.m).h} = ${sdH(cosE(rk.m))}, sin ${angM(rk.m).h} = ${sdH(sinE(rk.m))}; padauginkite iš modulio ${rho}.`, 'Visos šaknys: ' + [...Array(n).keys()].map(k => cxSd(rt(k).re, rt(k).im)).join('; &nbsp;'))
       ]
     };
   });
@@ -180,7 +180,8 @@ regLT('iseig', 'Ar k yra tikrinė reikšmė?',
 regLT('pdp', 'Diagonalizavimas: A = PDP⁻¹',
   'D – diagonalioji matrica su tikrinėmis reikšmėmis įstrižainėje. P stulpeliai yra tikriniai vektoriai, išdėstyti <b>ta pačia tvarka</b> kaip tikrinės reikšmės matricoje D. P<sup>−1</sup> – įprasta matricos P atvirkštinė 2×2 matrica. Tada A<sup>t</sup> = P·D<sup>t</sup>·P<sup>−1</sup>.',
   () => {
-    const e = eigA(), l = [e.l[1], e.l[0]], vs = l.map(v => eigvec2(e.A, v)), Dm = [[l[0], 0], [0, l[1]]], Pm = T(vs), Pi = inv2(Pm);
+    let e, l, vs, Pm; do { e = eigA(); l = [e.l[1], e.l[0]]; vs = l.map(v => eigvec2(e.A, v)); Pm = T(vs); } while (Math.abs(det2(Pm)) > 6);   // keeps P⁻¹ to simple fractions
+    const Dm = [[l[0], 0], [0, l[1]]], Pi = inv2(Pm);
     return {
       q: `Parodykite, kad ${I('A')} = ${I('PDP')}<sup>−1</sup>, kai ${I('P')} yra matrica, kurios stulpeliai yra matricos ${I('A')} tikriniai vektoriai, o ${I('D')} – diagonalioji matrica su atitinkamomis tikrinėmis reikšmėmis, kai ${E('A', M(e.A))}.`,
       steps: [
@@ -195,11 +196,14 @@ regLT('pdp', 'Diagonalizavimas: A = PDP⁻¹',
     };
   });
 
-regLT('closed', 'Rekurentinės lygties sprendinys n_t',
+regLT('closed', 'Rekurentinės lygties sprendinys n<sub>t</sub>',
   'n<sub>t</sub> = c<sub>1</sub>λ<sub>1</sub><sup>t</sup>v<sub>1</sub> + c<sub>2</sub>λ<sub>2</sub><sup>t</sup>v<sub>2</sub>. Raskite tikrines reikšmes ir tikrinius vektorius, tada c<sub>1</sub>, c<sub>2</sub> iš pradinės sąlygos: c<sub>1</sub>v<sub>1</sub> + c<sub>2</sub>v<sub>2</sub> = n<sub>0</sub> (dvi lygtys, du nežinomieji).',
   () => {
-    const e = eigA(), vs = e.l.map(l => eigvec2(e.A, l)), c = [nz(-2, 3), nz(-2, 3)], n0 = [0, 1].map(i => c[0] * vs[0][i] + c[1] * vs[1][i]), Tt = pick([2, 3]);
-    let nT = [[n0[0]], [n0[1]]]; for (let k = 0; k < Tt; k++) nT = mmul(e.A, nT);
+    let e, vs, c, n0, Tt, nT;
+    do {                      // keep the numbers small enough to work out by hand
+      e = eigA(); vs = e.l.map(l => eigvec2(e.A, l)); c = [nz(-2, 3), nz(-2, 3)]; n0 = [0, 1].map(i => c[0] * vs[0][i] + c[1] * vs[1][i]); Tt = pick([2, 3]);
+      nT = [[n0[0]], [n0[1]]]; for (let k = 0; k < Tt; k++) nT = mmul(e.A, nT);
+    } while (Math.max(Math.abs(nT[0][0]), Math.abs(nT[1][0])) > 300 || Math.max(...e.l.map(Math.abs)) > 5);
     const solveC = (v, w) => { const d = v[0] * w[1] - w[0] * v[1]; return [(n0[0] * w[1] - w[0] * n0[1]) / d, (v[0] * n0[1] - n0[0] * v[1]) / d]; };
     return {
       q: `Rekurentinei lygčiai ${I('n')}<sub>t+1</sub> = ${I('A')}${I('n')}<sub>t</sub>, kai ${E('A', M(e.A))} ir ${I('n')}<sub>0</sub> = ${V(n0)}, užrašykite jos sprendinį ${I('n')}<sub>t</sub> = ${sub('c', 1)}λ<sub>1</sub><sup>t</sup>${sub('v', 1)} + ${sub('c', 2)}λ<sub>2</sub><sup>t</sup>${sub('v', 2)}, pasinaudodami matricos ${I('A')} tikrinėmis reikšmėmis ir tikriniais vektoriais.`,
@@ -352,7 +356,7 @@ regLT('limroot', 'Šaknys, kai x → ∞',
       return {
         q: `Apskaičiuokite ribą ${lim('x', '+∞')} ${big(rt, `${e} ${d < 0 ? '−' : '+'} ${Math.abs(d) === 1 ? '' : Math.abs(d)}${I('x')}`)}.`,
         steps: [
-          st(`Kai ${I('x')} didelis, ${rt} elgiasi kaip:`, [num('', { after: `·${I('x')}`, w: 4 })], [a], '√(a²x²) = a·x, kai x teigiamas; konstanta po šaknimi nebeturi įtakos.', `${rt} ≈ ${root(`${a * a}${pw('x', 2)}`)} = ${a}${I('x')}`),
+          st(`Kai ${I('x')} reikšmės didelės, ${rt} elgiasi kaip:`, [num('', { after: `·${I('x')}`, w: 4 })], [a], '√(a²x²) = a·x, kai x teigiamas; konstanta po šaknimi nebeturi įtakos.', `${rt} ≈ ${root(`${a * a}${pw('x', 2)}`)} = ${a}${I('x')}`),
           st('Palyginkite vyriausiuosius narius:', [num('riba =', INF)], [ans], `${big(`${a}x`, `${d}x`)}`, `${big(`${a}${I('x')}`, `${H(d)}${I('x')}`)} → ${H(ans)}`)
         ]
       };
@@ -362,7 +366,7 @@ regLT('limroot', 'Šaknys, kai x → ∞',
       const ans = sq ? sq : { v: Math.sqrt(p / q), s: `sqrt(${new Q(p, q).str()})`, h: root(H(new Q(p, q))) };
       return {
         q: `Apskaičiuokite ribą ${lim('x', '+∞')} ${big(root(terms([[b, ''], [p, I('x')]])), root(terms([[q, I('x')], [-c, '']])))}.`,
-        steps: [st('Viską surašykite po viena šaknimi ir palyginkite vyriausiuosius narius. Šaknį rašykite sqrt(5/3).', [num('riba =', INF)], [ans], `${root(big(terms([[b, ''], [p, I('x')]]), terms([[q, I('x')], [-c, '']])))}; trupmena po šaknimi artėja prie ${H(new Q(p, q))}.`, `${root(H(new Q(p, q)))}${sq ? ' = ' + sq : ''}`)]
+        steps: [st('Viską surašykite po viena šaknimi ir palyginkite vyriausiuosius narius. Šaknį rašykite taip: sqrt(5/3).', [num('riba =', INF)], [ans], `${root(big(terms([[b, ''], [p, I('x')]]), terms([[q, I('x')], [-c, '']])))}; trupmena po šaknimi artėja prie ${H(new Q(p, q))}.`, `${root(H(new Q(p, q)))}${sq ? ' = ' + sq : ''}`)]
       };
     }
     const k = pick([2, 3]), m = pick([1, 2]), A0 = pick([1, 2, 3]), A = Math.pow(A0, k), B = nz(-3, 4), C = ri(1, 3), dd = ri(1, 5);
@@ -371,7 +375,7 @@ regLT('limroot', 'Šaknys, kai x → ∞',
     return {
       q: `Apskaičiuokite ribą ${lim('x', '+∞')} ${big(`${numRoot} ${B < 0 ? '−' : '+'} ${Math.abs(B) === 1 ? '' : Math.abs(B)}${xm}${m === 2 ? ` − 2${I('x')}` : ''}`, `${denRoot} + ${dd}`)}.`,
       steps: [
-        st(`Šaknų elgesys, kai ${I('x')} didelis:`, [num(`${numRoot} ≈`, { after: `·${xm}`, w: 4 }), num(`${denRoot} ≈`, { after: `·${xm}`, w: 4 })], [A0, C], `Po kiekviena šaknimi palikite tik aukščiausią laipsnį: ${root(`${A}${pw('x', k * m)}`, k === 3 ? 3 : '')} ir ${root(`${C * C}${pw('x', 2 * m)}`)}.`, `${numRoot} ≈ ${A0}${xm}, &nbsp; ${denRoot} ≈ ${C}${xm}`),
+        st(`Šaknų elgesys, kai ${I('x')} reikšmės didelės:`, [num(`${numRoot} ≈`, { after: `·${xm}`, w: 4 }), num(`${denRoot} ≈`, { after: `·${xm}`, w: 4 })], [A0, C], `Po kiekviena šaknimi palikite tik aukščiausią laipsnį: ${root(`${A}${pw('x', k * m)}`, k === 3 ? 3 : '')} ir ${root(`${C * C}${pw('x', 2 * m)}`)}.`, `${numRoot} ≈ ${A0}${xm}, &nbsp; ${denRoot} ≈ ${C}${xm}`),
         st(`Palyginkite ${xm} koeficientus skaitiklyje ir vardiklyje:`, [num('riba =', INF)], [ans], `Skaitiklis: (${A0} ${B < 0 ? '−' : '+'} ${Math.abs(B)})${xm}. Vardiklis: ${C}${xm}.`, `${big(`${A0} ${B < 0 ? '−' : '+'} ${Math.abs(B)}`, C)} = ${H(ans)}`)
       ]
     };

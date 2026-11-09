@@ -7,7 +7,7 @@
   const STR = {
     lt: {
       brand: 'GMC matematikos <b>pratybų</b> treniruoklis', reset: 'Ištrinti pažangą', reset2: 'Spustelėkite dar kartą, kad ištrintumėte', choose: 'Pasirinkite uždavinio tipą', nav: 'Uždavinių tipai',
-      mix1: '1 KD mišinys', mix1s: '1–8 temos', mix2: 'Ribų mišinys', mix2s: '9 tema', mix: 'mišinys', solved: 'išspręsta be pagalbos', streak: 'iš eilės',
+      mix1: 'Mišrūs uždaviniai (1 KD)', mix1s: '1–8 temos', mix2: 'Mišrūs uždaviniai (ribos)', mix2s: '9 tema', mix: 'mišrūs', title: 'GMC matematikos treniruoklis', skip: 'Praleisti šį uždavinį', stepOf: (k, n) => `${k} žingsnis iš ${n}`, solved: 'išspręsta be pagalbos', streak: 'iš eilės',
       topic: n => `${n} tema`, method: 'Kaip spręsti šio tipo uždavinius', check: 'Tikrinti', hint: 'Užuomina', show: 'Rodyti atsakymą', solL: 'Sprendimas', nohint: 'Šiam žingsniui užuominos nėra.',
       fill: 'Pirmiausia užpildykite visus langelius.', cant: v => `Nepavyko perskaityti „${v}“. Rašykite skaičius, trupmenas (3/4), sqrt(3), pi arba inf.`, pickopt: 'Pirmiausia pasirinkite atsakymą.',
       near: 'Labai arti. Įveskite tikslią reikšmę, pavyzdžiui, trupmeną 2/3.', notthat: 'Ne. Bandykite dar kartą.', notyet: 'Dar ne. Pažymėti langeliai neteisingi.',
@@ -16,7 +16,7 @@
     },
     en: {
       brand: 'GMC math <b>pratybos</b> trainer', reset: 'Reset progress', reset2: 'Click again to erase progress', choose: 'Choose exercise type', nav: 'Exercise types',
-      mix1: 'Test 1 mix', mix1s: 'topics 1–8', mix2: 'Limits mix', mix2s: 'topic 9', mix: 'mix', solved: 'solved without help', streak: 'streak',
+      mix1: 'Test 1 mix', mix1s: 'topics 1–8', mix2: 'Limits mix', mix2s: 'topic 9', mix: 'mix', title: 'GMC Math Trainer', skip: 'Skip this problem', stepOf: (k, n) => `Step ${k} of ${n}`, solved: 'solved without help', streak: 'streak',
       topic: n => `Topic ${n}`, method: 'How to solve this type', check: 'Check', hint: 'Hint', show: 'Show answer', solL: 'Worked', nohint: 'No hint for this step.',
       fill: 'Fill in every box first.', cant: v => `I can’t read “${v}”. Use numbers, fractions like 3/4, sqrt(3), pi or inf.`, pickopt: 'Pick an option first.',
       near: 'Very close. Give the exact value, for example a fraction like 2/3.', notthat: 'Not that. Try again.', notyet: 'Not yet. The marked boxes are wrong.',
@@ -26,7 +26,9 @@
   };
   const KEY = 'gmc-math-trainer-v1', LKEY = 'gmc-math-trainer-lang';
   let stats = { clean: {}, helped: {}, streak: 0 }, lang = 'lt';
-  try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.clean) stats = Object.assign(stats, s); const l = localStorage.getItem(LKEY); if (l === 'en' || l === 'lt') lang = l; } catch (e) { /* storage unavailable */ }
+  const count = x => (typeof x === 'number' && isFinite(x) && x >= 0) ? Math.min(Math.floor(x), 1e6) : 0;
+  const cleanMap = m => { const o = {}; if (m && typeof m === 'object') for (const t of TYPES) { const c = count(m[t.id]); if (c) o[t.id] = c; } return o; };
+  try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && typeof s === 'object') stats = { clean: cleanMap(s.clean), helped: cleanMap(s.helped), streak: count(s.streak) }; const l = localStorage.getItem(LKEY); if (l === 'en' || l === 'lt') lang = l; } catch (e) { /* storage unavailable or corrupted: start fresh */ }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(stats)); localStorage.setItem(LKEY, lang); } catch (e) { /* ignore */ } };
   let S_ = STR[lang];
   const tName = t => lang === 'lt' ? t.L.name : t.name, tOther = t => lang === 'lt' ? t.name : t.L.name;
@@ -38,7 +40,7 @@
   let cur = null, lastId = null, interacted = false;
 
   function applyLang() {
-    S_ = STR[lang]; document.documentElement.lang = lang;
+    S_ = STR[lang]; document.documentElement.lang = lang; document.title = S_.title;
     $('#brand').innerHTML = S_.brand; $('#reset').textContent = S_.reset; $('#navtoggle span').textContent = S_.choose; $('#nav').setAttribute('aria-label', S_.nav); $('#keys').innerHTML = S_.keys;
     $('#langs').setAttribute('aria-label', S_.lang);
     document.querySelectorAll('#langs button').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false'));
@@ -66,6 +68,7 @@
       }
       nav.append(box);
     }
+    const curBtn = nav.querySelector('[aria-current="true"]'); if (curBtn && nav.scrollHeight > nav.clientHeight) { const top = curBtn.offsetTop - nav.offsetTop; if (top < nav.scrollTop || top > nav.scrollTop + nav.clientHeight - 60) nav.scrollTop = Math.max(0, top - nav.clientHeight / 3); }
     const total = Object.values(stats.clean).reduce((a, b) => a + b, 0);
     $('#tally').innerHTML = `<span><strong>${total}</strong> ${S_.solved}</span><span>${S_.streak} <strong>${stats.streak}</strong></span>`;
   }
@@ -87,9 +90,12 @@
   }
   function newProblem() {
     const type = pickType(); lastId = type.id;
-    cur = { type, prob: (lang === 'lt' ? type.L.gen : type.gen)(), ctx: {}, k: 0, helped: false };
+    const gen = lang === 'lt' ? type.L.gen : type.gen; let prob = gen();
+    for (let tries = 0; tries < 25 && !selfCheck(prob); tries++) prob = gen();
+    cur = { type, prob, ctx: {}, k: 0, helped: false };
     const topic = TOPICS.find(t => t.n === type.topic), sheet = $('#sheet'); sheet.innerHTML = '';
-    const head = el('div', 'phead', `<span class="tag">${S_.topic(topic.n)}</span><h2>${tName(type)}</h2><span class="lt">${tOther(type)}</span>`);
+    const head = el('div', 'phead', `<span class="tag">${S_.topic(topic.n)}</span><h2>${tName(type)}</h2><span class="lt">${tOther(type)}</span><span class="prog" id="prog"></span>`);
+    const skip = el('button', 'linkb skip', S_.skip); skip.type = 'button'; skip.addEventListener('click', () => { interacted = true; newProblem(); }); head.append(skip);
     const method = el('details', 'method', `<summary>${S_.method}</summary><p>${lang === 'lt' ? type.L.method : type.method}</p>`);
     const stmt = el('div', 'stmt math', dotfix(cur.prob.q));
     const steps = el('ol', 'steps'); steps.id = 'steps';
@@ -107,7 +113,7 @@
       wrap.append(i, el('span', 'aft', f.after || ''));
       if (f.inf) for (const [t, v] of [['+∞', 'inf'], ['−∞', '-inf']]) { const c = el('button', 'chip', t); c.type = 'button'; c.setAttribute('aria-label', S_.enter(t)); c.addEventListener('click', () => { i.value = v; i.focus(); }); wrap.append(c); }
     } else if (f.k === 'mat') {
-      const mx = el('span', 'mx inp'), g = el('span', 'mg'); g.style.gridTemplateColumns = `repeat(${f.c},auto)`;
+      const mx = el('span', 'mx inp'), g = el('span', 'mg c' + f.c);
       for (let a = 0; a < f.r; a++) for (let b = 0; b < f.c; b++) { const i = el('input', 'in'); i.type = 'text'; i.id = `${id}r${a}c${b}`; i.autocomplete = 'off'; i.spellcheck = false; i.setAttribute('autocapitalize', 'off'); i.setAttribute('aria-label', `${plain} ${S_.row} ${a + 1} ${S_.col} ${b + 1}`); i.style.setProperty('--w', 4); i.dataset.r = a; i.dataset.c = b; g.append(i); }
       mx.append(g); wrap.append(mx); wrap.style.whiteSpace = 'normal';
     } else {
@@ -147,6 +153,7 @@
   }
   function drawStep() {
     const step = cur.prob.steps[cur.k], k = cur.k, li = el('li', 'step active');
+    $('#prog').textContent = S_.stepOf(k + 1, cur.prob.steps.length);
     const body = el('div', 'math');
     body.append(el('div', 'sq', fn(step.q, cur.ctx)));
     const fields = el('div', 'fields'); step.fields.forEach((f, fi) => { if (f.br) fields.append(el('span', 'brk')); fields.append(fieldDom(f, k, fi)); }); body.append(fields);
@@ -186,7 +193,14 @@
     bCheck.addEventListener('click', check);
     bHint.addEventListener('click', showHint);
     bShow.addEventListener('click', () => { interacted = true; cur.helped = true; fill(step, li, step.ansFn ? step.ansFn(cur.ctx) : step.ans); lock('shown'); });
-    li.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches('input')) { e.preventDefault(); check(); } });
+    li.addEventListener('keydown', e => {
+      const t = e.target; if (!t.matches('input')) return;
+      if (e.key === 'Enter') { e.preventDefault(); check(); return; }
+      if (t.dataset.r === undefined || e.altKey || e.ctrlKey || e.metaKey) return;
+      const r = +t.dataset.r, c = +t.dataset.c, atStart = t.selectionStart === 0 && t.selectionEnd === 0, atEnd = t.selectionStart === t.value.length;
+      const to = e.key === 'ArrowUp' ? [r - 1, c] : e.key === 'ArrowDown' ? [r + 1, c] : (e.key === 'ArrowLeft' && atStart) ? [r, c - 1] : (e.key === 'ArrowRight' && atEnd) ? [r, c + 1] : null;
+      if (!to) return; const nx = t.closest('.mg').querySelector(`input[data-r="${to[0]}"][data-c="${to[1]}"]`); if (nx) { e.preventDefault(); nx.focus(); nx.select(); }
+    });
     li.addEventListener('input', e => { e.target.classList.remove('bad'); });
     if (step.fields.length === 1 && step.fields[0].k === 'choice') { bCheck.hidden = true; li.addEventListener('picked', check); }
     if (interacted) { const first = li.querySelector('input:not(:disabled), .opt'); if (first) first.focus({ preventScroll: true }); li.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
@@ -199,6 +213,7 @@
     f.append(el('span', 'verdict' + (cur.helped ? ' help' : ''), cur.helped ? S_.doneHelp : S_.done));
     const next = el('button', 'btn primary', mode.kind === 'type' ? S_.another : S_.next); next.type = 'button'; next.dataset.act = 'next'; next.addEventListener('click', () => { interacted = true; newProblem(); }); f.append(next);
     if (mode.kind === 'mix') { const again = el('button', 'btn', S_.repeat); again.type = 'button'; again.addEventListener('click', () => { interacted = true; const keep = mode; mode = { kind: 'type', id, label: keep.label }; newProblem(); mode = keep; drawNav(); }); f.append(again); }
+    $('#prog').textContent = ''; const sk = $('#sheet .skip'); if (sk) sk.remove();
     $('#sheet').append(f); next.focus({ preventScroll: true }); f.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
   applyLang(); newProblem();

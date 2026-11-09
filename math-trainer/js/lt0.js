@@ -1,5 +1,5 @@
 /* ================= Lietuviška versija: 1–2 temos ================= */
-const ROOTSL = 'Šaknis galima rašyti sqrt(74).';
+const ROOTSL = 'Šaknį galima rašyti taip: sqrt(74).';
 
 regLT('closest', 'Taškai ir koordinačių plokštumos',
   'xy plokštuma yra z = 0, xz plokštuma – y = 0, yz plokštuma – x = 0. Atstumas nuo taško iki koordinačių plokštumos lygus tos koordinatės, kurios <b>nėra</b> plokštumos pavadinime, moduliui.',
@@ -115,7 +115,7 @@ regLT('dot', 'Skaliarinė sandauga',
       const a = [nz(-4, 5), ri(-3, 4), ri(-3, 4)], b = [ri(-3, 4), nz(-4, 5), ri(-3, 4)], ijk = v => terms(v.map((x, i) => [x, Bv('ijk'[i])]));
       return { q: `Apskaičiuokite ${Bv('a')}·${Bv('b')}, kai ${Bv('a')} = ${ijk(a)}, ${Bv('b')} = ${ijk(b)}.`, steps: [st('', [num(`${Bv('a')}·${Bv('b')} =`)], [dotv(a, b)], `Komponentėmis: ${Bv('a')} = ${rv(a)}, ${Bv('b')} = ${rv(b)}.`, `${dots(a, b)} = ${H(dotv(a, b))}`)] };
     }
-    const d = pick([2, 3, 4]), a = [nz(-5, 6), nz(-5, 6), new Q(pick([1, -1, 3]), d)], b = [nz(-6, 7), nz(-6, 7), d * nz(-3, 3)], r = a[0] * b[0] + a[1] * b[1] + a[2].n * b[2] / d;
+    const d = pick([2, 3, 4]), a = [nz(-5, 6), nz(-5, 6), new Q(pick([1, -1, 3]), d)], b = [nz(-6, 7), nz(-6, 7), d * nz(-3, 3)], r = a[0] * b[0] + a[1] * b[1] + a[2].n * b[2] / a[2].d;
     return { q: `Apskaičiuokite ${Bv('a')}·${Bv('b')}, kai ${Bv('a')} = ${rv(a)}, ${Bv('b')} = ${rv(b)}.`, steps: [st('', [num(`${Bv('a')}·${Bv('b')} =`)], [r], 'Padauginkite pirmą komponentę iš pirmos, antrą iš antros, trečią iš trečios ir sudėkite.', `${dots(a, b)} = ${H(r)}`)] };
   });
 
@@ -123,9 +123,9 @@ regLT('meaning', 'Kurios išraiškos turi prasmę?',
   'Taškas · žymi skaliarinę sandaugą: abiejose pusėse turi būti vektoriai, o rezultatas – skaičius. Skaičių galima dauginti iš vektoriaus (be taško), tačiau skaičiaus negalima nei sudėti su vektoriumi, nei skaliariškai iš jo dauginti. Eikite iš vidaus į išorę ir kiekvieną dalį pažymėkite „skaičius“ arba „vektorius“.',
   () => {
     const a = Bv('a'), b = Bv('b'), c = Bv('c'), bank = [
-      [`(${a}·${b})·${c}`, false, 'a·b yra skaičius; skaičiaus negalima skaliariškai dauginti iš c'], [`(${a}·${b})${c}`, true, 'skaičius kart vektorius'], [`|${a}|(${b}·${c})`, true, 'skaičius kart skaičius'],
+      [`(${a}·${b})·${c}`, false, 'a·b yra skaičius; skaičiaus negalima skaliariškai dauginti iš c'], [`(${a}·${b})${c}`, true, 'skaičiaus ir vektoriaus sandauga'], [`|${a}|(${b}·${c})`, true, 'dviejų skaičių sandauga'],
       [`${a}·(${b} + ${c})`, true, 'vektoriaus ir vektoriaus skaliarinė sandauga'], [`${a}·${b} + ${c}`, false, 'skaičiaus ir vektoriaus suma neapibrėžta'], [`|${a}|·(${b} + ${c})`, false, '|a| yra skaičius; jo negalima skaliariškai dauginti iš vektoriaus'],
-      [`${a}·${b} + |${c}|`, true, 'skaičius plius skaičius'], [`(${a} + ${b})·${c}`, true, 'vektoriaus ir vektoriaus skaliarinė sandauga'], [`${a} + ${b}·${c}`, false, 'vektoriaus ir skaičiaus suma neapibrėžta'], [`(${a}·${b})(${a}·${c})`, true, 'skaičius kart skaičius']];
+      [`${a}·${b} + |${c}|`, true, 'dviejų skaičių suma'], [`(${a} + ${b})·${c}`, true, 'vektoriaus ir vektoriaus skaliarinė sandauga'], [`${a} + ${b}·${c}`, false, 'vektoriaus ir skaičiaus suma neapibrėžta'], [`(${a}·${b})(${a}·${c})`, true, 'dviejų skaičių sandauga']];
     let qs; do { qs = shuffle(bank).slice(0, 6); } while (qs.every(x => x[1]) || !qs.some(x => x[1]));
     return {
       q: `Paaiškinkite, kurios iš pateiktų išraiškų turi prasmę, o kurios – ne. Čia ${a}, ${b}, ${c} – vektoriai, o · žymi skaliarinę sandaugą.`,
@@ -168,7 +168,7 @@ regLT('proj', 'Vektoriaus projekcija ir projekcijos vektorius',
       steps: [
         st('Skaliarinė sandauga:', [num(`${Bv('a')}·${Bv('b')} =`)], [d], 'Sudauginkite atitinkamas komponentes ir sudėkite.', `${dots(a, b)} = ${H(d)}`),
         st(`Vektoriaus ${Bv('a')} ilgis. ${ROOTSL}`, [num(`|${Bv('a')}| =`)], [rt2(s)], 'Šaknis iš kvadratų sumos.', `√(${sqs(a)}) = ${H(rt2(s))}`),
-        st('Projekcija (jei reikia, rašykite 1/sqrt(21)):', [num(`comp<sub>${Bv('a')}</sub>${Bv('b')} =`)], [overRt(d, s)], '(a·b)/|a|', `${FR(H(d), H(rt2(s)))}${Number.isInteger(Math.sqrt(s)) ? ' = ' + H(new Q(d, Math.sqrt(s))) : ''}`),
+        st('Projekcija (jei reikia, rašykite taip: 1/sqrt(21)):', [num(`comp<sub>${Bv('a')}</sub>${Bv('b')} =`)], [overRt(d, s)], '(a·b)/|a|', `${FR(H(d), H(rt2(s)))}${Number.isInteger(Math.sqrt(s)) ? ' = ' + H(new Q(d, Math.sqrt(s))) : ''}`),
         st('Projekcijos vektorius (galima rašyti trupmenas, pvz., 9/5):', [mat(1, n, `proj<sub>${Bv('a')}</sub>${Bv('b')} =`)], [[pr]], `Padauginkite ${Bv('a')} iš (a·b)/|a|² = ${H(d)}/${s}.`, `${H(new Q(d, s))}·${rv(a)} = ${rv(pr)}`)
       ]
     };
@@ -185,7 +185,7 @@ regLT('angle', 'Kampas tarp vektorių',
       steps: [
         st('Skaliarinė sandauga:', [num(`${Bv('a')}·${Bv('b')} =`)], [d], 'Sudauginkite atitinkamas komponentes ir sudėkite.', `${dots(a, b)} = ${H(d)}`),
         st(`Ilgiai. ${ROOTSL}`, [num(`|${Bv('a')}| =`), num(`|${Bv('b')}| =`)], [rt2(pa), rt2(pb)], 'Šaknis iš kvadratų sumos.', `|${Bv('a')}| = ${H(rt2(pa))}, |${Bv('b')}| = ${H(rt2(pb))}`),
-        st('Kampo kosinusas (jei reikia, rašykite 3/sqrt(50)):', [num('cos θ =')], [overRt(d, pa * pb)], '(a·b)/(|a|·|b|). Dviejų šaknų sandauga lygi šakniai iš sandaugos.', `cos θ = ${FR(H(d), `√${pa}·√${pb}`)} = ${H(overRt(d, pa * pb))}`),
+        st('Kampo kosinusas (jei reikia, rašykite taip: 3/sqrt(50)):', [num('cos θ =')], [overRt(d, pa * pb)], '(a·b)/(|a|·|b|). Dviejų šaknų sandauga lygi šakniai iš sandaugos.', `cos θ = ${FR(H(d), `√${pa}·√${pb}`)} = ${H(overRt(d, pa * pb))}`),
         st('Taigi kampas yra:', [choice(['Smailusis (mažesnis nei 90°)', 'Statusis (kryptys statmenos)', 'Bukasis (didesnis nei 90°)'])], [d > 0 ? 0 : d === 0 ? 1 : 2], 'Žiūrėkite į cos θ ženklą.', d === 0 ? 'cos θ = 0 ⇒ θ = π/2, kryptys yra statmenos.' : d > 0 ? 'cos θ > 0, todėl kampas smailusis.' : 'cos θ < 0, todėl kampas bukasis.')
       ]
     };
