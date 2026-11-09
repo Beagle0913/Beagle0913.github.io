@@ -24,7 +24,17 @@
     return n;
   }
 
-  function projectUrl(p) { return new URL(p.path, ROOT).href; }
+  // A project's address must stay on this site; anything else falls back to the home page.
+  function projectUrl(p) {
+    try { var u = new URL(p.path, ROOT); return u.origin === ROOT.origin ? u.href : ROOT.href; }
+    catch (e) { return ROOT.href; }
+  }
+
+  // Keep only well-formed entries, so a typo in projects.json cannot break the bar or the list.
+  function valid(p) {
+    return p && typeof p.id === 'string' && typeof p.name === 'string' && typeof p.path === 'string' &&
+      /^[a-z0-9-]+$/.test(p.id);
+  }
 
   /* ---------- project bar on a project page ---------- */
   function renderBar(projects, currentId) {
@@ -90,7 +100,7 @@
         return res.json();
       })
       .then(function (data) {
-        var projects = data.projects || [];
+        var projects = (Array.isArray(data.projects) ? data.projects : []).filter(valid);
         var currentId = document.body.dataset.project;
         if (currentId) renderBar(projects, currentId);
         renderList(projects);

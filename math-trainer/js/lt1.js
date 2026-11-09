@@ -26,8 +26,8 @@ regLT('matmul', 'Matricų daugyba',
     return {
       q: `Tegul ${E('A', M(A))} ir ${E('B', M(B))}. Apskaičiuokite ${I('AB')}.`,
       steps: [
-        st(`Kokių matmenų yra ${I('AB')}?`, [num('', { after: 'eil.', w: 3 }), num('×', { after: 'stulp.', w: 3 })], [m, p], `A yra ${m}×${n}, B yra ${n}×${p}. Vidiniai skaičiai sutampa (${n} = ${n}); išoriniai skaičiai nusako rezultato matmenis.`, `${m}×${n} kart ${n}×${p} duoda ${m}×${p}.`),
-        st(`Užpildykite sandaugą:`, [mat(m, p, `${I('AB')} =`)], [R], 'Elementas (i, j): imkite A i-ąją eilutę ir B j-ąjį stulpelį, sudauginkite atitinkamus elementus ir sudėkite.', `${M(W)} = ${M(R)}`)
+        st(`Kokių matmenų yra ${I('AB')}?`, [num('', { after: 'eil.', w: 3 }), num('×', { after: 'stulp.', w: 3 })], [m, p], `A yra ${m}×${n}, B yra ${n}×${p}. Vidiniai skaičiai sutampa (${n} = ${n}); išoriniai skaičiai nusako rezultato matmenis.`, `(${m}×${n})·(${n}×${p}) → ${m}×${p}.`),
+        st(`Apskaičiuokite sandaugą:`, [mat(m, p, `${I('AB')} =`)], [R], 'Elementas (i, j): imkite A i-ąją eilutę ir B j-ąjį stulpelį, sudauginkite atitinkamus elementus ir sudėkite.', `${M(W)} = ${M(R)}`)
       ]
     };
   });
@@ -48,7 +48,7 @@ regLT('possible', 'Ar įmanoma sudauginti?',
       steps: [
         st('Pažymėkite visas sandaugas, kurias įmanoma apskaičiuoti:', [checks(pairs.map(([i, j]) => I(N[i] + N[j])))], [ok], `Matmenys: ${sh.map((s, i) => `${N[i]} yra ${s[0]}×${s[1]}`).join(', ')}. XY įmanoma, kai X stulpelių skaičius = Y eilučių skaičiui.`,
           pairs.map(([i, j], k) => `${I(N[i] + N[j])}: (${sh[i][0]}×<b>${sh[i][1]}</b>)(<b>${sh[j][0]}</b>×${sh[j][1]}) ${ok[k] ? '✓' : '✗'}`).join(' &nbsp;·&nbsp; ')),
-        st(`Kokių matmenų yra ${I(N[gi] + N[gj])}?`, [num('', { after: 'eil.', w: 3 }), num('×', { after: 'stulp.', w: 3 })], [sh[gi][0], sh[gj][1]], 'Pirmosios matricos eilučių skaičius × antrosios matricos stulpelių skaičius.', `(${sh[gi][0]}×${sh[gi][1]})(${sh[gj][0]}×${sh[gj][1]}) duoda ${sh[gi][0]}×${sh[gj][1]}.`)
+        st(`Kokių matmenų yra ${I(N[gi] + N[gj])}?`, [num('', { after: 'eil.', w: 3 }), num('×', { after: 'stulp.', w: 3 })], [sh[gi][0], sh[gj][1]], 'Pirmosios matricos eilučių skaičius × antrosios matricos stulpelių skaičius.', `(${sh[gi][0]}×${sh[gi][1]})(${sh[gj][0]}×${sh[gj][1]}) → ${sh[gi][0]}×${sh[gj][1]}.`)
       ]
     };
   });
@@ -61,7 +61,7 @@ regLT('det2', 'Determinantas 2×2',
   });
 
 regLT('det3', 'Determinantas 3×3 (trikampių taisyklė)',
-  'Trikampių (Sarrus) taisyklė: aei + bfg + cdh (trys sandaugos pagrindinės įstrižainės kryptimi) minus ceg + afh + bdi (trys sandaugos šalutinės įstrižainės kryptimi).',
+  'Trikampių (Sariuso) taisyklė: aei + bfg + cdh (trys sandaugos pagrindinės įstrižainės kryptimi) minus ceg + afh + bdi (trys sandaugos šalutinės įstrižainės kryptimi).',
   () => {
     const A = rm(3, 3, -3, 6), s = sarrus(A), p = s.pos.reduce((x, y) => x + y), n = s.neg.reduce((x, y) => x + y);
     return {
@@ -103,7 +103,8 @@ regLT('rec2mat', 'Rekurentinės lygtys → matrica',
 regLT('iterate', 'Vektorių dinamika: n₁ ir n₂',
   'n<sub>1</sub> = A·n<sub>0</sub>, tada n<sub>2</sub> = A·n<sub>1</sub>. Kiekvienas žingsnis – viena matricos ir vektoriaus sandauga.',
   () => {
-    const A = rm(2, 2, -1, 3), n0 = [[ri(1, 5)], [ri(1, 5)]], n1 = mmul(A, n0), n2v = mmul(A, n1);
+    let A; do { A = rm(2, 2, -1, 3); } while (!det2(A));
+    const n0 = [[ri(1, 5)], [ri(1, 5)]], n1 = mmul(A, n0), n2v = mmul(A, n1);
     const w = (A, v) => M(A.map(r => [r.map((x, k) => `${P(x)}·${P(v[k][0])}`).join(' + ')]));
     return {
       q: `Tegul ${I('n')}<sub>t+1</sub> = ${I('A')}${I('n')}<sub>t</sub>, kai ${E('A', M(A))} ir ${I('n')}<sub>0</sub> = ${M(n0)}.`,
@@ -122,7 +123,7 @@ regLT('inverse2', 'Atvirkštinė matrica 2×2', INV2L,
       steps: [
         st('Determinantas:', [num('det A =')], [d], 'ad − bc', `${d2s(A)} = ${H(d)}`),
         st('Pagrindinės įstrižainės elementus sukeiskite vietomis, kitų dviejų pakeiskite ženklą:', [mat(2, 2, '')], [ad], 'Iš [a, b; c, d] gaunama [d, −b; −c, a].', M(ad)),
-        st('Kiekvieną elementą padalykite iš determinanto (trupmenas rašykite 3/4):', [mat(2, 2, `${I('A')}<sup>−1</sup> =`)], [inv], `Kiekvienas ankstesnės matricos elementas dalijamas iš ${H(d)}.`, `${I('A')}<sup>−1</sup> = ${FR(1, P(d))}·${M(ad)} = ${M(inv)}`)
+        st('Kiekvieną elementą padalykite iš determinanto (trupmenas rašykite taip: 3/4):', [mat(2, 2, `${I('A')}<sup>−1</sup> =`)], [inv], `Kiekvienas ankstesnės matricos elementas dalijamas iš ${H(d)}.`, `${I('A')}<sup>−1</sup> = ${FR(1, P(d))}·${M(ad)} = ${M(inv)}`)
       ]
     };
   });
@@ -136,7 +137,7 @@ regLT('isinverse', 'Ar matricos viena kitai atvirkštinės?',
     return {
       q: `Nustatykite, ar matricos ${E('A', M(A))} ir ${E('B', M(B))} yra viena kitai atvirkštinės.`,
       steps: [
-        st('Sudauginkite:', [mat(2, 2, `${I('AB')} =`)], [AB], 'A eilutė kart B stulpelis. Trupmenas rašykite 7/3.', `${I('AB')} = ${M(AB)}`),
+        st('Sudauginkite:', [mat(2, 2, `${I('AB')} =`)], [AB], 'A eilutę dauginkite iš B stulpelio. Trupmenas rašykite taip: 7/3.', `${I('AB')} = ${M(AB)}`),
         st('Ar A ir B yra viena kitai atvirkštinės?', [choice(['Taip', 'Ne'])], [yes ? 0 : 1], 'Palyginkite AB su vienetine matrica.', yes ? 'AB yra vienetinė matrica, todėl taip.' : 'AB nėra vienetinė matrica, todėl ne.')
       ]
     };
@@ -184,7 +185,7 @@ regLT('minor', 'Minoras ir adjunktas',
   });
 
 regLT('det4', 'Determinantas 4×4 (skleidimas)',
-  'Pasirinkite eilutę arba stulpelį, kuriame daugiausia nulių. det = (elementas × jo adjunktas) suma toje eilutėje ar stulpelyje. Nuliai nieko neprideda, todėl 3×3 determinantų reikia tik nenuliniams elementams. Adjunkto ženklas: (−1)<sup>i+j</sup>.',
+  'Pasirinkite eilutę arba stulpelį, kuriame daugiausia nulių. Determinantas lygus tos eilutės (ar stulpelio) elementų ir jų adjunktų sandaugų sumai. Nuliai nieko neprideda, todėl 3×3 determinantų reikia tik nenuliniams elementams. Adjunkto ženklas: (−1)<sup>i+j</sup>.',
   () => {
     let A = rm(4, 4, -2, 4).map(r => r.map(x => Math.random() < 0.2 ? 0 : x)); const c = ri(0, 3), rows = shuffle([0, 1, 2, 3]).slice(0, 2).sort();
     for (let i = 0; i < 4; i++) A[i][c] = rows.includes(i) ? nz(-3, 5) : 0;
@@ -195,13 +196,13 @@ regLT('det4', 'Determinantas 4×4 (skleidimas)',
     return {
       q: `Apskaičiuokite determinantą ${D(sh, { hl: (i, j) => (asRow ? i : j) === c })} skleisdami pagal ${c + 1} ${asRow ? 'eilutę' : 'stulpelį'} (ten yra du nuliai).`,
       steps: [stepC(0), stepC(1),
-      st('Sudėkite: kiekvienas elementas, padaugintas iš savo adjunkto.', [num('det =')], [d], `${P(ent[0])}·${sub('A', idx(rows[0]))} + ${P(ent[1])}·${sub('A', idx(rows[1]))}`, `${P(ent[0])}·${P(cof[0])} + ${P(ent[1])}·${P(cof[1])} = ${H(d)}`)]
+      st('Kiekvieną elementą padauginkite iš jo adjunkto ir sudėkite:', [num('det =')], [d], `${P(ent[0])}·${sub('A', idx(rows[0]))} + ${P(ent[1])}·${sub('A', idx(rows[1]))}`, `${P(ent[0])}·${P(cof[0])} + ${P(ent[1])}·${P(cof[1])} = ${H(d)}`)]
     };
   });
 
 regLT('cramer2', 'Kramerio metodas, 2 nežinomieji', CRAMERL,
   () => {
-    let A; do { A = rm(2, 2, -5, 6); } while (!det2(A) || Math.abs(det2(A)) > 30 || A.flat().some(x => !x));
+    let A; do { A = rm(2, 2, -5, 6); } while (!det2(A) || Math.abs(det2(A)) > 12 || A.flat().some(x => !x));
     const b = [nz(-9, 9), ri(-9, 9)], d = det2(A), A1 = repCol(A, 0, b), A2 = repCol(A, 1, b), d1 = det2(A1), dd2 = det2(A2);
     return {
       q: `Išspręskite tiesinių lygčių sistemą Kramerio metodu: ${sys(A.map((r, i) => eqn(r, ['x', 'y'], b[i])))}`,
@@ -245,7 +246,7 @@ regLT('cramer0', 'Kai Δ = 0: sprendinių nėra ar be galo daug?', CRAMERL,
   });
 
 regLT('param3', 'Be galo daug sprendinių: parametrizavimas',
-  'Kai Δ = 0 ir Δ<sub>x</sub> = Δ<sub>y</sub> = Δ<sub>z</sub> = 0, viena lygtis yra kitų darinys ir ją galima išbraukti. Vieną nežinomąjį pažymėkite t (čia z = t), narius su t perkelkite į dešiniąją pusę ir iš likusių dviejų lygčių išreikškite x ir y per t. Atsakymą užrašykite (x, y, z) = (…, …, t).',
+  'Kai Δ = 0 ir Δ<sub>x</sub> = Δ<sub>y</sub> = Δ<sub>z</sub> = 0, viena lygtis yra kitų lygčių tiesinis darinys ir ją galima išbraukti. Vieną nežinomąjį pažymėkite t (čia z = t), narius su t perkelkite į dešiniąją pusę ir iš likusių dviejų lygčių išreikškite x ir y per t. Atsakymą užrašykite (x, y, z) = (…, …, t).',
   () => {
     let r1, r2, al, be, D, A;
     do { r1 = [nz(-3, 3), ri(-3, 3), nz(-3, 4)]; r2 = [ri(-3, 3), nz(-3, 3), ri(-3, 4)]; al = nz(-1, 2); be = nz(-1, 2); D = r1[0] * r2[1] - r1[1] * r2[0]; A = [r1, r2, r1.map((x, j) => al * x + be * r2[j])]; }
@@ -257,7 +258,7 @@ regLT('param3', 'Be galo daug sprendinių: parametrizavimas',
     return {
       q: `Tiesinių lygčių sistemos ${sys(A.map((r, i) => eqn(r, vn, b[i])))} determinantai Δ = Δ<sub>x</sub> = Δ<sub>y</sub> = Δ<sub>z</sub> = 0, todėl ji turi be galo daug sprendinių. Raskite juos parametrizuodami: ${I('z')} = ${I('t')}.`,
       steps: [
-        st('Įstatykite z = t ir narius su t perkelkite į dešinę. Pirmųjų dviejų lygčių dešiniosios pusės (neigiamą skaičių rašykite su minusu langelyje):', [num(`${lhs[0]} =`, { w: 4 }), num('+', tf), num(`${lhs[1]} =`, { w: 4, br: true }), num('+', tf)], [b[0], -A[0][2], b[1], -A[1][2]], `Pirmoji lygtis yra ${eqn(A[0], vn, b[0])}. Kai z = t, perkeliant narį su t į dešinę jo ženklas pasikeičia. Trečiąją lygtį galima išbraukti – ji yra pirmųjų dviejų darinys.`, two),
+        st('Įstatykite z = t ir narius su t perkelkite į dešinę. Pirmųjų dviejų lygčių dešiniosios pusės (neigiamą skaičių rašykite su minusu langelyje):', [num(`${lhs[0]} =`, { w: 4 }), num('+', tf), num(`${lhs[1]} =`, { w: 4, br: true }), num('+', tf)], [b[0], -A[0][2], b[1], -A[1][2]], `Pirmoji lygtis yra ${eqn(A[0], vn, b[0])}. Kai z = t, perkeliant narį su t į dešinę jo ženklas pasikeičia. Trečiąją lygtį galima išbraukti – ji yra pirmųjų dviejų lygčių tiesinis darinys.`, two),
         st('Iš šių dviejų lygčių išreikškite x ir y per t (sudėties būdu arba Kramerio metodu):', [num(`${I('x')} =`, { w: 4 }), num('+', tf), num(`${I('y')} =`, { w: 4, br: true }), num('+', tf)], [x0, x1, y0, y1], `Kairiųjų pusių determinantas lygus ${H(D)}. x = Δ<sub>x</sub>/${P(D)}, kai x stulpelyje įrašytos dešiniosios pusės; analogiškai y.`, `(${I('x')}, ${I('y')}, ${I('z')}) = (${terms([[x0, ''], [x1, I('t')]])}; &nbsp;${terms([[y0, ''], [y1, I('t')]])}; &nbsp;${I('t')}), ${I('t')} ∈ ℝ`)
       ]
     };

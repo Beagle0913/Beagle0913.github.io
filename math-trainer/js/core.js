@@ -43,7 +43,7 @@ function S(x) {                                                    // text that 
 }
 function M(a, o = {}) {
   const c = a[0].length;
-  return `<span class="mx${o.det ? ' det' : ''}"><span class="mg" style="grid-template-columns:repeat(${c},auto)">` +
+  return `<span class="mx${o.det ? ' det' : ''}"><span class="mg c${c}">` +
     a.map((r, i) => r.map((x, j) => `<span${o.hl && o.hl(i, j) ? ' class="hl"' : ''}>${H(x)}</span>`).join('')).join('') + '</span></span>';
 }
 const D = (a, o = {}) => M(a, { ...o, det: true });
@@ -154,7 +154,7 @@ function parseNum(str) {
     for (;;) {
       const k = peek(); if (!k) break;
       if (k.t === '*') { eat(); v *= unary(); } else if (k.t === '/') { eat(); v /= unary(); }
-      else if (k.t === 'n' || k.t === 'id' || k.t === '(') v *= power(); else break;
+      else if (k.t === 'id' || k.t === '(') v *= power(); else break;      // 3sqrt(2), 2pi, 2(3); two numbers in a row are a typo
     }
     return v;
   }
@@ -187,6 +187,24 @@ function checkStep(step, vals, ctx) {
     else if (f.k === 'checks') { if (a.some((x, i) => !!x !== !!v[i])) bad.push({ f: k }); }
   });
   return { ok: !bad.length, bad };
+}
+
+/* Runs a freshly generated problem through its own checker: the stored answers, written out the way
+   they would be typed, must be accepted at every step and no text may contain a broken value.
+   The interface regenerates a problem that fails, so a generator slip can never reach the screen. */
+function selfCheck(p) {
+  try {
+    const ctx = {}, bad = /undefined|NaN|\[object|Infinity/, tx = x => typeof x === 'function' ? x(ctx) : (x || '');
+    if (bad.test(p.q)) return false;
+    for (const s of p.steps) {
+      if (bad.test(tx(s.q))) return false;
+      const typed = s.fields.map((f, i) => f.k === 'num' ? parseNum(S(s.ans[i])) : f.k === 'mat' ? s.ans[i].map(r => r.map(x => parseNum(S(x)))) : s.ans[i]);
+      if (!checkStep(s, typed, ctx).ok) return false;
+      if (s.save) s.save(ctx);
+      if (bad.test(tx(s.hint) + tx(s.sol))) return false;
+    }
+    return true;
+  } catch (e) { return false; }
 }
 
 /* ---------- step + type registry ---------- */

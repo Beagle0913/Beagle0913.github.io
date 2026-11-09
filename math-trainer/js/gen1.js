@@ -7,8 +7,7 @@ reg('lincomb', 3, 'Combine matrices: αA + βBᵀ', 'Veiksmai su matricomis',
     const A = rm(2, 3, -5, 7), B = rm(3, 2, -8, 7), a = pick([2, 2, 3, -2, 4]), b = pick([3, 3, 2, -1, -2, 5]);
     const BT = T(B), aA = A.map(r => r.map(x => a * x)), bB = BT.map(r => r.map(x => b * x)), R = aA.map((r, i) => r.map((x, j) => x + bB[i][j]));
     const ex = terms([[a, I('A')], [b, I('B') + '<sup>T</sup>']]);
-    return {
-      q: `Let ${E('A', M(A))} and ${E('B', M(B))}. Compute ${ex}.`,
+    return { v: { A, B, a, b }, q: `Let ${E('A', M(A))} and ${E('B', M(B))}. Compute ${ex}.`,
       steps: [
         st(`Transpose ${I('B')}:`, [mat(2, 3, `${I('B')}<sup>T</sup> =`)], [BT], 'Row 1 of B becomes column 1 of Bᵀ, row 2 becomes column 2, and so on. A 3×2 matrix turns into a 2×3 one.', `${I('B')}<sup>T</sup> = ${M(BT)}`),
         st(`Now multiply by the numbers and add:`, [mat(2, 3, `${ex} =`)], [R], `Each entry is ${a}·(entry of A) ${b < 0 ? '−' : '+'} ${Math.abs(b)}·(entry of Bᵀ) in the same position.`, `${a}${I('A')} = ${M(aA)}, &nbsp; ${b}${I('B')}<sup>T</sup> = ${M(bB)}, &nbsp; sum = ${M(R)}`)
@@ -22,8 +21,7 @@ reg('matmul', 3, 'Multiply two matrices', 'Matricų daugyba',
     const [m, n, p] = pick([[2, 2, 2], [2, 2, 2], [2, 3, 2], [3, 2, 2], [2, 2, 3], [3, 2, 3], [2, 3, 3]]);
     const A = rm(m, n, -4, 7), B = rm(n, p, -4, 8), R = mmul(A, B);
     const W = A.map(r => B[0].map((_, j) => r.map((x, k) => `${P(x)}·${P(B[k][j])}`).join(' + ')));
-    return {
-      q: `Let ${E('A', M(A))} and ${E('B', M(B))}. Compute ${I('AB')}.`,
+    return { v: { A, B }, q: `Let ${E('A', M(A))} and ${E('B', M(B))}. Compute ${I('AB')}.`,
       steps: [
         st(`What size is ${I('AB')}?`, [num('', { after: 'rows', w: 3 }), num('×', { after: 'columns', w: 3 })], [m, p], `A is ${m}×${n}, B is ${n}×${p}. The inner numbers match (${n} = ${n}); the outer numbers give the size.`, `${m}×${n} times ${n}×${p} gives ${m}×${p}.`),
         st(`Fill in the product:`, [mat(m, p, `${I('AB')} =`)], [R], 'Entry (i, j): take row i of A and column j of B, multiply matching entries and add them.', `${M(W)} = ${M(R)}`)
@@ -42,8 +40,7 @@ reg('possible', 3, 'Which products exist?', 'Ar įmanoma sudauginti?',
     const N = ['A', 'B', 'C'], Ms = sh.map(s => rm(s[0], s[1], -6, 7));
     const pairs = []; for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (i !== j) pairs.push([i, j]);
     const good = pairs.filter((_, k) => ok[k]), [gi, gj] = pick(good);
-    return {
-      q: `Let ${Ms.map((m, i) => E(N[i], M(m))).join(', ')}.`,
+    return { v: { sh, gi, gj }, q: `Let ${Ms.map((m, i) => E(N[i], M(m))).join(', ')}.`,
       steps: [
         st('Select every product that can be computed:', [checks(pairs.map(([i, j]) => I(N[i] + N[j])))], [ok], `Sizes: ${sh.map((s, i) => `${N[i]} is ${s[0]}×${s[1]}`).join(', ')}. XY works when columns of X = rows of Y.`,
           pairs.map(([i, j], k) => `${I(N[i] + N[j])}: (${sh[i][0]}×<b>${sh[i][1]}</b>)(<b>${sh[j][0]}</b>×${sh[j][1]}) ${ok[k] ? '✓' : '✗'}`).join(' &nbsp;·&nbsp; ')),
@@ -56,15 +53,14 @@ reg('det2', 3, 'Determinant 2×2', 'Determinantas 2×2',
   'For a 2×2 matrix: main diagonal product minus the other diagonal product, ad − bc.',
   () => {
     const A = rm(2, 2, -7, 9);
-    return { q: `Compute ${D(A)}.`, steps: [st('', [num('det =')], [det2(A)], 'ad − bc: multiply the main diagonal, subtract the product of the other diagonal.', `${d2s(A)} = ${H(det2(A))}`)] };
+    return { v: { A }, q: `Compute ${D(A)}.`, steps: [st('', [num('det =')], [det2(A)], 'ad − bc: multiply the main diagonal, subtract the product of the other diagonal.', `${d2s(A)} = ${H(det2(A))}`)] };
   });
 
 reg('det3', 3, 'Determinant 3×3 (Sarrus)', 'Determinantas 3×3',
   'Triangle rule: aei + bfg + cdh (three products going down-right) minus ceg + afh + bdi (three products going down-left).',
   () => {
     const A = rm(3, 3, -3, 6), s = sarrus(A), p = s.pos.reduce((x, y) => x + y), n = s.neg.reduce((x, y) => x + y);
-    return {
-      q: `Compute ${D(A)}.`,
+    return { v: { A }, q: `Compute ${D(A)}.`,
       steps: [
         st('Add the three products along the main-diagonal direction (aei + bfg + cdh):', [num('sum =')], [p], 'Main diagonal, then the two “triangles” parallel to it.', `${s.ps} = ${H(p)}`),
         st('Add the three products along the other diagonal direction (ceg + afh + bdi):', [num('sum =')], [n], 'Anti-diagonal, then the two triangles parallel to it.', `${s.ns} = ${H(n)}`),
@@ -103,8 +99,7 @@ reg('diagram', 4, 'Diagram → matrix Q', 'Matricinė diagrama → matrica',
   () => {
     const n = pick([2, 2, 3]), names = ['A', 'B', 'C'].slice(0, n); let Qm, cnt;
     do { Qm = rm(n, n, 0, 9).map(r => r.map(x => Math.random() < (n === 2 ? 0.25 : 0.45) ? 0 : (x || 1))); cnt = Qm.flat().filter(x => x).length; } while (cnt < n + 1 || cnt === n * n);
-    return {
-      q: `The diagram shows the system ${I('n')}<sub>t+1</sub> = ${I('Q')}${I('n')}<sub>t</sub>, with the states ordered ${names.join(', ')}.<div class="fig">${diagram(Qm, names)}</div>`,
+    return { v: { Qm }, q: `The diagram shows the system ${I('n')}<sub>t+1</sub> = ${I('Q')}${I('n')}<sub>t</sub>, with the states ordered ${names.join(', ')}.<div class="fig">${diagram(Qm, names)}</div>`,
       steps: [st('Write the matrix:', [mat(n, n, `${I('Q')} =`)], [Qm], 'Take each arrow in turn. Arrow from state j to state i with weight w: put w in row i, column j. Loops go on the diagonal.',
         `${sys(recEq(Qm, names))} &nbsp;⇒&nbsp; ${E('Q', M(Qm))}`)]
     };
@@ -118,8 +113,7 @@ reg('rec2mat', 4, 'Recurrence equations → matrix', 'Rekurentinės lygtys → m
       Qm = Array.from({ length: n }, () => Array(n).fill(0));
       for (let j = 0; j < n; j++) { const stay = pick([5, 6, 7, 8, 9]), to = pick([...Array(n).keys()].filter(i => i !== j)); Qm[j][j] = stay / 10; Qm[to][j] = (10 - stay) / 10; }
     } else { do { Qm = rm(n, n, -3, 6).map(r => r.map(x => Math.random() < 0.35 ? 0 : x)); } while (Qm.some(r => r.every(x => !x))); }
-    return {
-      q: `A model is given by ${sys(recEq(Qm, names))} Write it as ${M(names.map(v => [sub(v, 't+1')]))} = ${I('Q')}${M(names.map(v => [sub(v, 't')]))}.`,
+    return { v: { Qm }, q: `A model is given by ${sys(recEq(Qm, names))} Write it as ${M(names.map(v => [sub(v, 't+1')]))} = ${I('Q')}${M(names.map(v => [sub(v, 't')]))}.`,
       steps: [st('', [mat(n, n, `${I('Q')} =`)], [Qm], `Column order is ${names.join(', ')}. In each equation read off the coefficient of each variable; write 0 where a variable does not appear. Decimals can be typed as 0.3 or 0,3.`, E('Q', M(Qm)))]
     };
   });
@@ -127,10 +121,10 @@ reg('rec2mat', 4, 'Recurrence equations → matrix', 'Rekurentinės lygtys → m
 reg('iterate', 4, 'Step a population forward', 'Vektorių dinamika: n₁, n₂',
   'n<sub>1</sub> = A·n<sub>0</sub>, then n<sub>2</sub> = A·n<sub>1</sub>. Each step is one matrix-times-vector product.',
   () => {
-    const A = rm(2, 2, -1, 3), n0 = [[ri(1, 5)], [ri(1, 5)]], n1 = mmul(A, n0), n2 = mmul(A, n1);
+    let A; do { A = rm(2, 2, -1, 3); } while (!det2(A));
+    const n0 = [[ri(1, 5)], [ri(1, 5)]], n1 = mmul(A, n0), n2 = mmul(A, n1);
     const w = (A, v) => M(A.map(r => [r.map((x, k) => `${P(x)}·${P(v[k][0])}`).join(' + ')]));
-    return {
-      q: `Let ${I('n')}<sub>t+1</sub> = ${I('A')}${I('n')}<sub>t</sub> with ${E('A', M(A))} and ${I('n')}<sub>0</sub> = ${M(n0)}.`,
+    return { v: { A, n0 }, q: `Let ${I('n')}<sub>t+1</sub> = ${I('A')}${I('n')}<sub>t</sub> with ${E('A', M(A))} and ${I('n')}<sub>0</sub> = ${M(n0)}.`,
       steps: [
         st('One step:', [mat(2, 1, `${I('n')}<sub>1</sub> =`)], [n1], 'Row 1 of A times n₀ gives the first entry, row 2 of A times n₀ gives the second.', `${w(A, n0)} = ${M(n1)}`),
         st('One more step:', [mat(2, 1, `${I('n')}<sub>2</sub> =`)], [n2], 'Multiply A by the vector you just found.', `${w(A, n1)} = ${M(n2)}`)
@@ -145,8 +139,7 @@ const INV2 = 'A<sup>−1</sup> = (1/det)·[d, −b; −c, a]: swap the main-diag
 reg('inverse2', 4, 'Inverse of a 2×2 matrix', 'Atvirkštinė matrica 2×2', INV2,
   () => {
     const A = goodA2(-5, 7, [1, 2, 3, 4, 5, 6]), d = det2(A), ad = adj2(A), inv = inv2(A);
-    return {
-      q: `Find the inverse of ${E('A', M(A))}.`,
+    return { v: { A }, q: `Find the inverse of ${E('A', M(A))}.`,
       steps: [
         st('Determinant:', [num('det A =')], [d], 'ad − bc', `${d2s(A)} = ${H(d)}`),
         st('Swap the diagonal entries and change the sign of the other two:', [mat(2, 2, '')], [ad], 'From [a, b; c, d] make [d, −b; −c, a].', M(ad)),
@@ -161,8 +154,7 @@ reg('isinverse', 4, 'Are A and B inverses?', 'Ar matricos viena kitai atvirkšti
     const A = goodA2(-4, 7, [1, 2, 3]); let B = inv2(A); const yes = Math.random() < 0.55;
     if (!yes) { const c = shuffle([[0, 0], [0, 1], [1, 0], [1, 1]]).find(([i, j]) => B[i][j].n !== 0); B = B.map((r, i) => r.map((x, j) => i === c[0] && j === c[1] ? x.mul(-1) : x)); }
     const AB = qmul(A, B);
-    return {
-      q: `Let ${E('A', M(A))} and ${E('B', M(B))}.`,
+    return { v: { A, B: B.map(r => r.map(x => x.v)), yes }, q: `Let ${E('A', M(A))} and ${E('B', M(B))}.`,
       steps: [
         st('Multiply them:', [mat(2, 2, `${I('AB')} =`)], [AB], 'Row of A times column of B. Fractions are fine: type 7/3.', `${I('AB')} = ${M(AB)}`),
         st('Are A and B inverses of each other?', [choice(['Yes', 'No'])], [yes ? 0 : 1], 'Compare AB with the identity matrix.', yes ? 'AB is the identity matrix, so yes.' : 'AB is not the identity matrix, so no.')
@@ -178,8 +170,7 @@ reg('singular', 4, 'When is the matrix singular?', 'Kada matrica išsigimusi?',
     const sol = [new Q(b * c, d), new Q(a * d, c), new Q(a * d, b), new Q(b * c, a)][pos];
     const sh = e.map((x, k) => k === pos ? I('a') : x);
     const eq = ['a·' + P(d) + ' − ' + P(b) + '·' + P(c), P(a) + '·' + P(d) + ' − a·' + P(c), P(a) + '·' + P(d) + ' − ' + P(b) + '·a', P(a) + '·a − ' + P(b) + '·' + P(c)][pos];
-    return {
-      q: `For which value of ${I('a')} is ${M([[sh[0], sh[1]], [sh[2], sh[3]]])} singular (išsigimusi)?`,
+    return { v: { e, pos }, q: `For which value of ${I('a')} is ${M([[sh[0], sh[1]], [sh[2], sh[3]]])} singular (išsigimusi)?`,
       steps: [st('', [num(`${I('a')} =`)], [sol], `Set the determinant to zero: ${eq} = 0.`, `${eq} = 0 &nbsp;⇒&nbsp; ${I('a')} = ${H(sol)}`)]
     };
   });
@@ -188,8 +179,7 @@ reg('backstep', 4, 'Step backwards with the inverse', 'Ankstesnio sezono vektori
   'If x<sub>t+1</sub> = A·x<sub>t</sub>, then x<sub>t</sub> = A<sup>−1</sup>·x<sub>t+1</sub>. Find the 2×2 inverse, then multiply it by the known vector.',
   () => {
     const A = goodA2(-3, 6, [1, 2, 4, 5]), x = [[ri(-3, 6)], [nz(-3, 6)]], y = mmul(A, x), d = det2(A), inv = inv2(A);
-    return {
-      q: `A population changes by ${I('x')}<sub>t+1</sub> = ${M(A)}${I('x')}<sub>t</sub>. This season the vector is ${I('x')}<sub>t+1</sub> = ${M(y)}. What was it one season earlier?`,
+    return { v: { A, y }, q: `A population changes by ${I('x')}<sub>t+1</sub> = ${M(A)}${I('x')}<sub>t</sub>. This season the vector is ${I('x')}<sub>t+1</sub> = ${M(y)}. What was it one season earlier?`,
       steps: [
         st('Determinant of the matrix:', [num('det =')], [d], 'ad − bc', `${d2s(A)} = ${H(d)}`),
         st('Inverse matrix:', [mat(2, 2, `${I('A')}<sup>−1</sup> =`)], [inv], INV2, `${FR(1, P(d))}·${M(adj2(A))} = ${M(inv)}`),
@@ -203,8 +193,7 @@ reg('minor', 5, 'Minor and cofactor', 'Minoras ir adjunktas',
   'Minor M<sub>ij</sub>: cross out row i and column j, take the determinant of what is left. Cofactor (adjunktas) A<sub>ij</sub> = (−1)<sup>i+j</sup>·M<sub>ij</sub>: same number, sign flipped when i + j is odd.',
   () => {
     const A = rm(3, 3, -5, 9), i = ri(0, 2), j = ri(0, 2), m = minorM(A, i, j), Mv = det2(m), sg = (i + j) % 2 ? -1 : 1, ij = `${i + 1}${j + 1}`;
-    return {
-      q: `Let ${E('A', M(A))}.`,
+    return { v: { A, i, j }, q: `Let ${E('A', M(A))}.`,
       steps: [
         st(`Minor:`, [num(`${sub('M', ij)} =`)], [Mv], `Cross out row ${i + 1} and column ${j + 1}: ${M(A, { hl: (r, c) => r === i || c === j })} The four entries left form a 2×2 determinant.`, `${sub('M', ij)} = ${D(m)} = ${d2s(m)} = ${H(Mv)}`),
         st(`Cofactor (adjunktas):`, [num(`${sub('A', ij)} =`)], [sg * Mv], `(−1)<sup>${i + 1}+${j + 1}</sup> = ${sg > 0 ? '+1' : '−1'}`, `${sub('A', ij)} = (−1)<sup>${i + 1 + j + 1}</sup>·${P(Mv)} = ${H(sg * Mv)}`)
@@ -221,8 +210,7 @@ reg('det4', 5, 'Determinant 4×4 by expansion', 'Determinantas 4×4 (skleidimas)
     const d = rows.reduce((s, i, k) => s + A[i][c] * cof[k], 0), ent = rows.map(i => A[i][c]);
     const sh = asRow ? T(A) : A, idx = i => asRow ? `${c + 1}${i + 1}` : `${i + 1}${c + 1}`, mn = k => asRow ? T(mins[k]) : mins[k];
     const stepC = k => { const i = rows[k], sg = (i + c) % 2 ? -1 : 1, s = sarrus(mn(k)); return st(`Cofactor of the entry ${H(ent[k])}:`, [num(`${sub('A', idx(i))} = ${sg > 0 ? '+' : MIN}${D(mn(k))} =`)], [cof[k]], `Compute the 3×3 determinant with the triangle rule, then apply the sign (${sg > 0 ? '+' : '−'}).`, `${D(mn(k))} = (${s.ps}) − (${s.ns}) = ${H(det(mins[k]))}, so ${sub('A', idx(i))} = ${H(cof[k])}`); };
-    return {
-      q: `Compute ${D(sh, { hl: (i, j) => (asRow ? i : j) === c })} by expanding along ${asRow ? 'row' : 'column'} ${c + 1} (it has two zeros).`,
+    return { v: { M: sh }, q: `Compute ${D(sh, { hl: (i, j) => (asRow ? i : j) === c })} by expanding along ${asRow ? 'row' : 'column'} ${c + 1} (it has two zeros).`,
       steps: [stepC(0), stepC(1),
       st('Combine: each entry times its cofactor.', [num('det =')], [d], `${P(ent[0])}·${sub('A', idx(rows[0]))} + ${P(ent[1])}·${sub('A', idx(rows[1]))}`, `${P(ent[0])}·${P(cof[0])} + ${P(ent[1])}·${P(cof[1])} = ${H(d)}`)]
     };
@@ -233,10 +221,9 @@ const CRAMER = 'Δ = det of the coefficient matrix. Δ<sub>x</sub>: replace the 
 
 reg('cramer2', 5, 'Cramer’s rule, 2 unknowns', 'Kramerio metodas 2×2', CRAMER,
   () => {
-    let A; do { A = rm(2, 2, -5, 6); } while (!det2(A) || Math.abs(det2(A)) > 30 || A.flat().some(x => !x));
+    let A; do { A = rm(2, 2, -5, 6); } while (!det2(A) || Math.abs(det2(A)) > 12 || A.flat().some(x => !x));
     const b = [nz(-9, 9), ri(-9, 9)], d = det2(A), A1 = repCol(A, 0, b), A2 = repCol(A, 1, b), d1 = det2(A1), d2 = det2(A2);
-    return {
-      q: `Solve with Cramer’s rule: ${sys(A.map((r, i) => eqn(r, ['x', 'y'], b[i])))}`,
+    return { v: { A, b }, q: `Solve with Cramer’s rule: ${sys(A.map((r, i) => eqn(r, ['x', 'y'], b[i])))}`,
       steps: [
         st('Main determinant:', [num('Δ =')], [d], `Δ = ${D(A)}`, `Δ = ${D(A)} = ${d2s(A)} = ${H(d)}`),
         st('Replace one column at a time with the right-hand sides:', [num(`Δ<sub>x</sub> = ${D(A1)} =`), num(`Δ<sub>y</sub> = ${D(A2)} =`)], [d1, d2], 'Two more 2×2 determinants: ad − bc.', `Δ<sub>x</sub> = ${d2s(A1)} = ${H(d1)}, &nbsp; Δ<sub>y</sub> = ${d2s(A2)} = ${H(d2)}`),
@@ -250,8 +237,7 @@ reg('cramer3', 5, 'Cramer’s rule, 3 unknowns', 'Kramerio metodas 3×3', CRAMER
   () => {
     let A; do { A = rm(3, 3, -3, 4); } while (!det(A) || Math.abs(det(A)) > 30);
     const x = [ri(-4, 6), ri(-4, 6), ri(-4, 6)], b = A.map(r => r.reduce((s, c, j) => s + c * x[j], 0)), d = det(A), As = [0, 1, 2].map(j => repCol(A, j, b)), ds = As.map(det), vn = ['x', 'y', 'z'];
-    return {
-      q: `Solve with Cramer’s rule: ${sys(A.map((r, i) => eqn(r, vn, b[i])))}`,
+    return { v: { A, b }, q: `Solve with Cramer’s rule: ${sys(A.map((r, i) => eqn(r, vn, b[i])))}`,
       steps: [
         st('Main determinant:', [num(`Δ = ${D(A)} =`)], [d], 'Triangle rule: aei + bfg + cdh − ceg − afh − bdi.', `Δ = ${detSol(A)}`),
         ...[0, 1, 2].map(j => st(`Put the right-hand sides in the ${vn[j]}-column:`, [num(`Δ<sub>${vn[j]}</sub> = ${D(As[j], { hl: (r, c) => c === j })} =`)], [ds[j]], 'Same triangle rule on this matrix.', `Δ<sub>${vn[j]}</sub> = ${detSol(As[j])}`)),
@@ -267,8 +253,7 @@ reg('cramer0', 5, 'Δ = 0: none or infinitely many?', 'Kai Δ = 0: sprendinių s
     while (r1[0] * r2[1] - r1[1] * r2[0] === 0 || A[2].some(x => Math.abs(x) > 6));
     const inf = Math.random() < 0.5, b = [ri(-4, 6), ri(-4, 6)]; b.push(al * b[0] + be * b[1] + (inf ? 0 : nz(-2, 2)));
     const As = [0, 1, 2].map(j => repCol(A, j, b)), ds = As.map(det), vn = ['x', 'y', 'z'];
-    return {
-      q: `Study the system ${sys(A.map((r, i) => eqn(r, vn, b[i])))}`,
+    return { v: { A, b, inf }, q: `Study the system ${sys(A.map((r, i) => eqn(r, vn, b[i])))}`,
       steps: [
         st('Main determinant:', [num(`Δ = ${D(A)} =`)], [0], 'Triangle rule.', `Δ = ${detSol(A)}`),
         st('Δ = 0, so there is no unique solution. Compute the other three determinants:', vn.map((v, j) => num(`Δ<sub>${v}</sub> =`)), ds, `Replace column by column with (${b.join(', ')}): ` + As.map((a, j) => `Δ<sub>${vn[j]}</sub> = ${D(a)}`).join(', '), ds.map((d, j) => `Δ<sub>${vn[j]}</sub> = ${H(d)}`).join(', ')),
@@ -287,8 +272,7 @@ reg('param3', 5, 'Infinitely many solutions: parametrise', 'Be galo daug sprendi
     const vn = ['x', 'y', 'z'], lhs = [0, 1].map(i => terms([[A[i][0], I('x')], [A[i][1], I('y')]]));
     const x0 = new Q(b[0] * r2[1] - r1[1] * b[1], D), x1 = new Q(-r1[2] * r2[1] + r1[1] * r2[2], D), y0 = new Q(r1[0] * b[1] - r2[0] * b[0], D), y1 = new Q(-r1[0] * r2[2] + r2[0] * r1[2], D);
     const two = sys([0, 1].map(i => `${lhs[i]} = ${terms([[b[i], ''], [-A[i][2], I('t')]])}`)), tf = { after: `·${I('t')}`, w: 4 };
-    return {
-      q: `The system ${sys(A.map((r, i) => eqn(r, vn, b[i])))} has Δ = Δ<sub>x</sub> = Δ<sub>y</sub> = Δ<sub>z</sub> = 0, so it has infinitely many solutions. Find all of them using the parameter ${I('z')} = ${I('t')}.`,
+    return { v: { A, b }, q: `The system ${sys(A.map((r, i) => eqn(r, vn, b[i])))} has Δ = Δ<sub>x</sub> = Δ<sub>y</sub> = Δ<sub>z</sub> = 0, so it has infinitely many solutions. Find all of them using the parameter ${I('z')} = ${I('t')}.`,
       steps: [
         st('Put z = t and move the t-terms to the right. Right-hand sides of the first two equations (a negative number goes into the box with its minus):', [num(`${lhs[0]} =`, { w: 4 }), num('+', tf), num(`${lhs[1]} =`, { w: 4, br: true }), num('+', tf)], [b[0], -A[0][2], b[1], -A[1][2]], `Equation 1 is ${eqn(A[0], vn, b[0])}. With z = t, the term with t changes sign when it crosses to the right. The third equation can be crossed out: it is a combination of the first two.`, two),
         st('Solve these two equations for x and y in terms of t (elimination, or Cramer’s rule carrying t along):', [num(`${I('x')} =`, { w: 4 }), num('+', tf), num(`${I('y')} =`, { w: 4, br: true }), num('+', tf)], [x0, x1, y0, y1], `The determinant of the left-hand sides is ${H(D)}. x = Δ<sub>x</sub>/${P(D)}, with the right-hand sides put in the x-column; the same for y.`, `(${I('x')}, ${I('y')}, ${I('z')}) = (${terms([[x0, ''], [x1, I('t')]])}; &nbsp;${terms([[y0, ''], [y1, I('t')]])}; &nbsp;${I('t')}), ${I('t')} ∈ ℝ`)
@@ -301,8 +285,7 @@ reg('syskind', 5, 'System with a parameter k', 'Sistema su parametru k',
   () => {
     const a = nz(-4, 5), b = nz(-3, 4), m = pick([2, 3, -2, -1, 2]), p = nz(-5, 6), d = m * b, k0 = m * a, inf = Math.random() < 0.5, q = m * p + (inf ? 0 : nz(-3, 3));
     const x1 = sub('x', 1), x2 = sub('x', 2);
-    return {
-      q: `For which ${I('k')} does the system have one solution, none, or infinitely many? ${sys([`${terms([[a, x1], [b, x2]])} = ${H(p)}`, `${terms([[1, I('k') + x1], [d, x2]])} = ${H(q)}`])}`,
+    return { v: { a, b, d, p, q, inf }, q: `For which ${I('k')} does the system have one solution, none, or infinitely many? ${sys([`${terms([[a, x1], [b, x2]])} = ${H(p)}`, `${terms([[1, I('k') + x1], [d, x2]])} = ${H(q)}`])}`,
       steps: [
         st(`The determinant ${D([[a, b], [I('k'), d]])} has the form:`, [num('det ='), num(`${MIN}`, { after: `·${I('k')}` })], [a * d, b], 'ad − bc with c = k.', `det = ${P(a)}·${P(d)} − ${P(b)}·${I('k')} = ${H(a * d)} − ${P(b)}${I('k')}`),
         st('For which k is the determinant zero?', [num(`${I('k')} =`)], [k0], `Solve ${H(a * d)} − ${P(b)}k = 0.`, `${I('k')} = ${H(a * d)}/${P(b)} = ${H(k0)}. For every other k there is exactly one solution.`),
@@ -317,8 +300,7 @@ reg('inv3', 5, 'Solve by the inverse-matrix method', 'Atvirkštinės matricos me
     let A; do { A = rm(3, 3, -2, 3); } while (![1, 2, 3, 4, 5, 6].includes(Math.abs(det(A))));
     const x = [ri(-3, 5), ri(-3, 5), ri(-3, 5)], b = A.map(r => r.reduce((s, c, j) => s + c * x[j], 0)), d = det(A), vn = ['x', 'y', 'z'];
     const C = A.map((r, i) => r.map((_, j) => ((i + j) % 2 ? -1 : 1) * det2(minorM(A, i, j)))), adj = T(C), ab = mmul(adj, b.map(v => [v]));
-    return {
-      q: `Solve by the inverse-matrix method: ${sys(A.map((r, i) => eqn(r, vn, b[i])))}<br>Here ${E('A', M(A))}, ${E('B', V(b))}.`,
+    return { v: { A, b }, q: `Solve by the inverse-matrix method: ${sys(A.map((r, i) => eqn(r, vn, b[i])))}<br>Here ${E('A', M(A))}, ${E('B', V(b))}.`,
       steps: [
         st('Determinant:', [num('det A =')], [d], 'Triangle rule.', `det A = ${detSol(A)}`),
         st('Matrix of cofactors (each entry: cross out its row and column, take the 2×2 determinant, apply the sign pattern + − + / − + − / + − +):', [mat(3, 3, `${I('C')} =`)], [C], `Example: ${sub('A', 11)} = +${D(minorM(A, 0, 0))}, ${sub('A', 12)} = −${D(minorM(A, 0, 1))}.`, E('C', M(C))),

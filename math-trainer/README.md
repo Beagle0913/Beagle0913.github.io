@@ -30,4 +30,11 @@ When you change a generator, change it in both languages.
 node tools/test.js 2000
 ```
 
-This generates 2000 problems of every type in each language, checks that the stored answers are accepted, that wrong answers are rejected, and that no text contains `undefined` or `NaN`.
+For every exercise type, in both languages, this:
+
+- checks that the stored answers are accepted when typed the way the page shows them, and that a perturbed answer (all boxes, and each box on its own) is rejected;
+- recomputes the answers independently from the raw problem data (Gaussian elimination, polar complex arithmetic, numerical limits, simulation of the matrix models) and compares;
+- generates the Lithuanian and English versions from the same random seed and requires identical answers;
+- checks that no text contains `undefined` or `NaN`, and times each generator.
+
+The page also runs every freshly generated problem through its own checker before showing it, and makes a new one if that fails.

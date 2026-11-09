@@ -17,8 +17,7 @@ reg('closest', 1, 'Points and coordinate planes', 'Taškai ir koordinačių plok
     const c1 = ri(0, 2), c2 = pick([0, 1, 2].filter(i => i !== c1)), zi = ri(0, 2), N = ['P', 'Q', 'R']; let pts;
     do { pts = [0, 1, 2].map(() => [nz(-8, 8), nz(-8, 8), nz(-8, 8)]); pts[zi][c2] = 0; } while (new Set(pts.map(p => Math.abs(p[c1]))).size < 3);
     const d = pts.map(p => Math.abs(p[c1])), near = d.indexOf(Math.min(...d));
-    return {
-      q: `Take the points ${pts.map((p, i) => I(N[i]) + pt(p)).join(', ')}.`,
+    return { v: { pts, c1, c2 }, q: `Take the points ${pts.map((p, i) => I(N[i]) + pt(p)).join(', ')}.`,
       steps: [
         st(`Which point is closest to the ${I(PLANE[c1])}-plane?`, [choice(N.map(I))], [near], `The ${PLANE[c1]}-plane is ${AX[c1]} = 0, so compare the sizes of the ${AX[c1]}-coordinates.`, `|${AX[c1]}| is ${d.join(', ')} for P, Q, R. The smallest belongs to ${N[near]}.`),
         st(`Which point lies in the ${I(PLANE[c2])}-plane?`, [choice(N.map(I))], [zi], `A point lies in the ${PLANE[c2]}-plane when its ${AX[c2]}-coordinate is 0.`, `${N[zi]} has ${AX[c2]} = 0.`)
@@ -30,8 +29,7 @@ reg('distpt', 1, 'Distance to a plane or an axis', 'Atstumas iki plokštumos ir 
   'To a coordinate plane: the absolute value of the missing coordinate (to the xy-plane it is |z|). To a coordinate axis: the root of the sum of squares of the <b>other two</b> coordinates (to the x-axis it is √(y² + z²)).',
   () => {
     const p = [nz(-9, 9), nz(-9, 9), nz(-9, 9)], pl = ri(0, 2), ax = ri(0, 2), o = [0, 1, 2].filter(i => i !== ax), s = p[o[0]] ** 2 + p[o[1]] ** 2;
-    return {
-      q: `Find the distance from the point ${pt(p)}:`,
+    return { v: { p, pl, ax }, q: `Find the distance from the point ${pt(p)}:`,
       steps: [
         st(`to the ${I(PLANE[pl])}-plane`, [num('distance =')], [Math.abs(p[pl])], `The ${PLANE[pl]}-plane is ${AX[pl]} = 0. How far is the ${AX[pl]}-coordinate from 0?`, `|${H(p[pl])}| = ${Math.abs(p[pl])}`),
         st(`to the ${I(AX[ax])}-axis. ${ROOTS}`, [num('distance =')], [rt2(s)], `The nearest point on the ${AX[ax]}-axis keeps ${AX[ax]} and has the other two coordinates 0. So only ${AX[o[0]]} and ${AX[o[1]]} count.`, `√(${P(p[o[0]])}² + ${P(p[o[1]])}²) = √${s}${Number.isInteger(Math.sqrt(s)) ? ' = ' + Math.sqrt(s) : ' ≈ ' + H(Math.round(Math.sqrt(s) * 100) / 100)}`)
@@ -46,8 +44,7 @@ reg('sphere', 1, 'Sphere: centre and radius', 'Sferos centras ir spindulys',
     const r = ri(1, 7), k = pick([1, 1, 1, 2, 3]), G = r * r - n2(c), h0 = c.findIndex(x => x), hv = AX[h0];
     const lhs = terms([[k, pw('x', 2)], [k, pw('y', 2)], [k, pw('z', 2)], ...c.map((v, i) => [-2 * v * k, I(AX[i])])]);
     const sq = c.map((v, i) => v === 0 ? pw(AX[i], 2) : `(${lin(v, AX[i])})<sup>2</sup>`).join(' + ');
-    return {
-      q: `The equation ${lhs} = ${H(k * G)} describes a sphere.`,
+    return { v: { c, r, k, G }, q: `The equation ${lhs} = ${H(k * G)} describes a sphere.`,
       steps: [
         st(`${k > 1 ? `Divide by ${k}, then complete` : 'Complete'} the square in each variable. Centre:`, AX.map(a => num(`${I(a)}<sub>0</sub> =`, { w: 4 })), c, `${hv}² ${c[h0] > 0 ? '−' : '+'} ${Math.abs(2 * c[h0])}${hv} = (${hv} ${c[h0] > 0 ? '−' : '+'} ${Math.abs(c[h0])})² − ${c[h0] * c[h0]}. Each centre coordinate is half of that variable’s coefficient, with the opposite sign.`, `Centre (${c.map(H).join('; ')})`),
         st('Right-hand side after moving the constants over:', [num(`${sq} =`)], [r * r], `${H(G)} + ${c.map(v => v * v).join(' + ')}`, `${sq} = ${H(G)} + ${c.map(v => v * v).join(' + ')} = ${r * r}`),
@@ -61,8 +58,7 @@ reg('touch', 1, 'Sphere touching a coordinate plane', 'Sfera, liečianti plokšt
   () => {
     let c; do { c = [nz(-7, 7), nz(-7, 7), nz(-7, 7)]; } while (new Set(c.map(Math.abs)).size < 3);
     const pl = ri(0, 2), r = Math.abs(c[pl]), sq = c.map((v, i) => `(${lin(v, AX[i])})<sup>2</sup>`).join(' + ');
-    return {
-      q: `A sphere has its centre at ${pt(c)} and touches the ${I(PLANE[pl])}-plane.`,
+    return { v: { c, pl }, q: `A sphere has its centre at ${pt(c)} and touches the ${I(PLANE[pl])}-plane.`,
       steps: [
         st('Its radius:', [num(`${I('r')} =`)], [r], `Distance from the centre to the ${PLANE[pl]}-plane (${AX[pl]} = 0).`, `${I('r')} = |${H(c[pl])}| = ${r}`),
         st('Its equation:', [num(`${sq} =`)], [r * r], 'The right-hand side is r².', `${sq} = ${r * r}`)
@@ -75,8 +71,7 @@ reg('dist3', 1, 'Distance between two points', 'Atstumas tarp dviejų taškų',
   () => {
     const a = [ri(-5, 6), ri(-5, 6), ri(-5, 6)]; let b; do { b = [ri(-5, 6), ri(-5, 6), ri(-5, 6)]; } while (b.every((x, i) => x === a[i]));
     const d = b.map((x, i) => x - a[i]), s = n2(d);
-    return {
-      q: `A point moves from ${I('A')}${pt(a)} at time ${I('t')} = 0 to ${I('B')}${pt(b)} at ${I('t')} = 2.`,
+    return { v: { a, b }, q: `A point moves from ${I('A')}${pt(a)} at time ${I('t')} = 0 to ${I('B')}${pt(b)} at ${I('t')} = 2.`,
       steps: [
         st('Change in each coordinate (end minus start):', AX.map(v => num(`Δ${I(v)} =`, { w: 4 })), d, 'A negative change means the coordinate decreased.', AX.map((v, i) => `Δ${I(v)} = ${H(b[i])} − ${P(a[i])} = ${H(d[i])}`).join(', &nbsp;')),
         st(`Distance between the two positions. ${ROOTS}`, [num('distance =')], [rt2(s)], '√(Δx² + Δy² + Δz²)', `√(${sqs(d)}) = √${s}${Number.isInteger(Math.sqrt(s)) ? ' = ' + Math.sqrt(s) : ' ≈ ' + H(Math.round(Math.sqrt(s) * 100) / 100)}`)
@@ -97,7 +92,7 @@ reg('describe', 1, 'What does the equation describe in space?', 'Ką aprašo lyg
       [`${pw('x', 2)} + ${pw('y', 2)} + ${pw('z', 2)} = ${r * r}`, 4, `All points at distance exactly ${r} from the origin.`],
       [`${pw('x', 2)} + ${pw('y', 2)} + ${pw('z', 2)} ≤ ${r * r - 1}`, 5, `All points at distance at most √${r * r - 1} from the origin: the surface and everything inside.`],
       [`${pw('x', 2)} + ${pw('y', 2)} = ${r * r}`, 6, `z is free, so the circle of radius ${r} is repeated at every height: a cylinder around the z-axis.`]];
-    return { q: `Describe the set of points in ℝ<sup>3</sup> given by each condition.`, steps: shuffle(bank).slice(0, 3).map(([h, a, why]) => st(`<span class="bigq">${h}</span>`, [choice(SHAPES)], [a], 'Which variables are free? Is it an equation or an inequality? One condition or two?', why)) };
+    return { v: {}, q: `Describe the set of points in ℝ<sup>3</sup> given by each condition.`, steps: shuffle(bank).slice(0, 3).map(([h, a, why]) => st(`<span class="bigq">${h}</span>`, [choice(SHAPES)], [a], 'Which variables are free? Is it an equation or an inequality? One condition or two?', why)) };
   });
 
 /* ================= TOPIC 2 — vectors, dot product ================= */
@@ -107,8 +102,7 @@ reg('vecops', 2, 'Vector arithmetic and length', 'Veiksmai su vektoriais, ilgis'
     const n = pick([2, 3]), a = n === 2 && Math.random() < 0.5 ? pick([[3, -4], [5, -12], [-6, 8], [8, 15], [-5, 12], [4, 3]]) : rm(1, n, -6, 7)[0]; let b; do { b = rm(1, n, -6, 7)[0]; } while (b.every((x, i) => x === a[i]));
     const al = pick([2, 2, 3, -1]), be = pick([3, 3, -2, 2]), sum = a.map((x, i) => x + b[i]), lc = a.map((x, i) => al * x + be * b[i]), df = a.map((x, i) => x - b[i]);
     const ex = terms([[al, Bv('a')], [be, Bv('b')]]);
-    return {
-      q: `Let ${Bv('a')} = ${rv(a)} and ${Bv('b')} = ${rv(b)}.`,
+    return { v: { a, b, al, be }, q: `Let ${Bv('a')} = ${rv(a)} and ${Bv('b')} = ${rv(b)}.`,
       steps: [
         st('Sum:', [mat(1, n, `${Bv('a')} + ${Bv('b')} =`)], [[sum]], 'Add matching components.', `${Bv('a')} + ${Bv('b')} = ${rv(sum)}`),
         st('Combination:', [mat(1, n, `${ex} =`)], [[lc]], `Each component: ${al}·(component of a) ${be < 0 ? '−' : '+'} ${Math.abs(be)}·(component of b).`, `${ex} = ${rv(lc)}`),
@@ -123,10 +117,10 @@ reg('dot', 2, 'Dot product', 'Skaliarinė sandauga',
   () => {
     if (Math.random() < 0.4) {
       const a = [nz(-4, 5), ri(-3, 4), ri(-3, 4)], b = [ri(-3, 4), nz(-4, 5), ri(-3, 4)], ijk = v => terms(v.map((x, i) => [x, Bv('ijk'[i])]));
-      return { q: `Compute ${Bv('a')}·${Bv('b')} for ${Bv('a')} = ${ijk(a)} and ${Bv('b')} = ${ijk(b)}.`, steps: [st('', [num(`${Bv('a')}·${Bv('b')} =`)], [dotv(a, b)], `As components: ${Bv('a')} = ${rv(a)}, ${Bv('b')} = ${rv(b)}.`, `${dots(a, b)} = ${H(dotv(a, b))}`)] };
+      return { v: { a, b }, q: `Compute ${Bv('a')}·${Bv('b')} for ${Bv('a')} = ${ijk(a)} and ${Bv('b')} = ${ijk(b)}.`, steps: [st('', [num(`${Bv('a')}·${Bv('b')} =`)], [dotv(a, b)], `As components: ${Bv('a')} = ${rv(a)}, ${Bv('b')} = ${rv(b)}.`, `${dots(a, b)} = ${H(dotv(a, b))}`)] };
     }
-    const d = pick([2, 3, 4]), a = [nz(-5, 6), nz(-5, 6), new Q(pick([1, -1, 3]), d)], b = [nz(-6, 7), nz(-6, 7), d * nz(-3, 3)], r = a[0] * b[0] + a[1] * b[1] + a[2].n * b[2] / d;
-    return { q: `Compute ${Bv('a')}·${Bv('b')} for ${Bv('a')} = ${rv(a)} and ${Bv('b')} = ${rv(b)}.`, steps: [st('', [num(`${Bv('a')}·${Bv('b')} =`)], [r], 'Multiply first by first, second by second, third by third, then add.', `${dots(a, b)} = ${H(r)}`)] };
+    const d = pick([2, 3, 4]), a = [nz(-5, 6), nz(-5, 6), new Q(pick([1, -1, 3]), d)], b = [nz(-6, 7), nz(-6, 7), d * nz(-3, 3)], r = a[0] * b[0] + a[1] * b[1] + a[2].n * b[2] / a[2].d;
+    return { v: { a: a.map(val), b }, q: `Compute ${Bv('a')}·${Bv('b')} for ${Bv('a')} = ${rv(a)} and ${Bv('b')} = ${rv(b)}.`, steps: [st('', [num(`${Bv('a')}·${Bv('b')} =`)], [r], 'Multiply first by first, second by second, third by third, then add.', `${dots(a, b)} = ${H(r)}`)] };
   });
 
 reg('meaning', 2, 'Which expressions make sense?', 'Kurios išraiškos turi prasmę?',
@@ -137,8 +131,7 @@ reg('meaning', 2, 'Which expressions make sense?', 'Kurios išraiškos turi pras
       [`${a}·(${b} + ${c})`, true, 'vector dotted with vector'], [`${a}·${b} + ${c}`, false, 'number plus vector is not defined'], [`|${a}|·(${b} + ${c})`, false, '|a| is a number; it cannot be dotted with a vector'],
       [`${a}·${b} + |${c}|`, true, 'number plus number'], [`(${a} + ${b})·${c}`, true, 'vector dotted with vector'], [`${a} + ${b}·${c}`, false, 'vector plus number is not defined'], [`(${a}·${b})(${a}·${c})`, true, 'number times number']];
     let qs; do { qs = shuffle(bank).slice(0, 6); } while (qs.every(x => x[1]) || !qs.some(x => x[1]));
-    return {
-      q: `Here ${a}, ${b}, ${c} are vectors and · is the dot product.`,
+    return { v: {}, q: `Here ${a}, ${b}, ${c} are vectors and · is the dot product.`,
       steps: [st('Select every expression that makes sense:', [checks(qs.map(x => x[0]))], [qs.map(x => x[1])], 'For each one decide step by step whether a piece is a number or a vector.', qs.map(x => `${x[0]}: ${x[1] ? '✓' : '✗'} ${x[2]}`).join(' &nbsp;·&nbsp; '))]
     };
   });
@@ -158,8 +151,7 @@ reg('right', 2, 'Is the triangle right-angled?', 'Ar trikampis statusis?',
       at = dp.indexOf(0); break;
     }
     const ar = s => `<span class="bar">${s}</span>`, nm = ['PQ', 'PR', 'QR'];
-    return {
-      q: `A triangle has vertices ${p.map((x, i) => I(N[i]) + pt(x)).join(', ')}.`,
+    return { v: { p }, q: `A triangle has vertices ${p.map((x, i) => I(N[i]) + pt(x)).join(', ')}.`,
       steps: [
         st('Side vectors (end minus start):', nm.map(s => mat(1, 3, `${ar(I(s))} =`)), sides.map(s => [s]), 'For PQ subtract the coordinates of P from those of Q.', nm.map((s, i) => `${ar(I(s))} = ${rv(sides[i])}`).join(', &nbsp;')),
         st('Dot product of the two sides meeting at each vertex:', [num(`at ${I('P')}: ${ar(I('PQ'))}·${ar(I('PR'))} =`, { w: 4 }), num(`at ${I('Q')}: ${ar(I('QP'))}·${ar(I('QR'))} =`, { w: 4 }), num(`at ${I('R')}: ${ar(I('RP'))}·${ar(I('RQ'))} =`, { w: 4 })], dp, 'QP is PQ with every sign flipped, and likewise RP = −PR, RQ = −QR.', `at P: ${H(dp[0])}, &nbsp; at Q: ${H(dp[1])}, &nbsp; at R: ${H(dp[2])}`),
@@ -173,8 +165,7 @@ reg('proj', 2, 'Projection of b onto a', 'Vektoriaus projekcija',
   () => {
     const n = pick([2, 3]); let a, b; do { a = n === 2 && Math.random() < 0.4 ? pick([[3, -4], [4, 3], [-3, 4], [0, 5], [6, 8]]) : rm(1, n, -4, 5)[0]; b = rm(1, n, -5, 6)[0]; } while (n2(a) < 2 || n2(b) === 0);
     const d = dotv(a, b), s = n2(a), pr = a.map(x => new Q(d * x, s));
-    return {
-      q: `Let ${Bv('a')} = ${rv(a)} and ${Bv('b')} = ${rv(b)}. Find the scalar projection comp<sub>${Bv('a')}</sub>${Bv('b')} and the vector projection proj<sub>${Bv('a')}</sub>${Bv('b')}.`,
+    return { v: { a, b }, q: `Let ${Bv('a')} = ${rv(a)} and ${Bv('b')} = ${rv(b)}. Find the scalar projection comp<sub>${Bv('a')}</sub>${Bv('b')} and the vector projection proj<sub>${Bv('a')}</sub>${Bv('b')}.`,
       steps: [
         st('Dot product:', [num(`${Bv('a')}·${Bv('b')} =`)], [d], 'Multiply matching components and add.', `${dots(a, b)} = ${H(d)}`),
         st(`Length of ${Bv('a')}. ${ROOTS}`, [num(`|${Bv('a')}| =`)], [rt2(s)], 'Root of the sum of squares.', `√(${sqs(a)}) = ${H(rt2(s))}`),
@@ -190,8 +181,7 @@ reg('angle', 2, 'Angle between two vectors', 'Kampas tarp vektorių',
     const n = pick([2, 2, 3]); let a, b;
     do { a = rm(1, n, -4, 5)[0]; b = rm(1, n, -4, 5)[0]; if (Math.random() < 0.35 && n === 2) b = [a[1], -a[0]].map(x => x * nz(-2, 2)); } while (!n2(a) || !n2(b) || n2(a) * n2(b) === dotv(a, b) ** 2);
     const d = dotv(a, b), pa = n2(a), pb = n2(b);
-    return {
-      q: `Two change vectors are ${Bv('a')} = ${rv(a)} and ${Bv('b')} = ${rv(b)}. Find the angle θ between them.`,
+    return { v: { a, b }, q: `Two change vectors are ${Bv('a')} = ${rv(a)} and ${Bv('b')} = ${rv(b)}. Find the angle θ between them.`,
       steps: [
         st('Dot product:', [num(`${Bv('a')}·${Bv('b')} =`)], [d], 'Multiply matching components and add.', `${dots(a, b)} = ${H(d)}`),
         st(`Lengths. ${ROOTS}`, [num(`|${Bv('a')}| =`), num(`|${Bv('b')}| =`)], [rt2(pa), rt2(pb)], 'Root of the sum of squares.', `|${Bv('a')}| = ${H(rt2(pa))}, |${Bv('b')}| = ${H(rt2(pb))}`),
@@ -206,8 +196,7 @@ reg('share', 2, 'Relative share of a desired change', 'Santykinė pokyčio dalis
   () => {
     let Vv, A, Bd, s, sa, sb;
     do { Vv = [nz(-5, 9), nz(-5, 9), nz(-6, 6)]; A = [ri(-4, 6), ri(-4, 6), ri(-5, 5)]; Bd = [ri(-4, 6), ri(-4, 6), ri(-5, 5)]; s = n2(Vv); sa = dotv(A, Vv); sb = dotv(Bd, Vv); } while (sa <= 0 || sb <= 0 || sa >= s || sb >= s || sa === sb);
-    return {
-      q: `Researchers want to change the expression of three genes by ${sub('V', 3)} = ${rv(Vv)}. Drug A causes the change ${rv(A)} and drug B causes ${rv(Bd)}.`,
+    return { v: { Vv, A, Bd }, q: `Researchers want to change the expression of three genes by ${sub('V', 3)} = ${rv(Vv)}. Drug A causes the change ${rv(A)} and drug B causes ${rv(Bd)}.`,
       steps: [
         st(`Size of the desired change. ${ROOTS}`, [num(`|${sub('V', 3)}| =`)], [rt2(s)], 'Root of the sum of squares.', `√(${sqs(Vv)}) = ${H(rt2(s))}`),
         st('Dot product of each drug’s vector with the desired change:', [num(`${I('A')}·${sub('V', 3)} =`), num(`${I('B')}·${sub('V', 3)} =`)], [sa, sb], 'Multiply matching components and add.', `${dots(A, Vv)} = ${sa}, &nbsp; ${dots(Bd, Vv)} = ${sb}`),
