@@ -8,7 +8,7 @@
     lt: {
       brand: 'GMC matematikos <b>pratybų</b> treniruoklis', reset: 'Ištrinti pažangą', reset2: 'Spustelėkite dar kartą, kad ištrintumėte', choose: 'Pasirinkite uždavinio tipą', nav: 'Uždavinių tipai',
       mix1: 'Mišrūs uždaviniai (1 KD)', mix1s: '1–8 temos', mix2: 'Mišrūs uždaviniai (ribos)', mix2s: '9 tema', mix: 'mišrūs', title: 'GMC matematikos treniruoklis', skip: 'Praleisti šį uždavinį', stepOf: (k, n) => `${k} žingsnis iš ${n}`, solved: 'išspręsta be pagalbos', streak: 'iš eilės',
-      topic: n => `${n} tema`, method: 'Kaip spręsti šio tipo uždavinius', check: 'Tikrinti', hint: 'Užuomina', show: 'Rodyti atsakymą', solL: 'Sprendimas', nohint: 'Šiam žingsniui užuominos nėra.',
+      topic: n => `${n} tema`, panel: 'Kaip mąstyti', idea: 'Idėja', plan: 'Planas', trap: 'Dažna klaida', quick: 'Pasitikriname', rule: 'Taisyklė', check: 'Tikrinti', hint: 'Užuomina', show: 'Rodyti atsakymą', solL: 'Sprendimas', nohint: 'Šiam žingsniui užuominos nėra.',
       fill: 'Pirmiausia užpildykite visus langelius.', cant: v => `Nepavyko perskaityti „${v}“. Rašykite skaičius, trupmenas (3/4), sqrt(3), pi arba inf.`, pickopt: 'Pirmiausia pasirinkite atsakymą.',
       near: 'Labai arti. Įveskite tikslią reikšmę, pavyzdžiui, trupmeną 2/3.', notthat: 'Ne. Bandykite dar kartą.', notyet: 'Dar ne. Pažymėti langeliai neteisingi.',
       done: 'Išspręsta!', doneHelp: 'Atlikta su pagalba', another: 'Dar vienas toks uždavinys', next: 'Kitas uždavinys', repeat: 'Kartoti šį tipą', answer: 'atsakymas', row: 'eilutė', col: 'stulpelis', enter: t => 'įrašyti ' + t, lang: 'Kalba',
@@ -17,7 +17,7 @@
     en: {
       brand: 'GMC math <b>pratybos</b> trainer', reset: 'Reset progress', reset2: 'Click again to erase progress', choose: 'Choose exercise type', nav: 'Exercise types',
       mix1: 'Test 1 mix', mix1s: 'topics 1–8', mix2: 'Limits mix', mix2s: 'topic 9', mix: 'mix', title: 'GMC Math Trainer', skip: 'Skip this problem', stepOf: (k, n) => `Step ${k} of ${n}`, solved: 'solved without help', streak: 'streak',
-      topic: n => `Topic ${n}`, method: 'How to solve this type', check: 'Check', hint: 'Hint', show: 'Show answer', solL: 'Worked', nohint: 'No hint for this step.',
+      topic: n => `Topic ${n}`, panel: 'How to think about it', idea: 'The idea', plan: 'Plan', trap: 'Common slip', quick: 'Quick check', rule: 'Rule', check: 'Check', hint: 'Hint', show: 'Show answer', solL: 'Worked', nohint: 'No hint for this step.',
       fill: 'Fill in every box first.', cant: v => `I can’t read “${v}”. Use numbers, fractions like 3/4, sqrt(3), pi or inf.`, pickopt: 'Pick an option first.',
       near: 'Very close. Give the exact value, for example a fraction like 2/3.', notthat: 'Not that. Try again.', notyet: 'Not yet. The marked boxes are wrong.',
       done: 'Solved!', doneHelp: 'Done, with help', another: 'Another one like this', next: 'Next problem', repeat: 'Repeat this type', answer: 'answer', row: 'row', col: 'column', enter: t => 'enter ' + t, lang: 'Language',
@@ -34,6 +34,8 @@
   const tName = t => lang === 'lt' ? t.L.name : t.name, tOther = t => lang === 'lt' ? t.name : t.L.name;
   const topName = t => lang === 'lt' ? t.lt : t.name, topOther = t => lang === 'lt' ? t.name : t.lt;
 
+  // the plain-language notes for a type: idea, plan, usual slip, quick check, then the formal rule
+  const explainHtml = t => { const x = EXPLAIN[t.id][lang]; return `<div class="ex"><h4>${S_.idea}</h4><p>${x.idea}</p><h4>${S_.plan}</h4><ol>${x.plan.map(p => `<li>${p}</li>`).join('')}</ol><h4 class="t">${S_.trap}</h4><p>${x.trap}</p><h4 class="c">${S_.quick}</h4><p>${x.check}</p><h4>${S_.rule}</h4><p class="rule">${lang === 'lt' ? t.L.method : t.method}</p></div>`; };
   const byId = Object.fromEntries(TYPES.map(t => [t.id, t]));
   const ALL1 = [1, 2, 3, 4, 5, 6, 7, 8];
   let mode = { kind: 'mix', topics: ALL1, label: 'test1' };
@@ -96,7 +98,8 @@
     const topic = TOPICS.find(t => t.n === type.topic), sheet = $('#sheet'); sheet.innerHTML = '';
     const head = el('div', 'phead', `<span class="tag">${S_.topic(topic.n)}</span><h2>${tName(type)}</h2><span class="lt">${tOther(type)}</span><span class="prog" id="prog"></span>`);
     const skip = el('button', 'linkb skip', S_.skip); skip.type = 'button'; skip.addEventListener('click', () => { interacted = true; newProblem(); }); head.append(skip);
-    const method = el('details', 'method', `<summary>${S_.method}</summary><p>${lang === 'lt' ? type.L.method : type.method}</p>`);
+    const notes = explainHtml(type), method = el('details', 'method', `<summary>${S_.panel}</summary>${notes}`);
+    const aside = $('#explain'); aside.innerHTML = `<h3>${S_.panel}</h3>${notes}`; aside.setAttribute('aria-label', S_.panel); aside.scrollTop = 0;
     const stmt = el('div', 'stmt math', dotfix(cur.prob.q));
     const steps = el('ol', 'steps'); steps.id = 'steps';
     sheet.append(head, method, stmt, steps);

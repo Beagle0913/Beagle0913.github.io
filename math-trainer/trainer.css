@@ -78,6 +78,23 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .method { margin: 8px 0 14px; border-left: 3px solid var(--pen); padding: 2px 0 2px 12px; max-width: 70ch; }
 .method summary { cursor: pointer; color: var(--pen); font-weight: 600; font-size: 14px; }
 .method p { margin: 6px 0 2px; font-size: 14.5px; }
+.explain { display: none; }
+.ex h4 { font: 600 12px/1.2 var(--ui); letter-spacing: .05em; text-transform: uppercase; color: var(--ink2); margin: 14px 0 4px; }
+.ex h4:first-child { margin-top: 0; }
+.ex h4.t { color: var(--bad); }
+.ex h4.c { color: var(--good); }
+.ex p, .ex ol { margin: 0; font: 14.5px/1.55 var(--ui); max-width: 62ch; }
+.ex ol { padding-left: 1.3em; display: grid; gap: 4px; }
+.ex p.rule { color: var(--ink2); font-size: 13.5px; }
+.method .ex { margin: 10px 0 4px; }
+@media (min-width: 1360px) {
+  /* wide screens: the notes sit in their own column beside the problem */
+  .top, .app { max-width: 1560px; }
+  .app { grid-template-columns: 290px minmax(0, 1fr) minmax(300px, 360px); }
+  .explain { display: block; position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; overscroll-behavior: contain; border-left: 3px solid var(--pen); padding: 2px 6px 14px 18px; scrollbar-width: thin; }
+  .explain h3 { font: 700 26px/1.1 var(--hand); color: var(--pen); margin: 0 0 12px; }
+  .method { display: none; }
+}
 .math { font-family: var(--math); font-size: 19px; line-height: 1.9; }
 .stmt { margin: 6px 0 16px; overflow-x: auto; padding-bottom: 2px; }
 .fig { overflow-x: auto; margin-top: 6px; }
@@ -149,6 +166,7 @@ sup .fr, sub .fr { font-size: .8em; }
 .sys { display: inline-flex; flex-direction: column; vertical-align: middle; border-left: 2px solid currentColor; border-radius: 9px 0 0 9px; padding: .1em 0 .1em .7em; margin: .25em .5em; line-height: 1.6; }
 .lim { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin-right: .3em; line-height: 1.1; }
 .lim > span:last-child { font-size: .72em; }
+.nw { white-space: nowrap; }
 .rt { white-space: nowrap; }
 .rt > .rd { border-top: 1.5px solid currentColor; padding: 0 .15em; }
 .rt > sup { font-size: .6em; margin-right: -.25em; vertical-align: .9em; }
