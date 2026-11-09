@@ -272,9 +272,9 @@ regLT('limside', 'Vienpusės ribos',
     const mk = () => {
       const c = nz(-5, 6), n = ri(1, 4), a = pick([0, 0, 0, ri(1, 4), -ri(1, 3)]), side = pick([1, 1, -1, -1, 2]);
       const den = n === 1 ? (a ? `(${lin(a)})` : I('x')) : (a ? `(${lin(a)})<sup>${n}</sup>` : `${I('x')}<sup>${n}</sup>`), f = big(H(c), a && n === 1 ? lin(a) : den);
-      if (side === 2) { const to = pick(['+∞', '−∞']); return st(`${lim('x', to)} ${f}`, [choice(LOPTL.slice(0, 3))], [0], 'Vardiklis neaprėžtai didėja moduliu.', 'skaičius/∞ = 0'); }
+      if (side === 2) { const to = pick(['+∞', '−∞']); return st(`${limOf('x', to, f)}`, [choice(LOPTL.slice(0, 3))], [0], 'Vardiklis neaprėžtai didėja moduliu.', 'skaičius/∞ = 0'); }
       const sg = Math.sign(c) * (side < 0 && n % 2 ? -1 : 1), to = `${H(a)}${side > 0 ? '<sup>+</sup>' : '<sup>−</sup>'}`;
-      return st(`${lim('x', to)} ${f}`, [choice(LOPTL.slice(0, 3))], [sg > 0 ? 1 : 2], `x artėja prie ${H(a)} iš ${side > 0 ? 'dešinės' : 'kairės'}, todėl ${a ? lin(a) : 'x'} yra labai mažas ${side > 0 ? 'teigiamas' : 'neigiamas'} skaičius. Koks laipsnio ženklas? O visos trupmenos?`,
+      return st(`${limOf('x', to, f)}`, [choice(LOPTL.slice(0, 3))], [sg > 0 ? 1 : 2], `x artėja prie ${H(a)} iš ${side > 0 ? 'dešinės' : 'kairės'}, todėl ${a ? lin(a) : 'x'} yra labai mažas ${side > 0 ? 'teigiamas' : 'neigiamas'} skaičius. Koks laipsnio ženklas? O visos trupmenos?`,
         `Vardiklis: labai mažas ${side < 0 && n % 2 ? 'neigiamas' : 'teigiamas'} skaičius. Skaitiklis ${H(c)} yra ${c > 0 ? 'teigiamas' : 'neigiamas'}. Atsakymas: ${sg > 0 ? '+∞' : '−∞'}.`);
     };
     return { q: 'Apskaičiuokite ribas.', steps: [mk(), mk(), mk()] };
@@ -287,7 +287,7 @@ regLT('limrat', 'Racionalioji trupmena, kai x → ∞',
     const np = p === 0 ? [lp] : randPoly(p, lp), dp = randPoly(q, lq), desc = Math.random() < 0.5;
     const ans = kind === 0 ? new Q(lp, lq) : kind === 1 ? 0 : (lp / lq > 0 ? Infinity : -Infinity);
     return {
-      q: `Apskaičiuokite ribą ${lim(v, '+∞')} ${big(poly(np, v, desc), poly(dp, v, desc))}.`,
+      q: `Apskaičiuokite ribą ${limOf(v, '+∞', big(poly(np, v, desc), poly(dp, v, desc)))}.`,
       steps: [
         st('Aukščiausias kintamojo laipsnis:', [num('skaitiklyje:', { w: 3 }), num('vardiklyje:', { w: 3 })], [p, q], 'Ieškokite didžiausio laipsnio rodiklio, kad ir kurioje reiškinio vietoje jis būtų.', `Skaitiklyje: ${pw(v, p) || v + ' nėra (laipsnis 0)'}, vardiklyje: ${pw(v, q)}.`),
         st('Riba:', [num('=', INF)], [ans], kind === 0 ? 'Laipsniai vienodi: padalykite vyriausiuosius koeficientus.' : kind === 1 ? 'Vardiklis auga greičiau.' : 'Skaitiklis auga greičiau. Koks ženklas?', kind === 0 ? `Vyriausieji nariai: ${big(terms([[lp, pw(v, p)]]), terms([[lq, pw(v, q)]]))} → ${H(ans)}` : kind === 1 ? 'Skaitiklio laipsnis mažesnis: riba lygi 0.' : `Vyriausieji nariai: ${big(terms([[lp, pw(v, p)]]), terms([[lq, pw(v, q)]]))} = ${terms([[new Q(lp, lq), pw(v, p - q)]])} → ${H(ans)}`)
@@ -301,7 +301,7 @@ regLT('limfactor', '0/0: skaidymas daugikliais',
     if (Math.random() < 0.3) {
       const a = pick([1, 2, 3, -1, -2]), ans = new Q(3 * a, 2);
       return {
-        q: `Apskaičiuokite ribą ${lim('x', H(a))} ${big(poly([-a * a * a, 0, 0, 1], 'x'), poly([-a * a, 0, 1], 'x'))}.`,
+        q: `Apskaičiuokite ribą ${limOf('x', H(a), big(poly([-a * a * a, 0, 0, 1], 'x'), poly([-a * a, 0, 1], 'x')))}.`,
         steps: [
           st(`Skaitiklis = (${lin(a)})·(…). Antrasis daugiklis:`, [num(`${I('x')}<sup>2</sup> +`, { after: I('x'), w: 4 }), num('+', { w: 4 })], [a, a * a], 'a³ − b³ = (a − b)(a² + ab + b²)', `${poly([-a * a * a, 0, 0, 1], 'x')} = (${lin(a)})(${poly([a * a, a, 1], 'x')})`),
           st(`Vardiklis = (${lin(a)})·(…). Antrasis daugiklis:`, [num(`${I('x')} +`, { w: 4 })], [a], 'a² − b² = (a − b)(a + b)', `${poly([-a * a, 0, 1], 'x')} = (${lin(a)})(${lin(-a)})`),
@@ -312,7 +312,7 @@ regLT('limfactor', '0/0: skaidymas daugikliais',
     let a, r1, r2; do { a = ri(-4, 5); r1 = ri(-5, 6); r2 = ri(-5, 6); } while (r1 === a || r2 === a || r1 === r2);
     const np = [a * r1, -(a + r1), 1], dp = [a * r2, -(a + r2), 1], ans = new Q(a - r1, a - r2);
     return {
-      q: `Apskaičiuokite ribą ${lim('x', H(a))} ${big(poly(np, 'x'), poly(dp, 'x'))}.`,
+      q: `Apskaičiuokite ribą ${limOf('x', H(a), big(poly(np, 'x'), poly(dp, 'x')))}.`,
       steps: [
         st(`Įstatę ${I('x')} = ${H(a)} gauname 0/0, todėl abu reiškiniai turi daugiklį (${lin(a)}). Raskite kitą kiekvieno šaknį:`, [num('kita skaitiklio šaknis:', { w: 4 }), num('kita vardiklio šaknis:', { w: 4 })], [r1, r2], 'Naudokite diskriminantą arba Vieto teoremą: šaknų sandauga lygi laisvajam nariui.', `Skaitiklis = (${lin(a)})(${lin(r1)}), vardiklis = (${lin(a)})(${lin(r2)})`),
         st(`Suprastinkite (${lin(a)}) ir įstatykite ${I('x')} = ${H(a)}:`, [num('riba =', INF)], [ans], `${big(lin(r1), lin(r2))}, kai x = ${H(a)}`, `${big(`${H(a)} − ${P(r1)}`, `${H(a)} − ${P(r2)}`)} = ${H(ans)}`)
@@ -328,7 +328,7 @@ regLT('limconj', '0/0 su šaknimi: jungtinis reiškinys',
       const a = pick([1, 4, 9]), b = ri(1, 5), c = ri(1, 5), d = pick([1, 1, 2, 3]), ra = Math.sqrt(a), ans = new Q(b + c, 2 * ra * d);
       const s1 = root(terms([[a, ''], [b, I('x')]])), s2 = root(terms([[a, ''], [-c, I('x')]]));
       return {
-        q: `Apskaičiuokite ribą ${lim('x', 0)} ${big(`${s1} − ${s2}`, terms([[d, I('x')]]))}.`,
+        q: `Apskaičiuokite ribą ${limOf('x', 0, big(`${s1} − ${s2}`, terms([[d, I('x')]])))}.`,
         steps: [
           st(`Skaitiklį ir vardiklį padauginkite iš ${s1} + ${s2}. Skaitiklis tampa:`, [num('', { after: `·${I('x')}`, w: 4 })], [b + c], `(${terms([[a, ''], [b, I('x')]])}) − (${terms([[a, ''], [-c, I('x')]])})`, `(${terms([[a, ''], [b, I('x')]])}) − (${terms([[a, ''], [-c, I('x')]])}) = ${b + c}${I('x')}`),
           st(`Suprastinkite ${I('x')}, tada įstatykite ${I('x')} = 0:`, [num('riba =', INF)], [ans], `${big(b + c, `${d === 1 ? '' : d + '·'}(${s1} + ${s2})`)}, kai x = 0`, `${big(b + c, `${d === 1 ? '' : d + '·'}(${ra} + ${ra})`)} = ${H(ans)}`)
@@ -338,7 +338,7 @@ regLT('limconj', '0/0 su šaknimi: jungtinis reiškinys',
     const a = ri(-2, 5), r = ri(1, 5), p = ri(1, 5), q = r * r - p * a, rt = root(terms([[p, I('x')], [q, '']])), flip = kind === 1, ans = flip ? new Q(2 * r, p) : new Q(p, 2 * r);
     const top = `${rt} − ${r}`, bot = lin(a);
     return {
-      q: `Apskaičiuokite ribą ${lim('x', H(a))} ${flip ? big(bot, top) : big(top, bot)}.`,
+      q: `Apskaičiuokite ribą ${limOf('x', H(a), flip ? big(bot, top) : big(top, bot))}.`,
       steps: [
         st(`Skaitiklį ir vardiklį padauginkite iš jungtinio reiškinio ${rt} + ${r}. Tada (${rt} − ${r})(${rt} + ${r}) supaprastėja iki:`, [num('', { after: `·(${lin(a)})`, w: 4 })], [p], `(${terms([[p, I('x')], [q, '']])}) − ${r * r} = ${terms([[p, I('x')], [q - r * r, '']])}. Iškelkite bendrą daugiklį.`, `${terms([[p, I('x')], [q - r * r, '']])} = ${p}(${lin(a)})`),
         st(`Suprastinus (${lin(a)}) lieka jungtinis reiškinys. Kai ${I('x')} = ${H(a)}: ${rt} + ${r} =`, [num('')], [2 * r], `√(${p}·${P(a)} ${q < 0 ? '−' : '+'} ${Math.abs(q)}) + ${r}`, `√${r * r} + ${r} = ${2 * r}`),
@@ -354,7 +354,7 @@ regLT('limroot', 'Šaknys, kai x → ∞',
     if (kind === 0) {
       const a = ri(1, 4), d = nz(-3, 4), c = ri(1, 6), e = pick(['π', '1', '3', '5']), ans = new Q(a, d), rt = root(terms([[c, ''], [a * a, pw('x', 2)]]));
       return {
-        q: `Apskaičiuokite ribą ${lim('x', '+∞')} ${big(rt, `${e} ${d < 0 ? '−' : '+'} ${Math.abs(d) === 1 ? '' : Math.abs(d)}${I('x')}`)}.`,
+        q: `Apskaičiuokite ribą ${limOf('x', '+∞', big(rt, `${e} ${d < 0 ? '−' : '+'} ${Math.abs(d) === 1 ? '' : Math.abs(d)}${I('x')}`))}.`,
         steps: [
           st(`Kai ${I('x')} reikšmės didelės, ${rt} elgiasi kaip:`, [num('', { after: `·${I('x')}`, w: 4 })], [a], '√(a²x²) = a·x, kai x teigiamas; konstanta po šaknimi nebeturi įtakos.', `${rt} ≈ ${root(`${a * a}${pw('x', 2)}`)} = ${a}${I('x')}`),
           st('Palyginkite vyriausiuosius narius:', [num('riba =', INF)], [ans], `${big(`${a}x`, `${d}x`)}`, `${big(`${a}${I('x')}`, `${H(d)}${I('x')}`)} → ${H(ans)}`)
@@ -365,7 +365,7 @@ regLT('limroot', 'Šaknys, kai x → ∞',
       const pairs = [[8, 2, 2], [18, 2, 3], [12, 3, 2], [27, 3, 3], [5, 3, 0], [7, 2, 0], [2, 3, 0], [20, 5, 2], [3, 1, 0], [32, 2, 4]], [p, q, sq] = pick(pairs), b = ri(1, 5), c = ri(1, 5);
       const ans = sq ? sq : { v: Math.sqrt(p / q), s: `sqrt(${new Q(p, q).str()})`, h: root(H(new Q(p, q))) };
       return {
-        q: `Apskaičiuokite ribą ${lim('x', '+∞')} ${big(root(terms([[b, ''], [p, I('x')]])), root(terms([[q, I('x')], [-c, '']])))}.`,
+        q: `Apskaičiuokite ribą ${limOf('x', '+∞', big(root(terms([[b, ''], [p, I('x')]])), root(terms([[q, I('x')], [-c, '']]))))}.`,
         steps: [st('Viską surašykite po viena šaknimi ir palyginkite vyriausiuosius narius. Šaknį rašykite taip: sqrt(5/3).', [num('riba =', INF)], [ans], `${root(big(terms([[b, ''], [p, I('x')]]), terms([[q, I('x')], [-c, '']])))}; trupmena po šaknimi artėja prie ${H(new Q(p, q))}.`, `${root(H(new Q(p, q)))}${sq ? ' = ' + sq : ''}`)]
       };
     }
@@ -373,7 +373,7 @@ regLT('limroot', 'Šaknys, kai x → ∞',
     const numRoot = root(terms([[A, pw('x', k * m)], [ri(1, 4), pw('x', m)], [1, '']]), k === 3 ? 3 : ''), denRoot = root(terms([[1, ''], [ri(1, 3), pw('x', m)], [C * C, pw('x', 2 * m)]]));
     const ans = new Q(A0 + B, C), xm = pw('x', m);
     return {
-      q: `Apskaičiuokite ribą ${lim('x', '+∞')} ${big(`${numRoot} ${B < 0 ? '−' : '+'} ${Math.abs(B) === 1 ? '' : Math.abs(B)}${xm}${m === 2 ? ` − 2${I('x')}` : ''}`, `${denRoot} + ${dd}`)}.`,
+      q: `Apskaičiuokite ribą ${limOf('x', '+∞', big(`${numRoot} ${B < 0 ? '−' : '+'} ${Math.abs(B) === 1 ? '' : Math.abs(B)}${xm}${m === 2 ? ` − 2${I('x')}` : ''}`, `${denRoot} + ${dd}`))}.`,
       steps: [
         st(`Šaknų elgesys, kai ${I('x')} reikšmės didelės:`, [num(`${numRoot} ≈`, { after: `·${xm}`, w: 4 }), num(`${denRoot} ≈`, { after: `·${xm}`, w: 4 })], [A0, C], `Po kiekviena šaknimi palikite tik aukščiausią laipsnį: ${root(`${A}${pw('x', k * m)}`, k === 3 ? 3 : '')} ir ${root(`${C * C}${pw('x', 2 * m)}`)}.`, `${numRoot} ≈ ${A0}${xm}, &nbsp; ${denRoot} ≈ ${C}${xm}`),
         st(`Palyginkite ${xm} koeficientus skaitiklyje ir vardiklyje:`, [num('riba =', INF)], [ans], `Skaitiklis: (${A0} ${B < 0 ? '−' : '+'} ${Math.abs(B)})${xm}. Vardiklis: ${C}${xm}.`, `${big(`${A0} ${B < 0 ? '−' : '+'} ${Math.abs(B)}`, C)} = ${H(ans)}`)

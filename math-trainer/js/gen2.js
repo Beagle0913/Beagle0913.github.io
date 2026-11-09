@@ -299,9 +299,9 @@ reg('limside', 9, 'One-sided limits of 1/xⁿ', 'Vienpusės ribos',
     const mk = () => {
       const c = nz(-5, 6), n = ri(1, 4), a = pick([0, 0, 0, ri(1, 4), -ri(1, 3)]), side = pick([1, 1, -1, -1, 2]); vv.push({ c, n, a, side });
       const den = n === 1 ? (a ? `(${lin(a)})` : I('x')) : (a ? `(${lin(a)})<sup>${n}</sup>` : `${I('x')}<sup>${n}</sup>`), f = big(H(c), a && n === 1 ? lin(a) : den);
-      if (side === 2) { const to = pick(['+∞', '−∞']); return st(`${lim('x', to)} ${f}`, [choice(LOPT.slice(0, 3))], [0], 'The denominator grows without bound.', 'number/∞ = 0'); }
+      if (side === 2) { const to = pick(['+∞', '−∞']); return st(`${limOf('x', to, f)}`, [choice(LOPT.slice(0, 3))], [0], 'The denominator grows without bound.', 'number/∞ = 0'); }
       const sg = Math.sign(c) * (side < 0 && n % 2 ? -1 : 1), to = `${H(a)}${side > 0 ? '<sup>+</sup>' : '<sup>−</sup>'}`;
-      return st(`${lim('x', to)} ${f}`, [choice(LOPT.slice(0, 3))], [sg > 0 ? 1 : 2], `x approaches ${H(a)} from the ${side > 0 ? 'right, so' : 'left, so'} ${a ? lin(a) : 'x'} is a tiny ${side > 0 ? 'positive' : 'negative'} number. What sign does the power have? And the whole fraction?`,
+      return st(`${limOf('x', to, f)}`, [choice(LOPT.slice(0, 3))], [sg > 0 ? 1 : 2], `x approaches ${H(a)} from the ${side > 0 ? 'right, so' : 'left, so'} ${a ? lin(a) : 'x'} is a tiny ${side > 0 ? 'positive' : 'negative'} number. What sign does the power have? And the whole fraction?`,
         `Denominator: tiny ${side < 0 && n % 2 ? 'negative' : 'positive'} number. Numerator ${H(c)} is ${c > 0 ? 'positive' : 'negative'}. Result: ${sg > 0 ? '+∞' : '−∞'}.`);
     };
     return { v: { items: vv }, q: 'Find each limit.', steps: [mk(), mk(), mk()] };
@@ -314,7 +314,7 @@ reg('limrat', 9, 'Polynomial fraction at infinity', 'Racionalioji trupmena, kai 
     const v = pick(['x', 'n']), kind = pick([0, 0, 0, 1, 2]), q = ri(1, 5), p = kind === 0 ? q : kind === 1 ? ri(0, q - 1) : q + ri(1, 2), lp = nz(-5, 6), lq = nz(-5, 6);
     const np = p === 0 ? [lp] : randPoly(p, lp), dp = randPoly(q, lq), desc = Math.random() < 0.5;
     const ans = kind === 0 ? new Q(lp, lq) : kind === 1 ? 0 : (lp / lq > 0 ? Infinity : -Infinity);
-    return { v: { np, dp }, q: `Find ${lim(v, '+∞')} ${big(poly(np, v, desc), poly(dp, v, desc))}.`,
+    return { v: { np, dp }, q: `Find ${limOf(v, '+∞', big(poly(np, v, desc), poly(dp, v, desc)))}.`,
       steps: [
         st('Highest power of the variable:', [num('in the numerator:', { w: 3 }), num('in the denominator:', { w: 3 })], [p, q], 'Look for the largest exponent, wherever it stands in the expression.', `Numerator: ${pw(v, p) || 'no ' + v + ' (degree 0)'}, denominator: ${pw(v, q)}.`),
         st('The limit:', [num('=', INF)], [ans], kind === 0 ? 'Same degree: divide the leading coefficients.' : kind === 1 ? 'The denominator grows faster.' : 'The numerator grows faster. Which sign?', kind === 0 ? `Leading terms: ${big(terms([[lp, pw(v, p)]]), terms([[lq, pw(v, q)]]))} → ${H(ans)}` : kind === 1 ? 'Lower degree on top: the limit is 0.' : `Leading terms: ${big(terms([[lp, pw(v, p)]]), terms([[lq, pw(v, q)]]))} = ${terms([[new Q(lp, lq), pw(v, p - q)]])} → ${H(ans)}`)
@@ -327,7 +327,7 @@ reg('limfactor', 9, '0/0: factor and cancel', '0/0: skaidymas daugikliais',
   () => {
     if (Math.random() < 0.3) {
       const a = pick([1, 2, 3, -1, -2]), ans = new Q(3 * a, 2);
-      return { v: { np: [-a * a * a, 0, 0, 1], dp: [-a * a, 0, 1], a }, q: `Find ${lim('x', H(a))} ${big(poly([-a * a * a, 0, 0, 1], 'x'), poly([-a * a, 0, 1], 'x'))}.`,
+      return { v: { np: [-a * a * a, 0, 0, 1], dp: [-a * a, 0, 1], a }, q: `Find ${limOf('x', H(a), big(poly([-a * a * a, 0, 0, 1], 'x'), poly([-a * a, 0, 1], 'x')))}.`,
         steps: [
           st(`Numerator = (${lin(a)})·(…). The second factor is:`, [num(`${I('x')}<sup>2</sup> +`, { after: I('x'), w: 4 }), num('+', { w: 4 })], [a, a * a], 'a³ − b³ = (a − b)(a² + ab + b²)', `${poly([-a * a * a, 0, 0, 1], 'x')} = (${lin(a)})(${poly([a * a, a, 1], 'x')})`),
           st(`Denominator = (${lin(a)})·(…). The second factor is:`, [num(`${I('x')} +`, { w: 4 })], [a], 'a² − b² = (a − b)(a + b)', `${poly([-a * a, 0, 1], 'x')} = (${lin(a)})(${lin(-a)})`),
@@ -337,7 +337,7 @@ reg('limfactor', 9, '0/0: factor and cancel', '0/0: skaidymas daugikliais',
     }
     let a, r1, r2; do { a = ri(-4, 5); r1 = ri(-5, 6); r2 = ri(-5, 6); } while (r1 === a || r2 === a || r1 === r2);
     const np = [a * r1, -(a + r1), 1], dp = [a * r2, -(a + r2), 1], ans = new Q(a - r1, a - r2);
-    return { v: { np, dp, a }, q: `Find ${lim('x', H(a))} ${big(poly(np, 'x'), poly(dp, 'x'))}.`,
+    return { v: { np, dp, a }, q: `Find ${limOf('x', H(a), big(poly(np, 'x'), poly(dp, 'x')))}.`,
       steps: [
         st(`Substituting ${I('x')} = ${H(a)} gives 0/0, so both parts contain the factor (${lin(a)}). Find the other root of each:`, [num('other root of the numerator:', { w: 4 }), num('other root of the denominator:', { w: 4 })], [r1, r2], 'Use the discriminant, or Vieta: the product of the two roots equals the constant term.', `Numerator = (${lin(a)})(${lin(r1)}), denominator = (${lin(a)})(${lin(r2)})`),
         st(`Cancel (${lin(a)}) and substitute ${I('x')} = ${H(a)}:`, [num('limit =', INF)], [ans], `${big(lin(r1), lin(r2))} at x = ${H(a)}`, `${big(`${H(a)} − ${P(r1)}`, `${H(a)} − ${P(r2)}`)} = ${H(ans)}`)
@@ -352,7 +352,7 @@ reg('limconj', 9, '0/0 with a square root: conjugate', '0/0 su šaknimi: jungtin
     if (kind === 2) {
       const a = pick([1, 4, 9]), b = ri(1, 5), c = ri(1, 5), d = pick([1, 1, 2, 3]), ra = Math.sqrt(a), ans = new Q(b + c, 2 * ra * d);
       const s1 = root(terms([[a, ''], [b, I('x')]])), s2 = root(terms([[a, ''], [-c, I('x')]]));
-      return { v: { f: x => (Math.sqrt(a + b * x) - Math.sqrt(a - c * x)) / (d * x), at: 0 }, q: `Find ${lim('x', 0)} ${big(`${s1} − ${s2}`, terms([[d, I('x')]]))}.`,
+      return { v: { f: x => (Math.sqrt(a + b * x) - Math.sqrt(a - c * x)) / (d * x), at: 0 }, q: `Find ${limOf('x', 0, big(`${s1} − ${s2}`, terms([[d, I('x')]])))}.`,
         steps: [
           st(`Multiply top and bottom by ${s1} + ${s2}. The numerator becomes:`, [num('', { after: `·${I('x')}`, w: 4 })], [b + c], `(${terms([[a, ''], [b, I('x')]])}) − (${terms([[a, ''], [-c, I('x')]])})`, `(${terms([[a, ''], [b, I('x')]])}) − (${terms([[a, ''], [-c, I('x')]])}) = ${b + c}${I('x')}`),
           st(`Cancel ${I('x')}, then substitute ${I('x')} = 0:`, [num('limit =', INF)], [ans], `${big(b + c, `${d === 1 ? '' : d + '·'}(${s1} + ${s2})`)} at x = 0`, `${big(b + c, `${d === 1 ? '' : d + '·'}(${ra} + ${ra})`)} = ${H(ans)}`)
@@ -361,7 +361,7 @@ reg('limconj', 9, '0/0 with a square root: conjugate', '0/0 su šaknimi: jungtin
     }
     const a = ri(-2, 5), r = ri(1, 5), p = ri(1, 5), q = r * r - p * a, rt = root(terms([[p, I('x')], [q, '']])), flip = kind === 1, ans = flip ? new Q(2 * r, p) : new Q(p, 2 * r);
     const top = `${rt} − ${r}`, bot = lin(a);
-    return { v: { f: x => flip ? (x - a) / (Math.sqrt(p * x + q) - r) : (Math.sqrt(p * x + q) - r) / (x - a), at: a }, q: `Find ${lim('x', H(a))} ${flip ? big(bot, top) : big(top, bot)}.`,
+    return { v: { f: x => flip ? (x - a) / (Math.sqrt(p * x + q) - r) : (Math.sqrt(p * x + q) - r) / (x - a), at: a }, q: `Find ${limOf('x', H(a), flip ? big(bot, top) : big(top, bot))}.`,
       steps: [
         st(`Multiply top and bottom by the conjugate ${rt} + ${r}. Then (${rt} − ${r})(${rt} + ${r}) simplifies to:`, [num('', { after: `·(${lin(a)})`, w: 4 })], [p], `(${terms([[p, I('x')], [q, '']])}) − ${r * r} = ${terms([[p, I('x')], [q - r * r, '']])}. Take the common factor out.`, `${terms([[p, I('x')], [q - r * r, '']])} = ${p}(${lin(a)})`),
         st(`After cancelling (${lin(a)}), the conjugate is left. At ${I('x')} = ${H(a)}: ${rt} + ${r} =`, [num('')], [2 * r], `√(${p}·${P(a)} ${q < 0 ? '−' : '+'} ${Math.abs(q)}) + ${r}`, `√${r * r} + ${r} = ${2 * r}`),
@@ -376,7 +376,7 @@ reg('limroot', 9, 'Roots at infinity', 'Šaknys, kai x → ∞',
     const kind = ri(0, 2);
     if (kind === 0) {
       const a = ri(1, 4), d = nz(-3, 4), c = ri(1, 6), e = pick(['π', '1', '3', '5']), ans = new Q(a, d), rt = root(terms([[c, ''], [a * a, pw('x', 2)]]));
-      return { v: { f: x => Math.sqrt(c + a * a * x * x) / ((e === 'π' ? Math.PI : +e) + d * x), at: Infinity }, q: `Find ${lim('x', '+∞')} ${big(rt, `${e} ${d < 0 ? '−' : '+'} ${Math.abs(d) === 1 ? '' : Math.abs(d)}${I('x')}`)}.`,
+      return { v: { f: x => Math.sqrt(c + a * a * x * x) / ((e === 'π' ? Math.PI : +e) + d * x), at: Infinity }, q: `Find ${limOf('x', '+∞', big(rt, `${e} ${d < 0 ? '−' : '+'} ${Math.abs(d) === 1 ? '' : Math.abs(d)}${I('x')}`))}.`,
         steps: [
           st(`For large ${I('x')}, ${rt} behaves like:`, [num('', { after: `·${I('x')}`, w: 4 })], [a], '√(a²x²) = a·x for positive x; the constant under the root stops mattering.', `${rt} ≈ ${root(`${a * a}${pw('x', 2)}`)} = ${a}${I('x')}`),
           st('Compare leading terms:', [num('limit =', INF)], [ans], `${big(`${a}x`, `${d}x`)}`, `${big(`${a}${I('x')}`, `${H(d)}${I('x')}`)} → ${H(ans)}`)
@@ -386,7 +386,7 @@ reg('limroot', 9, 'Roots at infinity', 'Šaknys, kai x → ∞',
     if (kind === 1) {
       const pairs = [[8, 2, 2], [18, 2, 3], [12, 3, 2], [27, 3, 3], [5, 3, 0], [7, 2, 0], [2, 3, 0], [20, 5, 2], [3, 1, 0], [32, 2, 4]], [p, q, sq] = pick(pairs), b = ri(1, 5), c = ri(1, 5);
       const ans = sq ? sq : { v: Math.sqrt(p / q), s: `sqrt(${new Q(p, q).str()})`, h: root(H(new Q(p, q))) };
-      return { v: { f: x => Math.sqrt(b + p * x) / Math.sqrt(q * x - c), at: Infinity }, q: `Find ${lim('x', '+∞')} ${big(root(terms([[b, ''], [p, I('x')]])), root(terms([[q, I('x')], [-c, '']])))}.`,
+      return { v: { f: x => Math.sqrt(b + p * x) / Math.sqrt(q * x - c), at: Infinity }, q: `Find ${limOf('x', '+∞', big(root(terms([[b, ''], [p, I('x')]])), root(terms([[q, I('x')], [-c, '']]))))}.`,
         steps: [st('Put everything under one root and compare leading terms. Type a root as sqrt(5/3).', [num('limit =', INF)], [ans], `${root(big(terms([[b, ''], [p, I('x')]]), terms([[q, I('x')], [-c, '']])))}; inside, the fraction tends to ${H(new Q(p, q))}.`, `${root(H(new Q(p, q)))}${sq ? ' = ' + sq : ''}`)]
       };
     }
@@ -394,7 +394,7 @@ reg('limroot', 9, 'Roots at infinity', 'Šaknys, kai x → ∞',
     const c1 = ri(1, 4), c2 = ri(1, 3);
     const numRoot = root(terms([[A, pw('x', k * m)], [c1, pw('x', m)], [1, '']]), k === 3 ? 3 : ''), denRoot = root(terms([[1, ''], [c2, pw('x', m)], [C * C, pw('x', 2 * m)]]));
     const ans = new Q(A0 + B, C), xm = pw('x', m);
-    return { v: { f: x => (Math.pow(A * Math.pow(x, k * m) + c1 * Math.pow(x, m) + 1, 1 / k) + B * Math.pow(x, m) - (m === 2 ? 2 * x : 0)) / (Math.sqrt(1 + c2 * Math.pow(x, m) + C * C * Math.pow(x, 2 * m)) + dd), at: Infinity }, q: `Find ${lim('x', '+∞')} ${big(`${numRoot} ${B < 0 ? '−' : '+'} ${Math.abs(B) === 1 ? '' : Math.abs(B)}${xm}${m === 2 ? ` − 2${I('x')}` : ''}`, `${denRoot} + ${dd}`)}.`,
+    return { v: { f: x => (Math.pow(A * Math.pow(x, k * m) + c1 * Math.pow(x, m) + 1, 1 / k) + B * Math.pow(x, m) - (m === 2 ? 2 * x : 0)) / (Math.sqrt(1 + c2 * Math.pow(x, m) + C * C * Math.pow(x, 2 * m)) + dd), at: Infinity }, q: `Find ${limOf('x', '+∞', big(`${numRoot} ${B < 0 ? '−' : '+'} ${Math.abs(B) === 1 ? '' : Math.abs(B)}${xm}${m === 2 ? ` − 2${I('x')}` : ''}`, `${denRoot} + ${dd}`))}.`,
       steps: [
         st(`Leading behaviour of the roots for large ${I('x')}:`, [num(`${numRoot} ≈`, { after: `·${xm}`, w: 4 }), num(`${denRoot} ≈`, { after: `·${xm}`, w: 4 })], [A0, C], `Keep only the highest power under each root: ${root(`${A}${pw('x', k * m)}`, k === 3 ? 3 : '')} and ${root(`${C * C}${pw('x', 2 * m)}`)}.`, `${numRoot} ≈ ${A0}${xm}, &nbsp; ${denRoot} ≈ ${C}${xm}`),
         st(`Compare the coefficients of ${xm} on top and bottom:`, [num('limit =', INF)], [ans], `Top: (${A0} ${B < 0 ? '−' : '+'} ${Math.abs(B)})${xm}. Bottom: ${C}${xm}.`, `${big(`${A0} ${B < 0 ? '−' : '+'} ${Math.abs(B)}`, C)} = ${H(ans)}`)

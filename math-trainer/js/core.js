@@ -70,6 +70,7 @@ function poly(c, v, desc = true) {            // c[k] = coefficient of v^k
 const lin = (a, v = 'x') => a === 0 ? I(v) : `${I(v)} ${a < 0 ? '+' : MIN} ${Math.abs(a)}`;   // (x − a)
 const sys = eqs => `<span class="sys">${eqs.map(e => `<span>${e}</span>`).join('')}</span>`;
 const lim = (v, to) => `<span class="lim"><span>lim</span><span>${I(v)}→${to}</span></span>`;
+const limOf = (v, to, expr) => `<span class="nw">${lim(v, to)} ${expr}</span>`;      // keeps “lim” and its expression on one line
 const root = (inner, idx) => `<span class="rt">${idx ? `<sup>${idx}</sup>` : ''}√<span class="rd">${inner}</span></span>`;
 const big = (a, b) => `<span class="fr big"><span>${a}</span><span>${b}</span></span>`;
 

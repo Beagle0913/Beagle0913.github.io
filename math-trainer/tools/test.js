@@ -12,9 +12,9 @@
  */
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const dir = fs.existsSync(path.join(__dirname, 'core.js')) ? __dirname : path.join(__dirname, '..', 'js');
-const code = ['core.js', 'gen1.js', 'gen2.js', 'gen0.js', 'lt1.js', 'lt2.js', 'lt0.js'].map(f => fs.readFileSync(path.join(dir, f), 'utf8')).join('\n') + '\n;globalThis.__x={TYPES,checkStep,numeric,parseNum,S,val,selfCheck};';
+const code = ['core.js', 'gen1.js', 'gen2.js', 'gen0.js', 'lt1.js', 'lt2.js', 'lt0.js', 'explain.js'].map(f => fs.readFileSync(path.join(dir, f), 'utf8')).join('\n') + '\n;globalThis.__x={TYPES,checkStep,numeric,parseNum,S,val,selfCheck,EXPLAIN};';
 vm.runInThisContext(code);
-const { TYPES, checkStep, numeric, parseNum, S, selfCheck } = globalThis.__x;
+const { TYPES, checkStep, numeric, parseNum, S, selfCheck, EXPLAIN } = globalThis.__x;
 const N = +process.argv[2] || 400; let fails = 0;
 const fail = (...a) => { fails++; if (fails <= 40) console.log('FAIL', ...a); };
 const fn = (x, ctx) => typeof x === 'function' ? x(ctx) : x;
@@ -27,6 +27,15 @@ for (const [s, e] of [['3/4', .75], ['-2,5', -2.5], ['0.5', .5], ['3sqrt(2)', 3 
   ['1 1', NaN], ['1 1/2', NaN], ['1.2.3', NaN], ['abc', NaN], ['', NaN], ['3+', NaN], ['(2', NaN], ['2)', NaN], ['1e5', NaN], ['sqrt(-1)', NaN], ['0/0', NaN], ['<b>1</b>', NaN], ['3i', NaN], ['x', NaN]]) {
   const v = parseNum(s); if (!(Object.is(v, e) || Math.abs(v - e) < 1e-12 || (isNaN(v) && isNaN(e)))) fail('parser', JSON.stringify(s), v, e);
 }
+
+/* ---------- every type has complete notes in both languages ---------- */
+for (const t of TYPES) for (const lg of ['en', 'lt']) {
+  const x = EXPLAIN[t.id] && EXPLAIN[t.id][lg];
+  if (!x || !x.idea || !x.trap || !x.check || !Array.isArray(x.plan) || x.plan.length < 2 || x.plan.length > 4) { fail('notes missing or incomplete', lg, t.id); continue; }
+  const words = [x.idea, ...x.plan, x.trap, x.check].join(' ').replace(/<[^>]+>/g, '').split(/\s+/).length;
+  if (words > 110) fail('notes too long', lg, t.id, words);
+}
+for (const id of Object.keys(EXPLAIN)) if (!TYPES.some(t => t.id === id)) fail('notes for unknown type', id);
 
 /* ---------- independent maths used only by the verifier ---------- */
 const Nn = x => (x && typeof x === 'object') ? (('n' in x && 'd' in x) ? x.n / x.d : x.v) : x;

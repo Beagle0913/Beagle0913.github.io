@@ -14,6 +14,7 @@ js/gen1.js     English exercise types for topics 3–5.
 js/gen2.js     English exercise types for topics 6–9.
 js/gen0.js     English exercise types for topics 1–2.
 js/lt1.js, lt2.js, lt0.js   The same exercise types in Lithuanian.
+js/explain.js  Plain-language notes for every type (idea, plan, common slip, quick check), in both languages.
 js/ui.js       The interface and its texts in both languages.
 tools/test.js  Checks every exercise type in both languages.
 ```
