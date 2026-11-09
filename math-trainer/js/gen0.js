@@ -1,7 +1,7 @@
 /* ================= TOPIC 1 — coordinate systems ================= */
 const Bv = s => `<b>${s}</b>`;
-const rv = v => '[' + v.map(H).join('; ') + ']';
-const pt = v => '(' + v.map(H).join('; ') + ')';
+const rv = v => '<span class="nw">[' + v.map(H).join('; ') + ']</span>';
+const pt = v => '<span class="nw">(' + v.map(H).join('; ') + ')</span>';
 const rt2 = n => { const r = Math.round(Math.sqrt(n)); return r * r === n ? r : { v: Math.sqrt(n), s: `sqrt(${n})`, h: `√${n}` }; };
 const overRt = (d, n) => { const r = Math.round(Math.sqrt(n)); if (r * r === n) return new Q(d, r); if (d === 0) return 0; return { v: d / Math.sqrt(n), s: `${d}/sqrt(${n})`, h: (d < 0 ? MIN : '') + FR(Math.abs(d), '√' + n) }; };
 const dotv = (a, b) => a.reduce((s, x, i) => s + x * b[i], 0);
@@ -132,7 +132,7 @@ reg('meaning', 2, 'Which expressions make sense?', 'Kurios išraiškos turi pras
       [`${a}·${b} + |${c}|`, true, 'number plus number'], [`(${a} + ${b})·${c}`, true, 'vector dotted with vector'], [`${a} + ${b}·${c}`, false, 'vector plus number is not defined'], [`(${a}·${b})(${a}·${c})`, true, 'number times number']];
     let qs; do { qs = shuffle(bank).slice(0, 6); } while (qs.every(x => x[1]) || !qs.some(x => x[1]));
     return { v: {}, q: `Here ${a}, ${b}, ${c} are vectors and · is the dot product.`,
-      steps: [st('Select every expression that makes sense:', [checks(qs.map(x => x[0]))], [qs.map(x => x[1])], 'For each one decide step by step whether a piece is a number or a vector.', qs.map(x => `${x[0]}: ${x[1] ? '✓' : '✗'} ${x[2]}`).join(' &nbsp;·&nbsp; '))]
+      steps: [st('Select every expression that makes sense:', [checks(qs.map(x => x[0]))], [qs.map(x => x[1])], 'For each one decide step by step whether a piece is a number or a vector.', qs.map(x => `${x[0]}: ${x[1] ? '✓' : '✗'} ${x[2]}`).join('<br>'))]
     };
   });
 

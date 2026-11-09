@@ -7,6 +7,7 @@ const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { c
 const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a || 1; };
 const PI = Math.PI;
 const MIN = '−';
+let DECIMAL = ',';                       // decimal mark for shown and pre-filled numbers; the interface sets it per language
 
 /* ---------- exact fractions ---------- */
 class Q {
@@ -28,7 +29,7 @@ function H(x) {
   if (x instanceof Q) return x.d === 1 ? H(x.n) : (x.n < 0 ? MIN : '') + FR(Math.abs(x.n), x.d);
   if (typeof x === 'number') {
     if (!isFinite(x)) return (x < 0 ? MIN : '+') + '∞';
-    const s = String(Math.round(Math.abs(x) * 1e6) / 1e6).replace('.', ',');
+    const s = String(Math.round(Math.abs(x) * 1e6) / 1e6).replace('.', DECIMAL);
     return (x < 0 ? MIN : '') + s;
   }
   if (x && typeof x === 'object' && 'h' in x) return x.h;
@@ -37,7 +38,7 @@ function H(x) {
 const P = x => val(x) < 0 ? '(' + H(x) + ')' : H(x);           // parenthesise negatives
 function S(x) {                                                    // text that can be typed into a field
   if (x instanceof Q) return x.str();
-  if (typeof x === 'number') return !isFinite(x) ? (x < 0 ? '-inf' : 'inf') : String(Math.round(x * 1e6) / 1e6);
+  if (typeof x === 'number') return !isFinite(x) ? (x < 0 ? '-inf' : 'inf') : String(Math.round(x * 1e6) / 1e6).replace('.', DECIMAL);
   if (x && typeof x === 'object' && 's' in x) return x.s;
   return String(x);
 }
@@ -70,6 +71,8 @@ function poly(c, v, desc = true) {            // c[k] = coefficient of v^k
 const lin = (a, v = 'x') => a === 0 ? I(v) : `${I(v)} ${a < 0 ? '+' : MIN} ${Math.abs(a)}`;   // (x − a)
 const sys = eqs => `<span class="sys">${eqs.map(e => `<span>${e}</span>`).join('')}</span>`;
 const lim = (v, to) => `<span class="lim"><span>lim</span><span>${I(v)}→${to}</span></span>`;
+const recip = d => d === 1 ? '' : d === -1 ? MIN : FR(1, P(d)) + '·';                     // the factor 1/det in front of a matrix, without “1/1”
+const AmL = l => l === 0 ? `${I('A')} − 0·${I('I')}` : `${I('A')} ${l < 0 ? '+' : MIN} ${Math.abs(l) === 1 ? '' : H(Math.abs(l))}${I('I')}`;   // A − λI with a number put in
 const limOf = (v, to, expr) => `<span class="nw">${lim(v, to)} ${expr}</span>`;      // keeps “lim” and its expression on one line
 const root = (inner, idx) => `<span class="rt">${idx ? `<sup>${idx}</sup>` : ''}√<span class="rd">${inner}</span></span>`;
 const big = (a, b) => `<span class="fr big"><span>${a}</span><span>${b}</span></span>`;
