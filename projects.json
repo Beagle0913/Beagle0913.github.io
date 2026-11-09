@@ -1,0 +1,25 @@
+{
+  "site": {
+    "title": "Beagle0913 projects"
+  },
+  "projects": [
+    {
+      "id": "math-trainer",
+      "name": "GMC Math Trainer",
+      "path": "math-trainer/",
+      "kind": "Study tool",
+      "summary": "Step-by-step practice for the VU GMC mathematics course: matrices, complex numbers, eigenvalues and limits. Problems are generated fresh each time and every step is checked. Lithuanian and English.",
+      "tags": ["Mathematics", "LT / EN"],
+      "added": "2026-11-09"
+    },
+    {
+      "id": "moto-routes",
+      "name": "Vilnius Moto Routes",
+      "path": "moto-routes/",
+      "kind": "Route plans",
+      "summary": "Motorcycle rides that start and end in Vilnius, each with a road book, GPX files for Kurviger and buttons for Google Maps and Waze.",
+      "tags": ["Motorcycling", "GPX"],
+      "added": "2026-09-30"
+    }
+  ]
+}

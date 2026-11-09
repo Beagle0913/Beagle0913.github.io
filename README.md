@@ -1,56 +1,55 @@
-# Vilnius Moto Routes
+# Beagle0913 projects
 
-Motorcycle route plans served by GitHub Pages at https://beagle0913.github.io.
+A shelf of small projects served by GitHub Pages at https://beagle0913.github.io.
+The home page lists every project, and every project page has a bar at the top for switching to another project or coming back to the list.
 
 ## Layout
 
 ```
-index.html               Home page. Lists every route from routes.json.
-routes.json              The list of routes. Everything that shows routes reads this file.
-assets/site.css          Shared styles and colour tokens (light and dark theme).
-assets/site.js           Shared behaviour: route bar, download buttons, home page cards.
-routes/<id>/index.html   One road-book page per route.
-routes/<id>/*.gpx|*.kml  That route's files, next to its page.
-asveja-loop.html         Redirect from the old address of the Asveja loop.
+index.html        Home page. Lists every project from projects.json.
+projects.json     The list of projects. The home page and the project bar both read this file.
+hub/hub.css       Styles for the home page and the project bar.
+hub/hub.js        Draws the project list (home page) and the project bar (project pages).
+math-trainer/     GMC Math Trainer (see its README).
+moto-routes/      Vilnius Moto Routes (see its README).
+routes/, asveja-loop.html   Redirects from the addresses the moto routes had before they moved.
 ```
 
-## Add a route
+Each project lives in its own folder and keeps its own styles and scripts, so projects cannot break each other.
 
-1. Make a folder `routes/<id>/` (lower-case, hyphens, e.g. `routes/nemunas-valley/`).
-2. Put the route's GPX/KML files in it.
-3. Copy an existing `routes/*/index.html` into it and change the content. Keep these lines:
-   - `<link rel="stylesheet" href="../../assets/site.css">`
-   - `<script src="../../assets/site.js" defer></script>`
-   - `<body data-route="<id>">`, where `<id>` matches the folder name
-   - `<div id="routebar"></div>` at the top of the body (the route bar is drawn here)
-   - `<div data-route-downloads></div>` wherever the download buttons should go
-4. Add an entry to `routes.json`:
+## Add a project
+
+1. Make a folder at the site root (lower-case, hyphens, e.g. `plant-log/`) with an `index.html` in it.
+2. In that page's `<head>` add the hub files, and mark the body with the project's id:
+
+```html
+<link rel="stylesheet" href="../hub/hub.css">
+<script src="../hub/hub.js" defer></script>
+...
+<body data-project="plant-log">
+<div id="hubbar"></div>
+```
+
+   The bar is drawn where `<div id="hubbar"></div>` is. Pages deeper inside the folder use a longer path (`../../hub/hub.js`).
+3. Add an entry to `projects.json`:
 
 ```json
 {
-  "id": "nemunas-valley",
-  "name": "Nemunas Valley Ride",
-  "path": "routes/nemunas-valley/",
-  "days": 1,
-  "distance_km": 450,
-  "start": "Vilnius",
-  "via": "Vilnius → Birštonas → Kaunas → Jurbarkas → Vilnius",
-  "summary": "One or two sentences for the home page card.",
-  "tags": ["Day loop", "Sweepers"],
-  "files": [{ "label": "Route GPX", "href": "nemunas-valley.gpx" }],
-  "added": "2026-10-01"
+  "id": "plant-log",
+  "name": "Plant Log",
+  "path": "plant-log/",
+  "kind": "Tracker",
+  "summary": "One or two sentences for the home page.",
+  "tags": ["Plants"],
+  "added": "2026-12-01"
 }
 ```
 
-The order of `routes` in `routes.json` is the order of the home page and of the previous/next cycling. The home page, dropdown, arrows, counter and download buttons all update from that file.
-
-## Add a feature
-
-Put new behaviour in `assets/site.js` as its own function and call it from `init()`, which already has the parsed `routes.json`. Extra route fields (for example `season` or `difficulty`) can be added to `routes.json` without breaking anything, since fields nothing reads are ignored.
+The order of `projects` in `projects.json` is the order on the home page and of the previous/next arrows.
 
 ## Preview locally
 
-`routes.json` is loaded with `fetch`, which browsers block for `file://` pages. Serve the folder instead:
+`projects.json` is loaded with `fetch`, which browsers block for `file://` pages. Serve the folder instead:
 
 ```
 python3 -m http.server 8000
