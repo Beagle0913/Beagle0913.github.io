@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GMC Math Trainer</title>
+<meta name="description" content="Interaktyvus GMC matematikos pratybų treniruoklis: matricos, kompleksiniai skaičiai, tikrinės reikšmės, ribos.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d5bd0'/%3E%3Ctext x='16' y='24' font-size='22' text-anchor='middle' fill='white' font-family='Georgia,serif'%3E%CE%BB%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="trainer.css">
+<link rel="stylesheet" href="../hub/hub.css">
+<script src="../hub/hub.js" defer></script>
+</head>
+<body data-project="math-trainer">
+<div id="hubbar"></div>
+<header class="top">
+  <h1 class="brand" id="brand">GMC matematikos <b>pratybų</b> treniruoklis</h1>
+  <div class="tally" id="tally"></div>
+  <div class="langs" id="langs" role="group" aria-label="Kalba"><button type="button" data-lang="lt" aria-pressed="true">LT</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+  <button type="button" class="linkb" id="reset">Ištrinti pažangą</button>
+</header>
+<div class="app">
+  <div>
+    <button type="button" class="navtoggle" id="navtoggle" aria-expanded="false" aria-controls="nav"><span>Pasirinkite uždavinio tipą</span><b aria-hidden="true">▾</b></button>
+    <nav id="nav" aria-label="Uždavinių tipai"></nav>
+  </div>
+  <main>
+    <section class="sheet" id="sheet" aria-live="polite"></section>
+    <p class="keys" id="keys"></p>
+  </main>
+</div>
+<script src="js/core.js"></script>
+<script src="js/gen1.js"></script>
+<script src="js/gen2.js"></script>
+<script src="js/gen0.js"></script>
+<script src="js/lt1.js"></script>
+<script src="js/lt2.js"></script>
+<script src="js/lt0.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>

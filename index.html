@@ -2,35 +2,36 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Vilnius Moto Routes</title>
-<meta name="description" content="Motorcycle routes from Vilnius with GPX files for Kurviger and links for Google Maps and Waze.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beagle0913 projects</title>
+<meta name="description" content="A shelf of small projects: study tools, route plans and other experiments.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231b2330'/%3E%3Cpath d='M8 10h16M8 16h16M8 22h10' stroke='%23f08a5d' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="assets/site.css">
-<script src="assets/site.js" defer></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="hub/hub.css">
+<script src="hub/hub.js" defer></script>
 </head>
-<body>
-<div class="wrap">
+<body class="hub">
+<div class="hub-wrap">
   <header>
-    <p class="eyebrow">Motorcycle routes · <span id="route-count">loading</span></p>
-    <h1>Vilnius Moto Routes</h1>
-    <p class="lede">Rides that start and end in Vilnius. Each route has a road book with times and road surfaces, a GPX for Kurviger, and buttons for Google Maps and Waze. Once you open a route, use the bar at the top to switch between routes.</p>
+    <p class="hub-eyebrow">beagle0913.github.io · <span id="project-count">loading</span></p>
+    <h1>Projects</h1>
+    <p class="hub-lede">Small things I have built, each in its own folder. Open one, then use the bar at the top of its page to switch to another or come back here.</p>
   </header>
 
-  <section>
-    <div id="route-list" class="route-list" aria-live="polite">
+  <main>
+    <ol id="project-list" class="hub-list" aria-live="polite">
       <noscript>
-        <p class="load-error">The route list needs JavaScript. You can open the routes directly:
-          <a href="routes/aukstaitija-lakes/">Aukštaitija Lakes Ride</a>,
-          <a href="routes/asveja-loop/">Asveja Twisties Loop</a>.</p>
+        <li class="hub-error">The project list needs JavaScript. You can open the projects directly:
+          <a href="math-trainer/">GMC Math Trainer</a>,
+          <a href="moto-routes/">Vilnius Moto Routes</a>.</li>
       </noscript>
-    </div>
-  </section>
+    </ol>
+  </main>
 
-  <footer>
-    <p>Distances and times come from OpenStreetMap car routing, and surfaces are partly estimated. Check the route in Kurviger before you ride.</p>
+  <footer class="hub-foot">
+    <p>Source: <a href="https://github.com/Beagle0913/Beagle0913.github.io">github.com/Beagle0913/Beagle0913.github.io</a></p>
   </footer>
 </div>
 </body>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vilnius Moto Routes</title>
+<meta name="description" content="Motorcycle routes from Vilnius with GPX files for Kurviger and links for Google Maps and Waze.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/site.js" defer></script>
+<link rel="stylesheet" href="../hub/hub.css">
+<script src="../hub/hub.js" defer></script>
+</head>
+<body data-project="moto-routes">
+<div id="hubbar"></div>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Motorcycle routes · <span id="route-count">loading</span></p>
+    <h1>Vilnius Moto Routes</h1>
+    <p class="lede">Rides that start and end in Vilnius. Each route has a road book with times and road surfaces, a GPX for Kurviger, and buttons for Google Maps and Waze. Once you open a route, use the bar at the top to switch between routes.</p>
+  </header>
+
+  <section>
+    <div id="route-list" class="route-list" aria-live="polite">
+      <noscript>
+        <p class="load-error">The route list needs JavaScript. You can open the routes directly:
+          <a href="routes/aukstaitija-lakes/">Aukštaitija Lakes Ride</a>,
+          <a href="routes/asveja-loop/">Asveja Twisties Loop</a>.</p>
+      </noscript>
+    </div>
+  </section>
+
+  <footer>
+    <p>Distances and times come from OpenStreetMap car routing, and surfaces are partly estimated. Check the route in Kurviger before you ride.</p>
+  </footer>
+</div>
+</body>
+</html>

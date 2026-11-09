@@ -1,0 +1,58 @@
+/* Project hub: shared styles.
+ * Two parts: the project bar that every project page shows at the top (.hubbar),
+ * and the home page (body.hub). The bar carries its own colours so it looks the
+ * same on any project, whatever that project's stylesheet does. */
+.hubbar {
+  --hb-bg: #1b2330; --hb-ink: #eef2f8; --hb-muted: #a9b4c6; --hb-line: #364154; --hb-field: #263042;
+  background: var(--hb-bg); color: var(--hb-ink);
+  font: 500 13px/1.3 "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.hubbar * { box-sizing: border-box; }
+.hubbar-in { display: flex; align-items: center; gap: 8px; max-width: 1180px; margin: 0 auto; padding: 6px 16px; }
+.hubbar a { color: var(--hb-ink); text-decoration: none; }
+.hubbar .hb-home { font-weight: 600; white-space: nowrap; margin-right: auto; padding: 4px 0; }
+.hubbar .hb-home:hover { text-decoration: underline; }
+.hubbar .hb-cyc { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: 1px solid var(--hb-line); border-radius: 6px; font-size: 16px; line-height: 1; }
+.hubbar .hb-cyc:hover { background: var(--hb-field); }
+.hubbar select { font: inherit; color: var(--hb-ink); background: var(--hb-field); border: 1px solid var(--hb-line); border-radius: 6px; height: 28px; padding: 0 8px; min-width: 0; max-width: 46vw; }
+.hubbar .hb-count { color: var(--hb-muted); font-variant-numeric: tabular-nums; }
+.hubbar a:focus-visible, .hubbar select:focus-visible { outline: 2px solid #8fb6ff; outline-offset: 2px; }
+
+/* ---------- home page ---------- */
+body.hub {
+  /* layout: one index column, projects as numbered ledger rows rather than cards.
+     Tokens are set on body.hub, not :root, so they never leak into a project's own palette. */
+  --bg: #f3f4f1; --surface: #ffffff; --ink: #1a2029; --muted: #5d6673; --line: #d5d9d2; --accent: #b3421f;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) body.hub { --bg: #12151a; --surface: #1a1f27; --ink: #e8ebf0; --muted: #9aa4b2; --line: #2c3440; --accent: #f08a5d; color-scheme: dark; }
+}
+:root[data-theme="dark"] body.hub { --bg: #12151a; --surface: #1a1f27; --ink: #e8ebf0; --muted: #9aa4b2; --line: #2c3440; --accent: #f08a5d; color-scheme: dark; }
+body.hub { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 var(--f-body); }
+body.hub * { box-sizing: border-box; }
+.hub-wrap { max-width: 860px; margin: 0 auto; padding: 48px 20px 64px; }
+.hub-eyebrow { font: 500 13px/1.4 var(--f-mono); color: var(--muted); margin: 0 0 6px; }
+.hub-wrap h1 { font: 600 34px/1.15 var(--f-body); letter-spacing: -.01em; margin: 0 0 10px; text-wrap: balance; }
+.hub-lede { color: var(--muted); max-width: 60ch; margin: 0 0 30px; }
+.hub-list { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
+.hub-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 4px 16px; align-items: baseline; padding: 18px 6px; border-bottom: 1px solid var(--line); color: inherit; text-decoration: none; }
+.hub-row:hover { background: var(--surface); }
+.hub-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.hub-no { font: 500 13px/1.6 var(--f-mono); color: var(--accent); }
+.hub-row h2 { font: 600 20px/1.3 var(--f-body); margin: 0; }
+.hub-kind { font: 400 13px/1.4 var(--f-mono); color: var(--muted); white-space: nowrap; }
+.hub-sum { grid-column: 2 / -1; margin: 2px 0 6px; color: var(--muted); max-width: 64ch; }
+.hub-tags { grid-column: 2 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
+.hub-tag { font: 400 12px/1.5 var(--f-mono); border: 1px solid var(--line); border-radius: 999px; padding: 0 9px; color: var(--muted); }
+.hub-open { font-weight: 600; color: var(--accent); margin-left: auto; }
+.hub-foot { margin-top: 28px; color: var(--muted); font-size: 14px; }
+.hub-foot a { color: inherit; }
+.hub-error { padding: 18px 6px; color: var(--muted); }
+@media (max-width: 520px) {
+  .hub-wrap { padding: 32px 16px 48px; }
+  .hub-row { grid-template-columns: 30px minmax(0, 1fr); }
+  .hub-kind { grid-column: 2; }
+  .hub-wrap h1 { font-size: 28px; }
+}
