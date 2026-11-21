@@ -11,7 +11,7 @@ projects.json     The list of projects. The home page and the project bar both r
 hub/hub.css       Styles for the home page and the project bar.
 hub/hub.js        Draws the project list (home page) and the project bar (project pages).
 404.html          Shown for addresses that do not exist; lists the projects.
-math-trainer/     GMC Math Trainer (see its README).
+math-trainer/     Redirect to https://beagle.lt/math/, where the maths trainer now lives.
 moto-routes/      Vilnius Moto Routes (see its README).
 routes/, asveja-loop.html   Redirects from the addresses the moto routes had before they moved.
 ```
@@ -53,7 +53,7 @@ The order of `projects` in `projects.json` is the order on the home page and of 
 - Every page carries a `Content-Security-Policy` meta tag: scripts and data load only from this site, styles from this site and Google Fonts, and nothing else. A new project should copy that tag from an existing page. If a project really needs an inline script or another host, loosen the tag on that project's pages only.
 - Text that comes from `projects.json`, `routes.json` or from what a visitor types is always put on the page as plain text, never as HTML.
 - Links built from those files are checked to stay on this site.
-- Nothing is collected or sent anywhere. The math trainer keeps its progress in the visitor's own browser.
+- Nothing is collected or sent anywhere.
 
 ## Preview locally
 

@@ -4,15 +4,6 @@
   },
   "projects": [
     {
-      "id": "math-trainer",
-      "name": "GMC Math Trainer",
-      "path": "math-trainer/",
-      "kind": "Study tool",
-      "summary": "Step-by-step practice for the VU GMC mathematics course: matrices, complex numbers, eigenvalues and limits. Problems are generated fresh each time and every step is checked. Lithuanian and English.",
-      "tags": ["Mathematics", "LT / EN"],
-      "added": "2026-11-09"
-    },
-    {
       "id": "moto-routes",
       "name": "Vilnius Moto Routes",
       "path": "moto-routes/",
